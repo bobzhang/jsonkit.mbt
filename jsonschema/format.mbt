@@ -67,7 +67,7 @@ pub suberror UnknownFormat {
 /// `repr(checker)`: `<FormatChecker checkers=['date', 'email', ...]>`.
 pub impl Show for FormatChecker with output(self, logger) {
   let names = self.checkers.keys().collect()
-  names.sort()
+  names.sort_by(py_str_compare)
   logger.write_string("<FormatChecker checkers=[")
   logger.write_string(names.map(n => @pycompat.repr_string(n)).join(", "))
   logger.write_string("]>")

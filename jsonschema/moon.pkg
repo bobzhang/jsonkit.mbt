@@ -13,4 +13,9 @@ warnings = "-implicit_impl_as_method"
 import {
   "bobzhang/referencing",
   "moonbitlang/core/cmp",
+  "moonbitlang/core/string",
 } for "test"
+
+import {
+  "moonbitlang/core/double",
+} for "wbtest"

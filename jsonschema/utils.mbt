@@ -4,7 +4,20 @@
 pub(all) enum PathItem {
   Key(String)
   Index(Int)
-} derive(Eq, Compare, Hash, Debug)
+} derive(Eq, Hash, Debug)
+
+///|
+/// Python's ordering: keys by code point, indices numerically. (Upstream
+/// would raise `TypeError` comparing a key with an index; here keys sort
+/// first.)
+pub impl Compare for PathItem with compare(self, other) {
+  match (self, other) {
+    (Key(a), Key(b)) => py_str_compare(a, b)
+    (Index(a), Index(b)) => a.compare(b)
+    (Key(_), Index(_)) => -1
+    (Index(_), Key(_)) => 1
+  }
+}
 
 ///|
 /// `repr(item)`: `'key'` or `3`.

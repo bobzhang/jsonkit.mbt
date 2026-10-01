@@ -44,7 +44,7 @@ pub impl Show for UndefinedTypeCheck with output(self, logger) {
 /// `repr(checker)`: `<TypeChecker types={'array', 'boolean', ...}>`.
 pub impl Show for TypeChecker with output(self, logger) {
   let names = self.type_checkers.keys().collect()
-  names.sort()
+  names.sort_by(py_str_compare)
   logger.write_string("<TypeChecker types={")
   logger.write_string(
     names.map(n => @pycompat.repr_string(n)).join(", "),
