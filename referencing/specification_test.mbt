@@ -115,3 +115,51 @@ test "opaque: no id, no subresources, no anchors" {
     assert_true(@referencing.opaque_specification.anchors_in(thing).is_empty())
   }
 }
+
+///|
+test "anchor equality includes the resolve callback identity (Codex review)" {
+  let resource = opaque_resource({ "a": 1 })
+  let resolve_a : (@referencing.Anchor, @referencing.Resolver) -> @referencing.Resolved raise = (
+    _,
+    resolver,
+  ) => { contents: "a", resolver, }
+  let resolve_b : (@referencing.Anchor, @referencing.Resolver) -> @referencing.Resolved raise = (
+    _,
+    resolver,
+  ) => { contents: "b", resolver, }
+  let a1 = @referencing.Anchor::custom(
+    name="x",
+    resource~,
+    kind="Custom",
+    resolve=resolve_a,
+  )
+  let a2 = @referencing.Anchor::custom(
+    name="x",
+    resource~,
+    kind="Custom",
+    resolve=resolve_a,
+  )
+  let b = @referencing.Anchor::custom(
+    name="x",
+    resource~,
+    kind="Custom",
+    resolve=resolve_b,
+  )
+  assert_true(a1 == a2)
+  assert_true(a1 != b)
+  // plain anchors never equal custom ones, even of the same kind name
+  let plain = @referencing.Anchor::new(name="x", resource~)
+  let fake = @referencing.Anchor::custom(
+    name="x",
+    resource~,
+    kind="Anchor",
+    resolve=resolve_a,
+  )
+  assert_true(plain == @referencing.Anchor::new(name="x", resource~))
+  assert_true(plain != fake)
+  // independently created dynamic anchors still compare equal
+  assert_true(
+    @referencing.dynamic_anchor(name="x", resource~) ==
+    @referencing.dynamic_anchor(name="x", resource~),
+  )
+}

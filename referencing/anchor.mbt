@@ -51,10 +51,18 @@ pub fn Anchor::resolve(self : Anchor, resolver : Resolver) -> Resolved raise {
 }
 
 ///|
+/// Anchors are equal when they have the same kind, name and resource, and the
+/// same resolution callback (compared by identity, as for `Specification`
+/// callbacks and registry retrievers).
 pub impl Eq for Anchor with fn equal(self, other) {
   self.kind == other.kind &&
   self.name == other.name &&
-  self.resource == other.resource
+  self.resource == other.resource &&
+  (match (self.resolve_impl, other.resolve_impl) {
+    (None, None) => true
+    (Some(a), Some(b)) => physical_equal(a, b)
+    _ => false
+  })
 }
 
 ///|

@@ -212,3 +212,69 @@ test "pointer escapes, percent-decoding and Python-style indices" {
     }
   }
 }
+
+///|
+test "pointer array indices follow Python int() (generated with CPython 3.13)" {
+  // index i holds i; None means PointerToNowhere
+  let resource = opaque_resource(
+    Json::array(Array::makei(20, i => Json::number(i.to_double()))),
+  )
+  let resolver = @referencing.Registry::new().resolver()
+  let cases : Array[(String, Int?)] = [
+    ("0", Some(0)),
+    ("19", Some(19)),
+    ("-1", Some(-1)),
+    ("-20", Some(-20)),
+    ("20", None),
+    ("-21", None),
+    (" 3 ", Some(3)),
+    ("\u{00a0}3", Some(3)),
+    ("\t\n3\r\u{000b}\f", Some(3)),
+    ("\u{3000}3\u{2028}", Some(3)),
+    ("\u{001c}3", None),
+    ("3\u{001f}", None),
+    ("\u{0085} 3", Some(3)),
+    ("\u{200b}3", None),
+    ("1_0", Some(10)),
+    ("_1", None),
+    ("1_", None),
+    ("1__0", None),
+    ("+_1", None),
+    ("- 1", None),
+    ("+7", Some(7)),
+    ("-0", Some(0)),
+    ("00", Some(0)),
+    ("\u{0663}", Some(3)),
+    ("1\u{0663}", Some(13)),
+    ("\u{ff11}\u{ff12}", Some(12)),
+    ("\u{1d7d9}", Some(1)),
+    ("\u{00b2}", None),
+    ("3.0", None),
+    ("0x1", None),
+    ("", None),
+    ("+", None),
+    ("1e1", None),
+    ("\u{2163}", None),
+    ("\u{1fbf5}", Some(5)),
+  ]
+  for case in cases {
+    let (segment, expected) = case
+    let got = resource.pointer("/" + segment, resolver).contents catch {
+        @referencing.PointerToNowhere(..) => Json::null()
+        error => fail("unexpected \{error}")
+      }
+    let expected = match expected {
+      Some(i) => Json::number(((i + 20) % 20).to_double())
+      None => Json::null()
+    }
+    assert_eq(got, expected, msg="segment \{Repr(segment)}")
+  }
+}
+
+///|
+test "pointer: percent-encoded NBSP before an index (Codex review)" {
+  let resolver = @referencing.Registry::new().resolver_with_root(
+    opaque_resource(["hit"]),
+  )
+  json_inspect(resolver.lookup("#/%C2%A00").contents, content="hit")
+}

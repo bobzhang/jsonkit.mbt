@@ -1,0 +1,89 @@
+///|
+/// Whitespace accepted around a number by Python's `int()`: `str.isspace()`
+/// characters except U+001C..U+001F, which the numeric parser rejects.
+fn is_py_int_space(c : Char) -> Bool {
+  match c.to_int() {
+    0x09..=0x0d
+    | 0x20
+    | 0x85
+    | 0xa0
+    | 0x1680
+    | 0x2000..=0x200a
+    | 0x2028
+    | 0x2029
+    | 0x202f
+    | 0x205f
+    | 0x3000 => true
+    _ => false
+  }
+}
+
+///|
+/// Code points of the digit zero of every Unicode decimal-digit run
+/// (category Nd, Unicode 15.1 as in CPython 3.13); each run is `zero..=zero+9`.
+let decimal_zeros : ReadOnlyArray[Int] = [
+  0x30, 0x660, 0x6f0, 0x7c0, 0x966, 0x9e6, 0xa66, 0xae6, 0xb66, 0xbe6, 0xc66, 0xce6,
+  0xd66, 0xde6, 0xe50, 0xed0, 0xf20, 0x1040, 0x1090, 0x17e0, 0x1810, 0x1946, 0x19d0,
+  0x1a80, 0x1a90, 0x1b50, 0x1bb0, 0x1c40, 0x1c50, 0xa620, 0xa8d0, 0xa900, 0xa9d0,
+  0xa9f0, 0xaa50, 0xabf0, 0xff10, 0x104a0, 0x10d30, 0x11066, 0x110f0, 0x11136, 0x111d0,
+  0x112f0, 0x11450, 0x114d0, 0x11650, 0x116c0, 0x11730, 0x118e0, 0x11950, 0x11c50,
+  0x11d50, 0x11da0, 0x11f50, 0x16a60, 0x16ac0, 0x16b50, 0x1d7ce, 0x1d7d8, 0x1d7e2,
+  0x1d7ec, 0x1d7f6, 0x1e140, 0x1e2f0, 0x1e4f0, 0x1e950, 0x1fbf0,
+]
+
+///|
+/// The value of a Unicode decimal digit (Python's `unicodedata.decimal`).
+fn py_decimal_value(c : Char) -> Int? {
+  let code = c.to_int()
+  for zero in decimal_zeros {
+    if code >= zero && code <= zero + 9 {
+      return Some(code - zero)
+    }
+  }
+  None
+}
+
+///|
+/// Python's `int(s)` (base 10): surrounding numeric whitespace, an optional
+/// sign, Unicode decimal digits, and single underscores between digits.
+/// Values beyond `Int` saturate (they can never be valid indices anyway).
+fn py_int(s : String) -> Int? {
+  let chars = s.iter().to_array()
+  let mut start = 0
+  let mut end = chars.length()
+  while start < end && is_py_int_space(chars[start]) {
+    start += 1
+  }
+  while end > start && is_py_int_space(chars[end - 1]) {
+    end -= 1
+  }
+  let mut negative = false
+  if start < end && (chars[start] == '+' || chars[start] == '-') {
+    negative = chars[start] == '-'
+    start += 1
+  }
+  if start >= end {
+    return None
+  }
+  let mut value = 0L
+  let mut prev_digit = false
+  for i in start..<end {
+    let c = chars[i]
+    if py_decimal_value(c) is Some(d) {
+      value = value * 10L + d.to_int64()
+      if value > 2147483647L {
+        value = 2147483647L
+      }
+      prev_digit = true
+    } else if c == '_' && prev_digit && i + 1 < end {
+      prev_digit = false
+    } else {
+      return None
+    }
+  }
+  if !prev_digit {
+    return None
+  }
+  let v = value.to_int()
+  Some(if negative { -v } else { v })
+}
