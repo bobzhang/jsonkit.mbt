@@ -1,1 +1,9 @@
+import {
+  "bobzhang/referencing/urllib",
+  "moonbitlang/core/immut/hashmap",
+  "moonbitlang/core/immut/hashset",
+  "moonbitlang/core/list",
+  "moonbitlang/core/json",
+}
 
+warnings = "-implicit_impl_as_method"
