@@ -63,7 +63,10 @@ fn iso_decimal(s : Array[Int]) -> Bool raise LibError {
 
 ///|
 /// `parse_designator`: pops designators until `target`.
-fn iso_designator(designators : Array[Int], target : Int) -> Unit raise LibError {
+fn iso_designator(
+  designators : Array[Int],
+  target : Int,
+) -> Unit raise LibError {
   while designators.length() > 0 {
     let key = designators.remove(0)
     if key == target {
@@ -103,9 +106,7 @@ pub fn parse_duration(duration_str : String) -> Unit raise LibError {
   for idx, ch in date_str {
     if ch == 'T' {
       if tmp_value.length() > 0 && tmp_value == date_str[:idx].to_owned() {
-        raise DurationParsingException(
-          "Value could not be parsed as datetime",
-        )
+        raise DurationParsingException("Value could not be parsed as datetime")
       }
       let time_str = date_str[idx + 1:]
       if time_str.length() == 0 {

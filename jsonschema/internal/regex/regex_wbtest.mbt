@@ -15,7 +15,9 @@ test "differential: re.compile / re.search against CPython" {
       Some(results) => {
         let p = compile(pattern) catch {
           e => {
-            failures.push("should be valid: \{pattern} (\{e is PatternError(_)})")
+            failures.push(
+              "should be valid: \{pattern} (\{e is PatternError(_)})",
+            )
             continue
           }
         }

@@ -19,7 +19,10 @@ pub fn validate_rfc3986(url : String, rule~ : String) -> Bool raise LibError {
 /// `rfc3987_syntax.is_valid_syntax(term, value)` (rfc3987-syntax 1.1.0) for
 /// the `iri` and `iri_reference` terms: whether `value` is derivable from
 /// the library's RFC 3987 grammar.
-pub fn rfc3987_syntax_is_valid(term : String, value : String) -> Bool raise LibError {
+pub fn rfc3987_syntax_is_valid(
+  term : String,
+  value : String,
+) -> Bool raise LibError {
   let pattern = match term {
     "iri" => rfc3987_syntax_iri_pattern
     "iri_reference" => rfc3987_syntax_iri_reference_pattern

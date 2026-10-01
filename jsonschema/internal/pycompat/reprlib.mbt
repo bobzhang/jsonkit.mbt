@@ -24,7 +24,9 @@ fn short_repr_level(j : Json, level : Int) -> String {
   match j {
     String(s) => {
       let cps = @unicodedata.code_points(s)
-      let head = @unicodedata.from_code_points(cps[:@cmp.minimum(cps.length(), 30)])
+      let head = @unicodedata.from_code_points(
+        cps[:@cmp.minimum(cps.length(), 30)],
+      )
       let rep = repr_string(head)
       let rcps = @unicodedata.code_points(rep)
       if rcps.length() > 30 {
@@ -83,9 +85,11 @@ fn short_repr_level(j : Json, level : Int) -> String {
         })
         let pieces = keys[:@cmp.minimum(keys.length(), 4)]
           .iter()
-          .map(k => short_repr_level(Json::string(k), level - 1) +
+          .map(k => {
+            short_repr_level(Json::string(k), level - 1) +
             ": " +
-            short_repr_level(m[k], level - 1))
+            short_repr_level(m[k], level - 1)
+          })
           .collect()
         if m.length() > 4 {
           pieces.push("...")

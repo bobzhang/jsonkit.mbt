@@ -5,7 +5,8 @@ fn validator_class_for(class_name : String) -> @jsonschema.ValidatorClass {
     "TestDraft4" => @jsonschema.draft4_validator
     "TestDraft6" => @jsonschema.draft6_validator
     "TestDraft7" => @jsonschema.draft7_validator
-    "TestDraft201909" | "TestDraft201909Format" => @jsonschema.draft201909_validator
+    "TestDraft201909" | "TestDraft201909Format" =>
+      @jsonschema.draft201909_validator
     _ => @jsonschema.draft202012_validator
   }
 }
@@ -36,7 +37,11 @@ fn remotes_for(version : String) -> @referencing.Registry raise {
     }
     let has_schema = schema is Object({ "$schema": _, .. })
     if ((version == "draft3" || version == "draft4") && stem == "tree.json") ||
-      (!has_schema && relative.has_prefix("draft") && !relative.has_prefix(version)) {
+      (
+        !has_schema &&
+        relative.has_prefix("draft") &&
+        !relative.has_prefix(version)
+      ) {
       continue
     }
     contents.push(("http://localhost:1234/\{relative}", schema))
@@ -107,14 +112,24 @@ fn run_suite_file(
   for case in cases {
     guard case
       is Object(
-        { "description": String(case_description), "schema": schema, "tests": Array(tests), .. }
+        {
+          "description": String(case_description),
+          "schema": schema,
+          "tests": Array(tests),
+          ..
+        }
       ) else {
       return "malformed case"
     }
     for t in tests {
       guard t
         is Object(
-          { "description": String(description), "data": data, "valid": valid, .. }
+          {
+            "description": String(description),
+            "data": data,
+            "valid": valid,
+            ..
+          }
         ) else {
         return "malformed test"
       }
@@ -131,9 +146,7 @@ fn run_suite_file(
       let upstream_skipped = up is Some('A'..='Z')
       let reason = skip(test_)
       if (reason is Some(_)) != upstream_skipped {
-        notes.push(
-          "skip mismatch: \{case_description} / \{description}",
-        )
+        notes.push("skip mismatch: \{case_description} / \{description}")
       }
       if reason is Some(_) {
         skipped += 1
