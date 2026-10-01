@@ -1,4 +1,7 @@
 import {
+  "bobzhang/jsonschema/specifications",
+  "bobzhang/referencing",
+  "bobzhang/referencing/urllib",
   "bobzhang/jsonschema/internal/formats",
   "bobzhang/jsonschema/internal/pycompat",
   "bobzhang/jsonschema/internal/regex",

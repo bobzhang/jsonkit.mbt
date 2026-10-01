@@ -1,5 +1,6 @@
 import {
   "bobzhang/jsonschema",
+  "bobzhang/referencing",
 }
 
 warnings = "-implicit_impl_as_method"

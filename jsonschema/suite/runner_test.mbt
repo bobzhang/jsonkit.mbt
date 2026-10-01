@@ -23,24 +23,82 @@ fn validator_version_for(class_name : String) -> String {
 }
 
 ///|
-/// Run one test, returning `'v'` (valid), `'i'` (invalid) or `'e'` (some
-/// other error).
+fn validator_class_for(class_name : String) -> @jsonschema.ValidatorClass {
+  match class_name {
+    "TestDraft3" => @jsonschema.draft3_validator
+    "TestDraft4" => @jsonschema.draft4_validator
+    "TestDraft6" => @jsonschema.draft6_validator
+    "TestDraft7" => @jsonschema.draft7_validator
+    "TestDraft201909" | "TestDraft201909Format" => @jsonschema.draft201909_validator
+    _ => @jsonschema.draft202012_validator
+  }
+}
+
+///|
+let remote_registries : Map[String, @referencing.Registry] = Map([])
+
+///|
+/// Upstream's `Suite.version(name)._remotes`: the suite's remotes, served
+/// at `http://localhost:1234/`, filtered like `remotes_in`.
+fn remotes_for(version : String) -> @referencing.Registry raise {
+  if remote_registries.get(version) is Some(r) {
+    return r
+  }
+  let cls = match @jsonschema.registered_validators().get(version) {
+    Some(c) => c
+    None => fail("unknown version \{version}")
+  }
+  let uri = (cls.id_of)(cls.meta_schema).unwrap()
+  let specification = @referencing.specification_with(uri)
+  let contents = []
+  for remote in suite_remotes {
+    let (relative, text) = remote
+    let schema = @jsonschema.loads(text)
+    let stem = match relative.rev_find("/") {
+      Some(i) => relative.unsafe_substring(start=i + 1, end=relative.length())
+      None => relative
+    }
+    let has_schema = schema is Object({ "$schema": _, .. })
+    if ((version == "draft3" || version == "draft4") && stem == "tree.json") ||
+      (!has_schema && relative.has_prefix("draft") && !relative.has_prefix(version)) {
+      continue
+    }
+    contents.push(("http://localhost:1234/\{relative}", schema))
+  }
+  let registry = @referencing.Registry::new().with_contents(
+    contents,
+    default_specification=specification,
+  )
+  remote_registries[version] = registry
+  registry
+}
+
+///|
+/// Run one test like upstream's `_Test.validate`, returning `'v'` (valid),
+/// `'i'` (a `ValidationError` was raised) or `'e'` (some other error).
 fn run_one(
   class_name : String,
-  _format_checker : Bool,
+  version : String,
+  format_checker : Bool,
   test_ : SuiteTest,
 ) -> Char {
-  // Phase 1: only `optional/format` groups exist; their schemas consist of
-  // `format` (and `$schema`), so validating amounts to checking the format.
-  guard test_.schema is Object({ "format": String(format), .. }) else {
-    return 'v'
-  }
-  let checker = format_checker_for(validator_version_for(class_name))
-  let ok = checker.conforms(test_.data, format) catch { _ => return 'e' }
-  if ok {
+  let cls = validator_class_for(class_name)
+  try {
+    cls.check_schema(test_.schema)
+    let validator = if format_checker {
+      cls.new(
+        test_.schema,
+        registry=remotes_for(version),
+        format_checker=cls.format_checker,
+      )
+    } else {
+      cls.new(test_.schema, registry=remotes_for(version))
+    }
+    validator.validate(test_.data)
     'v'
-  } else {
-    'i'
+  } catch {
+    @jsonschema.ValidationError(_) => 'i'
+    _ => 'e'
   }
 }
 
@@ -55,7 +113,6 @@ fn run_suite_file(
   upstream~ : String,
   text : String,
 ) -> String {
-  let _ = version
   let cases = @jsonschema.loads(text) catch {
     e => return "cannot parse \{path}: \{e}"
   }
@@ -102,7 +159,7 @@ fn run_suite_file(
         skipped += 1
         continue
       }
-      let ours = run_one(class_name, format_checker, test_)
+      let ours = run_one(class_name, version, format_checker, test_)
       let expected = if test_.valid { 'v' } else { 'i' }
       let python = match up {
         Some(c) => c.to_ascii_lowercase()
