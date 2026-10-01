@@ -1,0 +1,3 @@
+Each module in this workspace carries its own LICENSE and NOTICE file:
+jmespath/, referencing/ and jsonschema/. See those for third-party
+copyright notices and licenses.

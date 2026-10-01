@@ -8,7 +8,7 @@ import {
 
 readme = "README.md"
 
-repository = ""
+repository = "https://github.com/bobzhang/jsonkit.mbt"
 
 license = "MIT"
 
