@@ -134,8 +134,12 @@ fn optional_int_json(i : Int?) -> Json {
 /// The upstream dict representation of the node, e.g.
 /// `{"type": "field", "children": [], "value": "foo"}`.
 pub impl ToJson for Node with to_json(self) {
+  // Same key order as the upstream constructors.
   let obj : Map[String, Json] = Map([])
   obj["type"] = Json::string(self.type_name())
+  if self is (Index(_) | Literal(_)) {
+    obj["value"] = self.value().unwrap()
+  }
   obj["children"] = match self {
     Slice(start, end, step) =>
       Json::array([
