@@ -190,5 +190,10 @@ test "extend" {
   `RefResolver` API is not ported.
 * `extend` is `ValidatorClass::extend_with` (`extend` is reserved in
   MoonBit); validator classes are values (`draft7_validator`), not types.
+* Built-in format checks raise the public `FormatCause` errors
+  (`AddressValueError`, `IDNAError`, ... named after upstream's exception
+  classes), available as `ValidationError::cause`.
+* Python-level crashes upstream would hit (e.g. `OverflowError` in
+  `multipleOf` for ints too large for a float) are raised as `PythonError`.
 * Values Python allows but JSON cannot hold (non-string keys, tuples,
   `Decimal`) are out of scope.

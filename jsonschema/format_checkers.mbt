@@ -40,6 +40,11 @@ fn checks_drafts(
   draft202012? : String,
   raises? : (Error) -> Bool = raises_nothing,
 ) -> Unit {
+  let func : FormatCheckFn = instance => {
+    func(instance) catch {
+      e => raise lift_cause(e)
+    }
+  }
   let or_ = (a : String?, b : String?) => if a is Some(_) { a } else { b }
   let draft3 = or_(draft3, name)
   let draft4 = or_(draft4, name)
@@ -211,11 +216,6 @@ fn is_uuid(instance : Json) -> Bool raise {
 }
 
 ///|
-fn is_regex_error(e : Error) -> Bool {
-  e is @regex.PatternError(_)
-}
-
-///|
 fn init {
   // Registration order mirrors `jsonschema/_format.py` (it matters for the
   // class-level registry, where draft 3's `time` replaces the RFC 3339 one).
@@ -229,9 +229,9 @@ fn init {
     draft7="ipv4",
     draft201909="ipv4",
     draft202012="ipv4",
-    raises=@formats.is_address_value_error,
+    raises=is_address_value_error_cause,
   )
-  checks_drafts(is_ipv6, name="ipv6", raises=@formats.is_address_value_error)
+  checks_drafts(is_ipv6, name="ipv6", raises=is_address_value_error_cause)
   checks_drafts(
     is_host_name,
     draft3="host-name",
@@ -240,65 +240,65 @@ fn init {
     draft7="hostname",
     draft201909="hostname",
     draft202012="hostname",
-    raises=@formats.is_value_error,
+    raises=is_value_error_cause,
   )
   checks_drafts(
     is_idn_host_name,
     draft7="idn-hostname",
     draft201909="idn-hostname",
     draft202012="idn-hostname",
-    raises=@formats.is_idna_error,
+    raises=is_idna_error_cause,
   )
   checks_drafts(
     is_iri,
     draft7="iri",
     draft201909="iri",
     draft202012="iri",
-    raises=@formats.is_value_error,
+    raises=is_value_error_cause,
   )
   checks_drafts(
     is_iri_reference,
     draft7="iri-reference",
     draft201909="iri-reference",
     draft202012="iri-reference",
-    raises=@formats.is_value_error,
+    raises=is_value_error_cause,
   )
-  checks_drafts(is_uri, name="uri", raises=@formats.is_value_error)
+  checks_drafts(is_uri, name="uri", raises=is_value_error_cause)
   checks_drafts(
     is_uri_reference,
     draft6="uri-reference",
     draft7="uri-reference",
     draft201909="uri-reference",
     draft202012="uri-reference",
-    raises=@formats.is_value_error,
+    raises=is_value_error_cause,
   )
   checks_drafts(is_datetime, name="date-time")
   checks_drafts(is_time, draft7="time", draft201909="time", draft202012="time")
-  checks_drafts(is_regex, name="regex", raises=is_regex_error)
+  checks_drafts(is_regex, name="regex", raises=is_pattern_error_cause)
   checks_drafts(
     is_date,
     draft3="date",
     draft7="date",
     draft201909="date",
     draft202012="date",
-    raises=@formats.is_value_error,
+    raises=is_value_error_cause,
   )
-  checks_drafts(is_draft3_time, draft3="time", raises=@formats.is_value_error)
-  checks_drafts(is_css21_color, draft3="color", raises=@formats.is_value_error)
+  checks_drafts(is_draft3_time, draft3="time", raises=is_value_error_cause)
+  checks_drafts(is_css21_color, draft3="color", raises=is_value_error_cause)
   checks_drafts(
     is_json_pointer,
     draft6="json-pointer",
     draft7="json-pointer",
     draft201909="json-pointer",
     draft202012="json-pointer",
-    raises=@formats.is_json_pointer_exception,
+    raises=is_json_pointer_cause,
   )
   checks_drafts(
     is_relative_json_pointer,
     draft7="relative-json-pointer",
     draft201909="relative-json-pointer",
     draft202012="relative-json-pointer",
-    raises=@formats.is_json_pointer_exception,
+    raises=is_json_pointer_cause,
   )
   checks_drafts(
     i => is_uri_template(i),
@@ -311,12 +311,12 @@ fn init {
     is_duration,
     draft201909="duration",
     draft202012="duration",
-    raises=@formats.is_duration_parsing_exception,
+    raises=is_duration_cause,
   )
   checks_drafts(
     is_uuid,
     draft201909="uuid",
     draft202012="uuid",
-    raises=@formats.is_value_error,
+    raises=is_value_error_cause,
   )
 }

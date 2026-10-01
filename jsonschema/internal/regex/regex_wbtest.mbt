@@ -34,3 +34,13 @@ test "differential: re.compile / re.search against CPython" {
   }
   debug_inspect(failures, content="[]")
 }
+
+///|
+test "the compile cache is bounded" {
+  for i in 0..<(MAX_CACHE + 100) {
+    ignore(compile("^review\{i}$"))
+  }
+  inspect(cache.length() <= MAX_CACHE, content="true")
+  // recently compiled patterns are still there
+  assert_true(cache.contains("^review\{MAX_CACHE + 99}$"))
+}

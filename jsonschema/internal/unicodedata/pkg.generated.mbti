@@ -6,6 +6,8 @@ pub fn alnum_set() -> Array[(Int, Int)]
 
 pub fn bidirectional(Int) -> String
 
+pub fn case_fold_extras(ArrayView[(Int, Int)]) -> Array[(Int, Int)]
+
 pub fn code_points(StringView) -> Array[Int]
 
 pub fn combining(Int) -> Int

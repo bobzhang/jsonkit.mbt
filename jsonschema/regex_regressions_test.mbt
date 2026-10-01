@@ -27,7 +27,9 @@ test "pattern: $ is zero-width before a final newline" {
   assert_true(v.is_valid("\u{1F600}foo"))
   assert_false(v.is_valid("éfoo"))
   // lookaround works
-  let v = @jsonschema.draft202012_validator.new({ "pattern": "^(?!x)\\w+(?<=z)$" })
+  let v = @jsonschema.draft202012_validator.new({
+    "pattern": "^(?!x)\\w+(?<=z)$",
+  })
   assert_true(v.is_valid("abz"))
   assert_false(v.is_valid("xbz"))
 }

@@ -21,7 +21,11 @@ test "numeric edge cases agree with upstream" {
       } else {
         let cps = errors[0].message
         "invalid: " +
-        (if cps.length() > 60 { cps.unsafe_substring(start=0, end=60) } else { cps })
+        (if cps.length() > 60 {
+          cps.unsafe_substring(start=0, end=60)
+        } else {
+          cps
+        })
       }
     } catch {
       @jsonschema.PythonError(m) =>
@@ -33,7 +37,9 @@ test "numeric edge cases agree with upstream" {
       e => "error: \{e}"
     }
     if got != expected {
-      failures.push("\{schema_text} / \{instance_text}: got \{got}, upstream \{expected}")
+      failures.push(
+        "\{schema_text} / \{instance_text}: got \{got}, upstream \{expected}",
+      )
     }
   }
   debug_inspect(failures, content="[]")

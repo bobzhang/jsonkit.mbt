@@ -22,7 +22,7 @@ pub fn is_whole(Double) -> Bool
 
 pub fn loads(String) -> Json raise JSONDecodeError
 
-pub fn multiple_of_failed(Json, Json) -> Bool
+pub fn multiple_of_failed(Json, Json) -> Bool raise ArithmeticError
 
 pub fn number_value(Json) -> Double
 
@@ -49,6 +49,13 @@ pub fn text_indent(String, String) -> String
 pub fn write_repr(StringBuilder, Json) -> Unit
 
 // Errors
+pub suberror ArithmeticError {
+  OverflowError(String)
+  ValueError(String)
+  ZeroDivisionError(String)
+}
+pub impl Show for ArithmeticError
+
 pub suberror JSONDecodeError {
   JSONDecodeError(msg~ : String, pos~ : Int, lineno~ : Int, colno~ : Int)
 }

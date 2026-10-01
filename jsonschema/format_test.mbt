@@ -177,3 +177,27 @@ fn lexicographic(a : String, b : String) -> Int {
   }
   a.length().compare(b.length())
 }
+
+///|
+test "built-in format causes are public" {
+  let cls = @jsonschema.draft202012_validator
+  let v = cls.new({ "format": "ipv4" }, format_checker=cls.format_checker)
+  let error = v.iter_errors("nope").first().unwrap()
+  inspect(error.message, content="'nope' is not a 'ipv4'")
+  match error.cause {
+    Some(@jsonschema.AddressValueError(_) as cause) => {
+      inspect(cause.class_name(), content="AddressValueError")
+      assert_true(cause.is_value_error())
+    }
+    _ => fail("expected an AddressValueError cause")
+  }
+  let v = cls.new({ "format": "regex" }, format_checker=cls.format_checker)
+  let error = v.iter_errors("(").first().unwrap()
+  assert_true(error.cause is Some(@jsonschema.PatternError(_)))
+  let v = cls.new({ "format": "duration" }, format_checker=cls.format_checker)
+  let error = v.iter_errors("P").first().unwrap()
+  assert_true(error.cause is Some(@jsonschema.DurationParsingException(_)))
+  // checks returning False have no cause
+  let v = cls.new({ "format": "email" }, format_checker=cls.format_checker)
+  assert_true(v.iter_errors("nope").first().unwrap().cause is None)
+}

@@ -76,6 +76,18 @@ pub fn validator_for(Json, default? : ValidatorClass) -> ValidatorClass
 pub let weak_matches : Array[String]
 
 // Errors
+pub(all) suberror FormatCause {
+  AddressValueError(String)
+  IDNAError(String)
+  JsonPointerException(String)
+  DurationParsingException(String)
+  PatternError(String)
+  ValueError(String)
+}
+pub fn FormatCause::class_name(Self) -> String
+pub fn FormatCause::is_value_error(Self) -> Bool
+pub impl Show for FormatCause
+
 pub suberror FormatError {
   FormatError(message~ : String, cause~ : Error?)
 }
