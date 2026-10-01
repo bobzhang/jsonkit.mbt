@@ -1,0 +1,9 @@
+import {
+  "bobzhang/jsonschema/internal/formats",
+  "bobzhang/jsonschema/internal/pycompat",
+  "bobzhang/jsonschema/internal/regex",
+  "bobzhang/jsonschema/internal/unicodedata",
+  "moonbitlang/core/cmp",
+}
+
+warnings = "-implicit_impl_as_method"

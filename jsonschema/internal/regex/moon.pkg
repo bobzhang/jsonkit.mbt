@@ -1,0 +1,7 @@
+import {
+  "bobzhang/jsonschema/internal/unicodedata",
+  "moonbitlang/regexp",
+  "moonbitlang/core/cmp",
+}
+
+warnings = "-implicit_impl_as_method-unused_field"

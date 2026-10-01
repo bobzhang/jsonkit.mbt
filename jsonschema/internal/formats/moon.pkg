@@ -1,0 +1,6 @@
+import {
+  "bobzhang/jsonschema/internal/regex",
+  "bobzhang/jsonschema/internal/unicodedata",
+}
+
+warnings = "-implicit_impl_as_method"

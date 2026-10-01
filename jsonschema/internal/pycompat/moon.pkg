@@ -1,0 +1,8 @@
+import {
+  "bobzhang/jsonschema/internal/unicodedata",
+  "moonbitlang/core/bigint",
+  "moonbitlang/core/string",
+  "moonbitlang/core/double",
+}
+
+warnings = "-implicit_impl_as_method"
