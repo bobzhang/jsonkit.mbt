@@ -4,7 +4,9 @@
 pub fn uuid_round_trips(instance : String) -> Bool raise LibError {
   let cps = @unicodedata.code_points(instance)
   // UUID(hex): strip 'urn:' / 'uuid:', braces and dashes; 32 hex digits
-  let s = instance.replace_all(old="urn:", new="").replace_all(old="uuid:", new="")
+  let s = instance
+    .replace_all(old="urn:", new="")
+    .replace_all(old="uuid:", new="")
   let s = s.trim(chars="{}").to_owned().replace_all(old="-", new="")
   if @unicodedata.py_len(s) != 32 {
     raise ValueError("badly formed hexadecimal UUID string")

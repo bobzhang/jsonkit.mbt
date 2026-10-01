@@ -4002,4 +4002,3 @@ let regex_fuzz_json : String =
   #|["(?s)(?i:\\w)A", [["a\u00c9KA", true], ["bba1\u212a", false], ["\u017f\u212a_\n", false], ["", false], ["\n", false], ["\n KBB", false], ["\u017f1\u017faK", false], ["\u00c91a", false], ["a\n", false], ["\n", false], ["a\nb\n", false]]]
   #|["(?:[ab])?+", [["\u00c9AAKa", true], ["KA\n", true], ["", true], ["A1a\n", true], [" \u00c9", true], ["", true], ["1s", true], ["\u00e9", true], ["a\n", true], ["\n", true], ["a\nb\n", true]]]
   #|["(?i)(?:a\u00e9|\u00e9\\W)+", [[" ", false], ["A s", false], [" s_", false], ["1K", false], ["b\u00e9\u017f\u017f", false], ["aAaAK", false], ["b", false], ["a \u00c9", false], ["a\n", false], ["\n", false], ["a\nb\n", false]]]
-
