@@ -153,7 +153,7 @@ test "extend" {
   ])
   let errors = cls.new({ "even": true }).iter_errors(3).to_array()
   inspect(errors[0].message, content="3 is odd")
-  inspect(errors[0].schema_path, content="[even]")
+  debug_inspect(errors[0].schema_path, content="[Key(\"even\")]")
 }
 ```
 
