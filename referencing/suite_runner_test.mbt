@@ -16,7 +16,7 @@ fn check_suite_test(
   }
   let resolver = registry.resolver(base_uri~)
   if test_.get("error") is Some(True) {
-    return resolver.lookup(reference) catch {
+    return try resolver.lookup(reference) catch {
       error =>
         if @referencing.is_unresolvable(error) {
           None
@@ -35,7 +35,7 @@ fn check_suite_test(
   }
   if test_.get("target") != Some(resolved.contents) {
     return Some(
-      "\{reference}: got \{resolved.contents.stringify()}, expected \{test_.get("target").map(t => t.stringify())}",
+      "\{reference}: got \{resolved.contents.stringify()}, expected \{test_.get("target").map(t => t.stringify()).unwrap_or("nothing")}",
     )
   }
   let mut then = test_.get("then")
@@ -48,7 +48,7 @@ fn check_suite_test(
     }
     if step.get("target") != Some(resolved.contents) {
       return Some(
-        "then \{reference}: got \{resolved.contents.stringify()}, expected \{step.get("target").map(t => t.stringify())}",
+        "then \{reference}: got \{resolved.contents.stringify()}, expected \{step.get("target").map(t => t.stringify()).unwrap_or("nothing")}",
       )
     }
     then = step.get("then")
@@ -67,7 +67,9 @@ fn run_suite_file(
   text : String,
 ) -> Unit raise {
   let specification = @referencing.specification_with(dialect_id)
-  guard @json.parse(text) is Object(loaded) else { fail("malformed suite file") }
+  guard @json.parse(text) is Object(loaded) else {
+    fail("malformed suite file")
+  }
   guard loaded.get("registry") is Some(Object(resources)) else {
     fail("malformed suite registry")
   }

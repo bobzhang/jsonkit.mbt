@@ -30,6 +30,8 @@ pub fn dynamic_anchor(name~ : String, resource~ : Resource) -> Anchor
 
 pub let empty_registry : Registry
 
+pub fn is_unresolvable(Error) -> Bool
+
 pub fn legacy_anchor_in_dollar_id(Specification, Json) -> Array[Anchor]
 
 pub fn legacy_anchor_in_id(Specification, Json) -> Array[Anchor]
@@ -62,6 +64,7 @@ pub(all) suberror ReferencingError {
   InvalidAnchor(reference~ : String, resource~ : Resource, anchor~ : String)
   UnknownDialect(uri~ : String)
 }
+pub fn ReferencingError::from_error(Error) -> Self?
 pub fn ReferencingError::is_unresolvable(Self) -> Bool
 pub fn ReferencingError::reference(Self) -> String?
 pub impl Eq for ReferencingError
