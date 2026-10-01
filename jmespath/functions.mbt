@@ -659,19 +659,58 @@ fn func_min_max(args : Array[Value], op : String) -> Json raise JMESPathError {
 }
 
 ///|
+/// Python's `dict.update(other)` for a JSON value `other`.  Only the first
+/// argument of `merge` is type checked upstream, so later arguments go
+/// through `dict.update`'s sequence-of-pairs protocol.
+fn py_dict_update(
+  merged : Map[String, Json],
+  other : Value,
+) -> Unit raise JMESPathError {
+  let items : Array[Json] = match other {
+    Data(Object(map)) => {
+      for k, v in map {
+        merged[k] = v
+      }
+      return
+    }
+    Data(Array(items)) => items
+    Data(String(s)) => s.iter().map(c => Json::string(c.to_string())).collect()
+    other =>
+      raise TypeError("'\{other.py_type_name()}' object is not iterable")
+  }
+  for i, element in items {
+    let pair : Array[Json] = match element {
+      Array(pair) => pair
+      String(s) => s.iter().map(c => Json::string(c.to_string())).collect()
+      Object(map) => map.keys().map(Json::string).collect()
+      _ =>
+        raise TypeError(
+          "cannot convert dictionary update sequence element #\{i} to a sequence",
+        )
+    }
+    if pair.length() != 2 {
+      raise ValueError(
+        "dictionary update sequence element #\{i} has length \{pair.length()}; 2 is required",
+      )
+    }
+    match pair[0] {
+      String(key) => merged[key] = pair[1]
+      Array(_) | Object(_) =>
+        raise TypeError("unhashable type: '\{py_type_name(pair[0])}'")
+      // Python would create a non-string key, which JSON cannot hold.
+      key =>
+        raise TypeError(
+          "dictionary key \{py_repr(key)} is not a string and cannot be represented in JSON",
+        )
+    }
+  }
+}
+
+///|
 fn func_merge(args : Array[Value]) -> Json raise JMESPathError {
   let merged : Map[String, Json] = Map([])
   for arg in args {
-    match arg {
-      Data(Object(map)) =>
-        for k, v in map {
-          merged[k] = v
-        }
-      // Only the first argument is type checked upstream; dict.update()
-      // then fails on non-mappings.
-      other =>
-        raise TypeError("'\{other.py_type_name()}' object is not a mapping")
-    }
+    py_dict_update(merged, arg)
   }
   Json::object(merged)
 }
