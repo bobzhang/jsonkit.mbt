@@ -68,7 +68,10 @@ pub fn urljoin(
     // filter out elements that would cause redundant slashes on re-joining
     // the resolved_path
     if all.length() > 2 {
-      let middle = all[1:all.length() - 1].iter().filter(s => s != "").to_array()
+      let middle = all[1:all.length() - 1]
+        .iter()
+        .filter(s => s != "")
+        .to_array()
       [all[0], ..middle, all[all.length() - 1]]
     } else {
       all

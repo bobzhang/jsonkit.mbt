@@ -8,7 +8,7 @@ pub(all) suberror ValueError {
 
 ///|
 /// `str()` of the error: the message itself.
-pub impl Show for ValueError with output(self, logger) {
+pub impl Show for ValueError with fn output(self, logger) {
   match self {
     ValueError(msg) => logger.write_string(msg)
   }

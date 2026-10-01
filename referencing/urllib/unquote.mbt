@@ -18,7 +18,10 @@ fn unquote_ascii_run(run : StringView) -> String {
   let mut i = 0
   while i < n {
     let c = run[i]
-    if c == '%' && i + 2 < n && is_ascii_hex(run[i + 1]) && is_ascii_hex(run[i + 2]) {
+    if c == '%' &&
+      i + 2 < n &&
+      is_ascii_hex(run[i + 1]) &&
+      is_ascii_hex(run[i + 2]) {
       bytes.write_byte(
         (hex_value(run[i + 1]) * 16 + hex_value(run[i + 2])).to_byte(),
       )
@@ -58,7 +61,9 @@ pub fn unquote(s : String) -> String {
       while i < n && s[i] < 0x80 {
         i += 1
       }
-      out.write_string(unquote_ascii_run(s.view(start_offset=start, end_offset=i)))
+      out.write_string(
+        unquote_ascii_run(s.view(start_offset=start, end_offset=i)),
+      )
     } else {
       while i < n && s[i] >= 0x80 {
         i += 1

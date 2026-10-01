@@ -9,9 +9,9 @@ pub let uses_relative : ReadOnlyArray[String] = [
 ///|
 /// Schemes which use a network location (Python's `urllib.parse.uses_netloc`).
 pub let uses_netloc : ReadOnlyArray[String] = [
-  "", "ftp", "http", "gopher", "nntp", "telnet", "imap", "wais", "file", "mms",
-  "https", "shttp", "snews", "prospero", "rtsp", "rtsps", "rtspu", "rsync", "svn",
-  "svn+ssh", "sftp", "nfs", "git", "git+ssh", "ws", "wss", "itms-services",
+  "", "ftp", "http", "gopher", "nntp", "telnet", "imap", "wais", "file", "mms", "https",
+  "shttp", "snews", "prospero", "rtsp", "rtsps", "rtspu", "rsync", "svn", "svn+ssh",
+  "sftp", "nfs", "git", "git+ssh", "ws", "wss", "itms-services",
 ]
 
 ///|
@@ -181,7 +181,7 @@ pub fn urlsplit(
     url = u
     query = q
   }
-  { scheme, netloc, path: url, query, fragment }
+  { scheme, netloc, path: url, query, fragment, }
 }
 
 ///|
@@ -334,6 +334,6 @@ pub fn urldefrag(url : String) -> DefragResult raise ValueError {
       fragment: p.fragment,
     }
   } else {
-    { url, fragment: "" }
+    { url, fragment: "", }
   }
 }

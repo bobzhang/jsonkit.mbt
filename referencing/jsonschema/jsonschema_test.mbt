@@ -272,7 +272,10 @@ test "empty registry" {
 test "legacy ids ignore $ref siblings and treat #fragments as anchors" {
   let with_ref : Json = { "$ref": "#/x", "$id": "http://example.com/a" }
   assert_eq(@jsonschema.draft7().id_of(with_ref), None)
-  assert_eq(@jsonschema.draft202012().id_of(with_ref), Some("http://example.com/a"))
+  assert_eq(
+    @jsonschema.draft202012().id_of(with_ref),
+    Some("http://example.com/a"),
+  )
   assert_eq(@jsonschema.draft4().id_of({ "$ref": "#/x", "id": "a" }), None)
   assert_eq(@jsonschema.draft6().id_of({ "$id": "#foo" }), None)
   let anchors = @jsonschema.draft6().anchors_in({ "$id": "#foo" })
@@ -333,7 +336,9 @@ test "subresources of older drafts" {
   ])
   // dependencies are only subresources if the first one is a schema
   json_inspect(
-    @jsonschema.draft7().subresources_of({ "dependencies": { "y": ["d"], "x": {} } }),
+    @jsonschema.draft7().subresources_of({
+      "dependencies": { "y": ["d"], "x": {} },
+    }),
     content=[],
   )
   json_inspect(

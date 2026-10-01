@@ -64,7 +64,9 @@ test "urljoin matches CPython" {
     ("http://example.com", "", "http://example.com"),
     ("http://example.com", "#", "http://example.com"),
     ("http://example.com", "#foo", "http://example.com#foo"),
-    ("http://example.com", "#/definitions/a", "http://example.com#/definitions/a"),
+    (
+      "http://example.com", "#/definitions/a", "http://example.com#/definitions/a",
+    ),
     ("http://example.com", "#/$defs/a%25b", "http://example.com#/$defs/a%25b"),
     ("http://example.com", "g", "http://example.com/g"),
     ("http://example.com", "./g", "http://example.com/g"),
@@ -104,14 +106,18 @@ test "urljoin matches CPython" {
     ("http://example.com", "http:", "http://example.com"),
     ("http://example.com", "urn:example:bar", "urn:example:bar"),
     ("http://example.com", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://example.com", "tag:example.com,2023:other", "tag:example.com,2023:other"),
+    (
+      "http://example.com", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
     ("http://example.com", "https://other.example/x", "https://other.example/x"),
     ("http://example.com", "foo/bar/", "http://example.com/foo/bar/"),
     ("http://example.com", "bar", "http://example.com/bar"),
     ("http://example.com", "child/", "http://example.com/child/"),
     ("http://example.com", "grandchild", "http://example.com/grandchild"),
     ("http://example.com", "a%20b", "http://example.com/a%20b"),
-    ("http://example.com", "  leading-space", "http://example.com/leading-space"),
+    (
+      "http://example.com", "  leading-space", "http://example.com/leading-space",
+    ),
     ("http://example.com", "with\ttab", "http://example.com/withtab"),
     ("http://example.com", "mailto:x@y", "mailto:x@y"),
     ("http://example.com", "file:other.json", "file:other.json"),
@@ -122,7 +128,9 @@ test "urljoin matches CPython" {
     ("http://example.com/", "", "http://example.com/"),
     ("http://example.com/", "#", "http://example.com/"),
     ("http://example.com/", "#foo", "http://example.com/#foo"),
-    ("http://example.com/", "#/definitions/a", "http://example.com/#/definitions/a"),
+    (
+      "http://example.com/", "#/definitions/a", "http://example.com/#/definitions/a",
+    ),
     ("http://example.com/", "#/$defs/a%25b", "http://example.com/#/$defs/a%25b"),
     ("http://example.com/", "g", "http://example.com/g"),
     ("http://example.com/", "./g", "http://example.com/g"),
@@ -162,14 +170,20 @@ test "urljoin matches CPython" {
     ("http://example.com/", "http:", "http://example.com/"),
     ("http://example.com/", "urn:example:bar", "urn:example:bar"),
     ("http://example.com/", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://example.com/", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://example.com/", "https://other.example/x", "https://other.example/x"),
+    (
+      "http://example.com/", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://example.com/", "https://other.example/x", "https://other.example/x",
+    ),
     ("http://example.com/", "foo/bar/", "http://example.com/foo/bar/"),
     ("http://example.com/", "bar", "http://example.com/bar"),
     ("http://example.com/", "child/", "http://example.com/child/"),
     ("http://example.com/", "grandchild", "http://example.com/grandchild"),
     ("http://example.com/", "a%20b", "http://example.com/a%20b"),
-    ("http://example.com/", "  leading-space", "http://example.com/leading-space"),
+    (
+      "http://example.com/", "  leading-space", "http://example.com/leading-space",
+    ),
     ("http://example.com/", "with\ttab", "http://example.com/withtab"),
     ("http://example.com/", "mailto:x@y", "mailto:x@y"),
     ("http://example.com/", "file:other.json", "file:other.json"),
@@ -180,8 +194,12 @@ test "urljoin matches CPython" {
     ("http://example.com/a/b/c", "", "http://example.com/a/b/c"),
     ("http://example.com/a/b/c", "#", "http://example.com/a/b/c"),
     ("http://example.com/a/b/c", "#foo", "http://example.com/a/b/c#foo"),
-    ("http://example.com/a/b/c", "#/definitions/a", "http://example.com/a/b/c#/definitions/a"),
-    ("http://example.com/a/b/c", "#/$defs/a%25b", "http://example.com/a/b/c#/$defs/a%25b"),
+    (
+      "http://example.com/a/b/c", "#/definitions/a", "http://example.com/a/b/c#/definitions/a",
+    ),
+    (
+      "http://example.com/a/b/c", "#/$defs/a%25b", "http://example.com/a/b/c#/$defs/a%25b",
+    ),
     ("http://example.com/a/b/c", "g", "http://example.com/a/b/g"),
     ("http://example.com/a/b/c", "./g", "http://example.com/a/b/g"),
     ("http://example.com/a/b/c", "g/", "http://example.com/a/b/g/"),
@@ -220,14 +238,22 @@ test "urljoin matches CPython" {
     ("http://example.com/a/b/c", "http:", "http://example.com/a/b/c"),
     ("http://example.com/a/b/c", "urn:example:bar", "urn:example:bar"),
     ("http://example.com/a/b/c", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://example.com/a/b/c", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://example.com/a/b/c", "https://other.example/x", "https://other.example/x"),
+    (
+      "http://example.com/a/b/c", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://example.com/a/b/c", "https://other.example/x", "https://other.example/x",
+    ),
     ("http://example.com/a/b/c", "foo/bar/", "http://example.com/a/b/foo/bar/"),
     ("http://example.com/a/b/c", "bar", "http://example.com/a/b/bar"),
     ("http://example.com/a/b/c", "child/", "http://example.com/a/b/child/"),
-    ("http://example.com/a/b/c", "grandchild", "http://example.com/a/b/grandchild"),
+    (
+      "http://example.com/a/b/c", "grandchild", "http://example.com/a/b/grandchild",
+    ),
     ("http://example.com/a/b/c", "a%20b", "http://example.com/a/b/a%20b"),
-    ("http://example.com/a/b/c", "  leading-space", "http://example.com/a/b/leading-space"),
+    (
+      "http://example.com/a/b/c", "  leading-space", "http://example.com/a/b/leading-space",
+    ),
     ("http://example.com/a/b/c", "with\ttab", "http://example.com/a/b/withtab"),
     ("http://example.com/a/b/c", "mailto:x@y", "mailto:x@y"),
     ("http://example.com/a/b/c", "file:other.json", "file:other.json"),
@@ -238,8 +264,12 @@ test "urljoin matches CPython" {
     ("http://example.com/a/b/c/", "", "http://example.com/a/b/c/"),
     ("http://example.com/a/b/c/", "#", "http://example.com/a/b/c/"),
     ("http://example.com/a/b/c/", "#foo", "http://example.com/a/b/c/#foo"),
-    ("http://example.com/a/b/c/", "#/definitions/a", "http://example.com/a/b/c/#/definitions/a"),
-    ("http://example.com/a/b/c/", "#/$defs/a%25b", "http://example.com/a/b/c/#/$defs/a%25b"),
+    (
+      "http://example.com/a/b/c/", "#/definitions/a", "http://example.com/a/b/c/#/definitions/a",
+    ),
+    (
+      "http://example.com/a/b/c/", "#/$defs/a%25b", "http://example.com/a/b/c/#/$defs/a%25b",
+    ),
     ("http://example.com/a/b/c/", "g", "http://example.com/a/b/c/g"),
     ("http://example.com/a/b/c/", "./g", "http://example.com/a/b/c/g"),
     ("http://example.com/a/b/c/", "g/", "http://example.com/a/b/c/g/"),
@@ -272,31 +302,49 @@ test "urljoin matches CPython" {
     ("http://example.com/a/b/c/", "./g/.", "http://example.com/a/b/c/g/"),
     ("http://example.com/a/b/c/", "g/./h", "http://example.com/a/b/c/g/h"),
     ("http://example.com/a/b/c/", "g/../h", "http://example.com/a/b/c/h"),
-    ("http://example.com/a/b/c/", "g;x=1/./y", "http://example.com/a/b/c/g;x=1/y"),
+    (
+      "http://example.com/a/b/c/", "g;x=1/./y", "http://example.com/a/b/c/g;x=1/y",
+    ),
     ("http://example.com/a/b/c/", "g;x=1/../y", "http://example.com/a/b/c/y"),
     ("http://example.com/a/b/c/", "http:g", "http://example.com/a/b/c/g"),
     ("http://example.com/a/b/c/", "http:", "http://example.com/a/b/c/"),
     ("http://example.com/a/b/c/", "urn:example:bar", "urn:example:bar"),
     ("http://example.com/a/b/c/", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://example.com/a/b/c/", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://example.com/a/b/c/", "https://other.example/x", "https://other.example/x"),
-    ("http://example.com/a/b/c/", "foo/bar/", "http://example.com/a/b/c/foo/bar/"),
+    (
+      "http://example.com/a/b/c/", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://example.com/a/b/c/", "https://other.example/x", "https://other.example/x",
+    ),
+    (
+      "http://example.com/a/b/c/", "foo/bar/", "http://example.com/a/b/c/foo/bar/",
+    ),
     ("http://example.com/a/b/c/", "bar", "http://example.com/a/b/c/bar"),
     ("http://example.com/a/b/c/", "child/", "http://example.com/a/b/c/child/"),
-    ("http://example.com/a/b/c/", "grandchild", "http://example.com/a/b/c/grandchild"),
+    (
+      "http://example.com/a/b/c/", "grandchild", "http://example.com/a/b/c/grandchild",
+    ),
     ("http://example.com/a/b/c/", "a%20b", "http://example.com/a/b/c/a%20b"),
-    ("http://example.com/a/b/c/", "  leading-space", "http://example.com/a/b/c/leading-space"),
-    ("http://example.com/a/b/c/", "with\ttab", "http://example.com/a/b/c/withtab"),
+    (
+      "http://example.com/a/b/c/", "  leading-space", "http://example.com/a/b/c/leading-space",
+    ),
+    (
+      "http://example.com/a/b/c/", "with\ttab", "http://example.com/a/b/c/withtab",
+    ),
     ("http://example.com/a/b/c/", "mailto:x@y", "mailto:x@y"),
     ("http://example.com/a/b/c/", "file:other.json", "file:other.json"),
-    ("http://example.com/a/b/c/", "nested/../../up", "http://example.com/a/b/up"),
+    (
+      "http://example.com/a/b/c/", "nested/../../up", "http://example.com/a/b/up",
+    ),
     ("http://example.com/a/b/c/", "a//b", "http://example.com/a/b/c/a/b"),
     ("http://example.com/a/b/c/", "//", "http://example.com/a/b/c/"),
     ("http://example.com/a/b/c/", "///x", "http://example.com/x"),
     ("http://a/b/c/d;p?q", "", "http://a/b/c/d;p?q"),
     ("http://a/b/c/d;p?q", "#", "http://a/b/c/d;p?q"),
     ("http://a/b/c/d;p?q", "#foo", "http://a/b/c/d;p?q#foo"),
-    ("http://a/b/c/d;p?q", "#/definitions/a", "http://a/b/c/d;p?q#/definitions/a"),
+    (
+      "http://a/b/c/d;p?q", "#/definitions/a", "http://a/b/c/d;p?q#/definitions/a",
+    ),
     ("http://a/b/c/d;p?q", "#/$defs/a%25b", "http://a/b/c/d;p?q#/$defs/a%25b"),
     ("http://a/b/c/d;p?q", "g", "http://a/b/c/g"),
     ("http://a/b/c/d;p?q", "./g", "http://a/b/c/g"),
@@ -336,7 +384,9 @@ test "urljoin matches CPython" {
     ("http://a/b/c/d;p?q", "http:", "http://a/b/c/d;p?q"),
     ("http://a/b/c/d;p?q", "urn:example:bar", "urn:example:bar"),
     ("http://a/b/c/d;p?q", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://a/b/c/d;p?q", "tag:example.com,2023:other", "tag:example.com,2023:other"),
+    (
+      "http://a/b/c/d;p?q", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
     ("http://a/b/c/d;p?q", "https://other.example/x", "https://other.example/x"),
     ("http://a/b/c/d;p?q", "foo/bar/", "http://a/b/c/foo/bar/"),
     ("http://a/b/c/d;p?q", "bar", "http://a/b/c/bar"),
@@ -351,69 +401,183 @@ test "urljoin matches CPython" {
     ("http://a/b/c/d;p?q", "a//b", "http://a/b/c/a/b"),
     ("http://a/b/c/d;p?q", "//", "http://a/b/c/d;p?q"),
     ("http://a/b/c/d;p?q", "///x", "http://a/x"),
-    ("https://json-schema.org/draft/2020-12/schema", "", "https://json-schema.org/draft/2020-12/schema"),
-    ("https://json-schema.org/draft/2020-12/schema", "#", "https://json-schema.org/draft/2020-12/schema"),
-    ("https://json-schema.org/draft/2020-12/schema", "#foo", "https://json-schema.org/draft/2020-12/schema#foo"),
-    ("https://json-schema.org/draft/2020-12/schema", "#/definitions/a", "https://json-schema.org/draft/2020-12/schema#/definitions/a"),
-    ("https://json-schema.org/draft/2020-12/schema", "#/$defs/a%25b", "https://json-schema.org/draft/2020-12/schema#/$defs/a%25b"),
-    ("https://json-schema.org/draft/2020-12/schema", "g", "https://json-schema.org/draft/2020-12/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "./g", "https://json-schema.org/draft/2020-12/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "g/", "https://json-schema.org/draft/2020-12/g/"),
-    ("https://json-schema.org/draft/2020-12/schema", "/g", "https://json-schema.org/g"),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "", "https://json-schema.org/draft/2020-12/schema",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "#", "https://json-schema.org/draft/2020-12/schema",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "#foo", "https://json-schema.org/draft/2020-12/schema#foo",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "#/definitions/a", "https://json-schema.org/draft/2020-12/schema#/definitions/a",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "#/$defs/a%25b", "https://json-schema.org/draft/2020-12/schema#/$defs/a%25b",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g", "https://json-schema.org/draft/2020-12/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "./g", "https://json-schema.org/draft/2020-12/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g/", "https://json-schema.org/draft/2020-12/g/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "/g", "https://json-schema.org/g",
+    ),
     ("https://json-schema.org/draft/2020-12/schema", "//g", "https://g"),
-    ("https://json-schema.org/draft/2020-12/schema", "?y", "https://json-schema.org/draft/2020-12/schema?y"),
-    ("https://json-schema.org/draft/2020-12/schema", "g?y", "https://json-schema.org/draft/2020-12/g?y"),
-    ("https://json-schema.org/draft/2020-12/schema", "g#s", "https://json-schema.org/draft/2020-12/g#s"),
-    ("https://json-schema.org/draft/2020-12/schema", "g?y#s", "https://json-schema.org/draft/2020-12/g?y#s"),
-    ("https://json-schema.org/draft/2020-12/schema", ";x", "https://json-schema.org/draft/2020-12/;x"),
-    ("https://json-schema.org/draft/2020-12/schema", "g;x", "https://json-schema.org/draft/2020-12/g;x"),
-    ("https://json-schema.org/draft/2020-12/schema", "g;x?y#s", "https://json-schema.org/draft/2020-12/g;x?y#s"),
-    ("https://json-schema.org/draft/2020-12/schema", ".", "https://json-schema.org/draft/2020-12/"),
-    ("https://json-schema.org/draft/2020-12/schema", "./", "https://json-schema.org/draft/2020-12/"),
-    ("https://json-schema.org/draft/2020-12/schema", "..", "https://json-schema.org/draft/"),
-    ("https://json-schema.org/draft/2020-12/schema", "../", "https://json-schema.org/draft/"),
-    ("https://json-schema.org/draft/2020-12/schema", "../g", "https://json-schema.org/draft/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "../..", "https://json-schema.org/"),
-    ("https://json-schema.org/draft/2020-12/schema", "../../", "https://json-schema.org/"),
-    ("https://json-schema.org/draft/2020-12/schema", "../../g", "https://json-schema.org/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "../../../g", "https://json-schema.org/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "../../../../g", "https://json-schema.org/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "/./g", "https://json-schema.org/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "/../g", "https://json-schema.org/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "g.", "https://json-schema.org/draft/2020-12/g."),
-    ("https://json-schema.org/draft/2020-12/schema", ".g", "https://json-schema.org/draft/2020-12/.g"),
-    ("https://json-schema.org/draft/2020-12/schema", "g..", "https://json-schema.org/draft/2020-12/g.."),
-    ("https://json-schema.org/draft/2020-12/schema", "..g", "https://json-schema.org/draft/2020-12/..g"),
-    ("https://json-schema.org/draft/2020-12/schema", "./../g", "https://json-schema.org/draft/g"),
-    ("https://json-schema.org/draft/2020-12/schema", "./g/.", "https://json-schema.org/draft/2020-12/g/"),
-    ("https://json-schema.org/draft/2020-12/schema", "g/./h", "https://json-schema.org/draft/2020-12/g/h"),
-    ("https://json-schema.org/draft/2020-12/schema", "g/../h", "https://json-schema.org/draft/2020-12/h"),
-    ("https://json-schema.org/draft/2020-12/schema", "g;x=1/./y", "https://json-schema.org/draft/2020-12/g;x=1/y"),
-    ("https://json-schema.org/draft/2020-12/schema", "g;x=1/../y", "https://json-schema.org/draft/2020-12/y"),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "?y", "https://json-schema.org/draft/2020-12/schema?y",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g?y", "https://json-schema.org/draft/2020-12/g?y",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g#s", "https://json-schema.org/draft/2020-12/g#s",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g?y#s", "https://json-schema.org/draft/2020-12/g?y#s",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", ";x", "https://json-schema.org/draft/2020-12/;x",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g;x", "https://json-schema.org/draft/2020-12/g;x",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g;x?y#s", "https://json-schema.org/draft/2020-12/g;x?y#s",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", ".", "https://json-schema.org/draft/2020-12/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "./", "https://json-schema.org/draft/2020-12/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "..", "https://json-schema.org/draft/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "../", "https://json-schema.org/draft/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "../g", "https://json-schema.org/draft/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "../..", "https://json-schema.org/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "../../", "https://json-schema.org/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "../../g", "https://json-schema.org/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "../../../g", "https://json-schema.org/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "../../../../g", "https://json-schema.org/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "/./g", "https://json-schema.org/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "/../g", "https://json-schema.org/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g.", "https://json-schema.org/draft/2020-12/g.",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", ".g", "https://json-schema.org/draft/2020-12/.g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g..", "https://json-schema.org/draft/2020-12/g..",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "..g", "https://json-schema.org/draft/2020-12/..g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "./../g", "https://json-schema.org/draft/g",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "./g/.", "https://json-schema.org/draft/2020-12/g/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g/./h", "https://json-schema.org/draft/2020-12/g/h",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g/../h", "https://json-schema.org/draft/2020-12/h",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g;x=1/./y", "https://json-schema.org/draft/2020-12/g;x=1/y",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "g;x=1/../y", "https://json-schema.org/draft/2020-12/y",
+    ),
     ("https://json-schema.org/draft/2020-12/schema", "http:g", "http:g"),
     ("https://json-schema.org/draft/2020-12/schema", "http:", "http:"),
-    ("https://json-schema.org/draft/2020-12/schema", "urn:example:bar", "urn:example:bar"),
-    ("https://json-schema.org/draft/2020-12/schema", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("https://json-schema.org/draft/2020-12/schema", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("https://json-schema.org/draft/2020-12/schema", "https://other.example/x", "https://other.example/x"),
-    ("https://json-schema.org/draft/2020-12/schema", "foo/bar/", "https://json-schema.org/draft/2020-12/foo/bar/"),
-    ("https://json-schema.org/draft/2020-12/schema", "bar", "https://json-schema.org/draft/2020-12/bar"),
-    ("https://json-schema.org/draft/2020-12/schema", "child/", "https://json-schema.org/draft/2020-12/child/"),
-    ("https://json-schema.org/draft/2020-12/schema", "grandchild", "https://json-schema.org/draft/2020-12/grandchild"),
-    ("https://json-schema.org/draft/2020-12/schema", "a%20b", "https://json-schema.org/draft/2020-12/a%20b"),
-    ("https://json-schema.org/draft/2020-12/schema", "  leading-space", "https://json-schema.org/draft/2020-12/leading-space"),
-    ("https://json-schema.org/draft/2020-12/schema", "with\ttab", "https://json-schema.org/draft/2020-12/withtab"),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "urn:example:bar", "urn:example:bar",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "tag:example.com,2023:other",
+      "tag:example.com,2023:other",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "https://other.example/x",
+      "https://other.example/x",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "foo/bar/", "https://json-schema.org/draft/2020-12/foo/bar/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "bar", "https://json-schema.org/draft/2020-12/bar",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "child/", "https://json-schema.org/draft/2020-12/child/",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "grandchild", "https://json-schema.org/draft/2020-12/grandchild",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "a%20b", "https://json-schema.org/draft/2020-12/a%20b",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "  leading-space", "https://json-schema.org/draft/2020-12/leading-space",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "with\ttab", "https://json-schema.org/draft/2020-12/withtab",
+    ),
     ("https://json-schema.org/draft/2020-12/schema", "mailto:x@y", "mailto:x@y"),
-    ("https://json-schema.org/draft/2020-12/schema", "file:other.json", "file:other.json"),
-    ("https://json-schema.org/draft/2020-12/schema", "nested/../../up", "https://json-schema.org/draft/up"),
-    ("https://json-schema.org/draft/2020-12/schema", "a//b", "https://json-schema.org/draft/2020-12/a/b"),
-    ("https://json-schema.org/draft/2020-12/schema", "//", "https://json-schema.org/draft/2020-12/schema"),
-    ("https://json-schema.org/draft/2020-12/schema", "///x", "https://json-schema.org/x"),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "file:other.json", "file:other.json",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "nested/../../up", "https://json-schema.org/draft/up",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "a//b", "https://json-schema.org/draft/2020-12/a/b",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "//", "https://json-schema.org/draft/2020-12/schema",
+    ),
+    (
+      "https://json-schema.org/draft/2020-12/schema", "///x", "https://json-schema.org/x",
+    ),
     ("http://example.com/foo#", "", "http://example.com/foo#"),
     ("http://example.com/foo#", "#", "http://example.com/foo"),
     ("http://example.com/foo#", "#foo", "http://example.com/foo#foo"),
-    ("http://example.com/foo#", "#/definitions/a", "http://example.com/foo#/definitions/a"),
-    ("http://example.com/foo#", "#/$defs/a%25b", "http://example.com/foo#/$defs/a%25b"),
+    (
+      "http://example.com/foo#", "#/definitions/a", "http://example.com/foo#/definitions/a",
+    ),
+    (
+      "http://example.com/foo#", "#/$defs/a%25b", "http://example.com/foo#/$defs/a%25b",
+    ),
     ("http://example.com/foo#", "g", "http://example.com/g"),
     ("http://example.com/foo#", "./g", "http://example.com/g"),
     ("http://example.com/foo#", "g/", "http://example.com/g/"),
@@ -452,14 +616,20 @@ test "urljoin matches CPython" {
     ("http://example.com/foo#", "http:", "http://example.com/foo"),
     ("http://example.com/foo#", "urn:example:bar", "urn:example:bar"),
     ("http://example.com/foo#", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://example.com/foo#", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://example.com/foo#", "https://other.example/x", "https://other.example/x"),
+    (
+      "http://example.com/foo#", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://example.com/foo#", "https://other.example/x", "https://other.example/x",
+    ),
     ("http://example.com/foo#", "foo/bar/", "http://example.com/foo/bar/"),
     ("http://example.com/foo#", "bar", "http://example.com/bar"),
     ("http://example.com/foo#", "child/", "http://example.com/child/"),
     ("http://example.com/foo#", "grandchild", "http://example.com/grandchild"),
     ("http://example.com/foo#", "a%20b", "http://example.com/a%20b"),
-    ("http://example.com/foo#", "  leading-space", "http://example.com/leading-space"),
+    (
+      "http://example.com/foo#", "  leading-space", "http://example.com/leading-space",
+    ),
     ("http://example.com/foo#", "with\ttab", "http://example.com/withtab"),
     ("http://example.com/foo#", "mailto:x@y", "mailto:x@y"),
     ("http://example.com/foo#", "file:other.json", "file:other.json"),
@@ -469,9 +639,15 @@ test "urljoin matches CPython" {
     ("http://example.com/foo#", "///x", "http://example.com/x"),
     ("http://example.com/foo?x=1#frag", "", "http://example.com/foo?x=1#frag"),
     ("http://example.com/foo?x=1#frag", "#", "http://example.com/foo?x=1"),
-    ("http://example.com/foo?x=1#frag", "#foo", "http://example.com/foo?x=1#foo"),
-    ("http://example.com/foo?x=1#frag", "#/definitions/a", "http://example.com/foo?x=1#/definitions/a"),
-    ("http://example.com/foo?x=1#frag", "#/$defs/a%25b", "http://example.com/foo?x=1#/$defs/a%25b"),
+    (
+      "http://example.com/foo?x=1#frag", "#foo", "http://example.com/foo?x=1#foo",
+    ),
+    (
+      "http://example.com/foo?x=1#frag", "#/definitions/a", "http://example.com/foo?x=1#/definitions/a",
+    ),
+    (
+      "http://example.com/foo?x=1#frag", "#/$defs/a%25b", "http://example.com/foo?x=1#/$defs/a%25b",
+    ),
     ("http://example.com/foo?x=1#frag", "g", "http://example.com/g"),
     ("http://example.com/foo?x=1#frag", "./g", "http://example.com/g"),
     ("http://example.com/foo?x=1#frag", "g/", "http://example.com/g/"),
@@ -504,24 +680,42 @@ test "urljoin matches CPython" {
     ("http://example.com/foo?x=1#frag", "./g/.", "http://example.com/g/"),
     ("http://example.com/foo?x=1#frag", "g/./h", "http://example.com/g/h"),
     ("http://example.com/foo?x=1#frag", "g/../h", "http://example.com/h"),
-    ("http://example.com/foo?x=1#frag", "g;x=1/./y", "http://example.com/g;x=1/y"),
+    (
+      "http://example.com/foo?x=1#frag", "g;x=1/./y", "http://example.com/g;x=1/y",
+    ),
     ("http://example.com/foo?x=1#frag", "g;x=1/../y", "http://example.com/y"),
     ("http://example.com/foo?x=1#frag", "http:g", "http://example.com/g"),
     ("http://example.com/foo?x=1#frag", "http:", "http://example.com/foo?x=1"),
     ("http://example.com/foo?x=1#frag", "urn:example:bar", "urn:example:bar"),
-    ("http://example.com/foo?x=1#frag", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://example.com/foo?x=1#frag", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://example.com/foo?x=1#frag", "https://other.example/x", "https://other.example/x"),
-    ("http://example.com/foo?x=1#frag", "foo/bar/", "http://example.com/foo/bar/"),
+    (
+      "http://example.com/foo?x=1#frag", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "http://example.com/foo?x=1#frag", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://example.com/foo?x=1#frag", "https://other.example/x", "https://other.example/x",
+    ),
+    (
+      "http://example.com/foo?x=1#frag", "foo/bar/", "http://example.com/foo/bar/",
+    ),
     ("http://example.com/foo?x=1#frag", "bar", "http://example.com/bar"),
     ("http://example.com/foo?x=1#frag", "child/", "http://example.com/child/"),
-    ("http://example.com/foo?x=1#frag", "grandchild", "http://example.com/grandchild"),
+    (
+      "http://example.com/foo?x=1#frag", "grandchild", "http://example.com/grandchild",
+    ),
     ("http://example.com/foo?x=1#frag", "a%20b", "http://example.com/a%20b"),
-    ("http://example.com/foo?x=1#frag", "  leading-space", "http://example.com/leading-space"),
-    ("http://example.com/foo?x=1#frag", "with\ttab", "http://example.com/withtab"),
+    (
+      "http://example.com/foo?x=1#frag", "  leading-space", "http://example.com/leading-space",
+    ),
+    (
+      "http://example.com/foo?x=1#frag", "with\ttab", "http://example.com/withtab",
+    ),
     ("http://example.com/foo?x=1#frag", "mailto:x@y", "mailto:x@y"),
     ("http://example.com/foo?x=1#frag", "file:other.json", "file:other.json"),
-    ("http://example.com/foo?x=1#frag", "nested/../../up", "http://example.com/up"),
+    (
+      "http://example.com/foo?x=1#frag", "nested/../../up", "http://example.com/up",
+    ),
     ("http://example.com/foo?x=1#frag", "a//b", "http://example.com/a/b"),
     ("http://example.com/foo?x=1#frag", "//", "http://example.com/foo?x=1"),
     ("http://example.com/foo?x=1#frag", "///x", "http://example.com/x"),
@@ -568,7 +762,9 @@ test "urljoin matches CPython" {
     ("urn:example:foo", "http:", "http:"),
     ("urn:example:foo", "urn:example:bar", "urn:example:bar"),
     ("urn:example:foo", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("urn:example:foo", "tag:example.com,2023:other", "tag:example.com,2023:other"),
+    (
+      "urn:example:foo", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
     ("urn:example:foo", "https://other.example/x", "https://other.example/x"),
     ("urn:example:foo", "foo/bar/", "foo/bar/"),
     ("urn:example:foo", "bar", "bar"),
@@ -583,11 +779,17 @@ test "urljoin matches CPython" {
     ("urn:example:foo", "a//b", "a//b"),
     ("urn:example:foo", "//", "//"),
     ("urn:example:foo", "///x", "///x"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "", "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed"),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "", "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed",
+    ),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "#", "#"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "#foo", "#foo"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "#/definitions/a", "#/definitions/a"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "#/$defs/a%25b", "#/$defs/a%25b"),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "#/definitions/a", "#/definitions/a",
+    ),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "#/$defs/a%25b", "#/$defs/a%25b",
+    ),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "g", "g"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "./g", "./g"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "g/", "g/"),
@@ -608,8 +810,12 @@ test "urljoin matches CPython" {
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "../..", "../.."),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "../../", "../../"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "../../g", "../../g"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "../../../g", "../../../g"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "../../../../g", "../../../../g"),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "../../../g", "../../../g",
+    ),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "../../../../g", "../../../../g",
+    ),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "/./g", "/./g"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "/../g", "/../g"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "g.", "g."),
@@ -621,23 +827,45 @@ test "urljoin matches CPython" {
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "g/./h", "g/./h"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "g/../h", "g/../h"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "g;x=1/./y", "g;x=1/./y"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "g;x=1/../y", "g;x=1/../y"),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "g;x=1/../y", "g;x=1/../y",
+    ),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "http:g", "http:g"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "http:", "http:"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "urn:example:bar", "urn:example:bar"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "https://other.example/x", "https://other.example/x"),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "urn:example:bar", "urn:example:bar",
+    ),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "tag:example.com,2023:other",
+      "tag:example.com,2023:other",
+    ),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "https://other.example/x",
+      "https://other.example/x",
+    ),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "foo/bar/", "foo/bar/"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "bar", "bar"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "child/", "child/"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "grandchild", "grandchild"),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "grandchild", "grandchild",
+    ),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "a%20b", "a%20b"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "  leading-space", "  leading-space"),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "  leading-space", "  leading-space",
+    ),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "with\ttab", "with\ttab"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "mailto:x@y", "mailto:x@y"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "file:other.json", "file:other.json"),
-    ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "nested/../../up", "nested/../../up"),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "mailto:x@y", "mailto:x@y",
+    ),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "file:other.json", "file:other.json",
+    ),
+    (
+      "urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "nested/../../up", "nested/../../up",
+    ),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "a//b", "a//b"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "//", "//"),
     ("urn:uuid:deadbeef-1234-ffff-ffff-4321feebdaed", "///x", "///x"),
@@ -683,9 +911,15 @@ test "urljoin matches CPython" {
     ("tag:example.com,2023:schema", "http:g", "http:g"),
     ("tag:example.com,2023:schema", "http:", "http:"),
     ("tag:example.com,2023:schema", "urn:example:bar", "urn:example:bar"),
-    ("tag:example.com,2023:schema", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("tag:example.com,2023:schema", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("tag:example.com,2023:schema", "https://other.example/x", "https://other.example/x"),
+    (
+      "tag:example.com,2023:schema", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "tag:example.com,2023:schema", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "tag:example.com,2023:schema", "https://other.example/x", "https://other.example/x",
+    ),
     ("tag:example.com,2023:schema", "foo/bar/", "foo/bar/"),
     ("tag:example.com,2023:schema", "bar", "bar"),
     ("tag:example.com,2023:schema", "child/", "child/"),
@@ -701,9 +935,15 @@ test "urljoin matches CPython" {
     ("tag:example.com,2023:schema", "///x", "///x"),
     ("file:///tmp/schemas/root.json", "", "file:///tmp/schemas/root.json"),
     ("file:///tmp/schemas/root.json", "#", "file:///tmp/schemas/root.json"),
-    ("file:///tmp/schemas/root.json", "#foo", "file:///tmp/schemas/root.json#foo"),
-    ("file:///tmp/schemas/root.json", "#/definitions/a", "file:///tmp/schemas/root.json#/definitions/a"),
-    ("file:///tmp/schemas/root.json", "#/$defs/a%25b", "file:///tmp/schemas/root.json#/$defs/a%25b"),
+    (
+      "file:///tmp/schemas/root.json", "#foo", "file:///tmp/schemas/root.json#foo",
+    ),
+    (
+      "file:///tmp/schemas/root.json", "#/definitions/a", "file:///tmp/schemas/root.json#/definitions/a",
+    ),
+    (
+      "file:///tmp/schemas/root.json", "#/$defs/a%25b", "file:///tmp/schemas/root.json#/$defs/a%25b",
+    ),
     ("file:///tmp/schemas/root.json", "g", "file:///tmp/schemas/g"),
     ("file:///tmp/schemas/root.json", "./g", "file:///tmp/schemas/g"),
     ("file:///tmp/schemas/root.json", "g/", "file:///tmp/schemas/g/"),
@@ -736,23 +976,41 @@ test "urljoin matches CPython" {
     ("file:///tmp/schemas/root.json", "./g/.", "file:///tmp/schemas/g/"),
     ("file:///tmp/schemas/root.json", "g/./h", "file:///tmp/schemas/g/h"),
     ("file:///tmp/schemas/root.json", "g/../h", "file:///tmp/schemas/h"),
-    ("file:///tmp/schemas/root.json", "g;x=1/./y", "file:///tmp/schemas/g;x=1/y"),
+    (
+      "file:///tmp/schemas/root.json", "g;x=1/./y", "file:///tmp/schemas/g;x=1/y",
+    ),
     ("file:///tmp/schemas/root.json", "g;x=1/../y", "file:///tmp/schemas/y"),
     ("file:///tmp/schemas/root.json", "http:g", "http:g"),
     ("file:///tmp/schemas/root.json", "http:", "http:"),
     ("file:///tmp/schemas/root.json", "urn:example:bar", "urn:example:bar"),
-    ("file:///tmp/schemas/root.json", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("file:///tmp/schemas/root.json", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("file:///tmp/schemas/root.json", "https://other.example/x", "https://other.example/x"),
-    ("file:///tmp/schemas/root.json", "foo/bar/", "file:///tmp/schemas/foo/bar/"),
+    (
+      "file:///tmp/schemas/root.json", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "file:///tmp/schemas/root.json", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "file:///tmp/schemas/root.json", "https://other.example/x", "https://other.example/x",
+    ),
+    (
+      "file:///tmp/schemas/root.json", "foo/bar/", "file:///tmp/schemas/foo/bar/",
+    ),
     ("file:///tmp/schemas/root.json", "bar", "file:///tmp/schemas/bar"),
     ("file:///tmp/schemas/root.json", "child/", "file:///tmp/schemas/child/"),
-    ("file:///tmp/schemas/root.json", "grandchild", "file:///tmp/schemas/grandchild"),
+    (
+      "file:///tmp/schemas/root.json", "grandchild", "file:///tmp/schemas/grandchild",
+    ),
     ("file:///tmp/schemas/root.json", "a%20b", "file:///tmp/schemas/a%20b"),
-    ("file:///tmp/schemas/root.json", "  leading-space", "file:///tmp/schemas/leading-space"),
-    ("file:///tmp/schemas/root.json", "with\ttab", "file:///tmp/schemas/withtab"),
+    (
+      "file:///tmp/schemas/root.json", "  leading-space", "file:///tmp/schemas/leading-space",
+    ),
+    (
+      "file:///tmp/schemas/root.json", "with\ttab", "file:///tmp/schemas/withtab",
+    ),
     ("file:///tmp/schemas/root.json", "mailto:x@y", "mailto:x@y"),
-    ("file:///tmp/schemas/root.json", "file:other.json", "file:///tmp/schemas/other.json"),
+    (
+      "file:///tmp/schemas/root.json", "file:other.json", "file:///tmp/schemas/other.json",
+    ),
     ("file:///tmp/schemas/root.json", "nested/../../up", "file:///tmp/up"),
     ("file:///tmp/schemas/root.json", "a//b", "file:///tmp/schemas/a/b"),
     ("file:///tmp/schemas/root.json", "//", "file:///tmp/schemas/root.json"),
@@ -800,8 +1058,12 @@ test "urljoin matches CPython" {
     ("mailto:someone@example.com", "http:", "http:"),
     ("mailto:someone@example.com", "urn:example:bar", "urn:example:bar"),
     ("mailto:someone@example.com", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("mailto:someone@example.com", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("mailto:someone@example.com", "https://other.example/x", "https://other.example/x"),
+    (
+      "mailto:someone@example.com", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "mailto:someone@example.com", "https://other.example/x", "https://other.example/x",
+    ),
     ("mailto:someone@example.com", "foo/bar/", "foo/bar/"),
     ("mailto:someone@example.com", "bar", "bar"),
     ("mailto:someone@example.com", "child/", "child/"),
@@ -817,9 +1079,15 @@ test "urljoin matches CPython" {
     ("mailto:someone@example.com", "///x", "///x"),
     ("ftp://ftp.example.com/pub/file", "", "ftp://ftp.example.com/pub/file"),
     ("ftp://ftp.example.com/pub/file", "#", "ftp://ftp.example.com/pub/file"),
-    ("ftp://ftp.example.com/pub/file", "#foo", "ftp://ftp.example.com/pub/file#foo"),
-    ("ftp://ftp.example.com/pub/file", "#/definitions/a", "ftp://ftp.example.com/pub/file#/definitions/a"),
-    ("ftp://ftp.example.com/pub/file", "#/$defs/a%25b", "ftp://ftp.example.com/pub/file#/$defs/a%25b"),
+    (
+      "ftp://ftp.example.com/pub/file", "#foo", "ftp://ftp.example.com/pub/file#foo",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "#/definitions/a", "ftp://ftp.example.com/pub/file#/definitions/a",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "#/$defs/a%25b", "ftp://ftp.example.com/pub/file#/$defs/a%25b",
+    ),
     ("ftp://ftp.example.com/pub/file", "g", "ftp://ftp.example.com/pub/g"),
     ("ftp://ftp.example.com/pub/file", "./g", "ftp://ftp.example.com/pub/g"),
     ("ftp://ftp.example.com/pub/file", "g/", "ftp://ftp.example.com/pub/g/"),
@@ -828,10 +1096,14 @@ test "urljoin matches CPython" {
     ("ftp://ftp.example.com/pub/file", "?y", "ftp://ftp.example.com/pub/file?y"),
     ("ftp://ftp.example.com/pub/file", "g?y", "ftp://ftp.example.com/pub/g?y"),
     ("ftp://ftp.example.com/pub/file", "g#s", "ftp://ftp.example.com/pub/g#s"),
-    ("ftp://ftp.example.com/pub/file", "g?y#s", "ftp://ftp.example.com/pub/g?y#s"),
+    (
+      "ftp://ftp.example.com/pub/file", "g?y#s", "ftp://ftp.example.com/pub/g?y#s",
+    ),
     ("ftp://ftp.example.com/pub/file", ";x", "ftp://ftp.example.com/pub/;x"),
     ("ftp://ftp.example.com/pub/file", "g;x", "ftp://ftp.example.com/pub/g;x"),
-    ("ftp://ftp.example.com/pub/file", "g;x?y#s", "ftp://ftp.example.com/pub/g;x?y#s"),
+    (
+      "ftp://ftp.example.com/pub/file", "g;x?y#s", "ftp://ftp.example.com/pub/g;x?y#s",
+    ),
     ("ftp://ftp.example.com/pub/file", ".", "ftp://ftp.example.com/pub/"),
     ("ftp://ftp.example.com/pub/file", "./", "ftp://ftp.example.com/pub/"),
     ("ftp://ftp.example.com/pub/file", "..", "ftp://ftp.example.com/"),
@@ -841,7 +1113,9 @@ test "urljoin matches CPython" {
     ("ftp://ftp.example.com/pub/file", "../../", "ftp://ftp.example.com/"),
     ("ftp://ftp.example.com/pub/file", "../../g", "ftp://ftp.example.com/g"),
     ("ftp://ftp.example.com/pub/file", "../../../g", "ftp://ftp.example.com/g"),
-    ("ftp://ftp.example.com/pub/file", "../../../../g", "ftp://ftp.example.com/g"),
+    (
+      "ftp://ftp.example.com/pub/file", "../../../../g", "ftp://ftp.example.com/g",
+    ),
     ("ftp://ftp.example.com/pub/file", "/./g", "ftp://ftp.example.com/g"),
     ("ftp://ftp.example.com/pub/file", "/../g", "ftp://ftp.example.com/g"),
     ("ftp://ftp.example.com/pub/file", "g.", "ftp://ftp.example.com/pub/g."),
@@ -852,31 +1126,57 @@ test "urljoin matches CPython" {
     ("ftp://ftp.example.com/pub/file", "./g/.", "ftp://ftp.example.com/pub/g/"),
     ("ftp://ftp.example.com/pub/file", "g/./h", "ftp://ftp.example.com/pub/g/h"),
     ("ftp://ftp.example.com/pub/file", "g/../h", "ftp://ftp.example.com/pub/h"),
-    ("ftp://ftp.example.com/pub/file", "g;x=1/./y", "ftp://ftp.example.com/pub/g;x=1/y"),
-    ("ftp://ftp.example.com/pub/file", "g;x=1/../y", "ftp://ftp.example.com/pub/y"),
+    (
+      "ftp://ftp.example.com/pub/file", "g;x=1/./y", "ftp://ftp.example.com/pub/g;x=1/y",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "g;x=1/../y", "ftp://ftp.example.com/pub/y",
+    ),
     ("ftp://ftp.example.com/pub/file", "http:g", "http:g"),
     ("ftp://ftp.example.com/pub/file", "http:", "http:"),
     ("ftp://ftp.example.com/pub/file", "urn:example:bar", "urn:example:bar"),
-    ("ftp://ftp.example.com/pub/file", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("ftp://ftp.example.com/pub/file", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("ftp://ftp.example.com/pub/file", "https://other.example/x", "https://other.example/x"),
-    ("ftp://ftp.example.com/pub/file", "foo/bar/", "ftp://ftp.example.com/pub/foo/bar/"),
+    (
+      "ftp://ftp.example.com/pub/file", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "https://other.example/x", "https://other.example/x",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "foo/bar/", "ftp://ftp.example.com/pub/foo/bar/",
+    ),
     ("ftp://ftp.example.com/pub/file", "bar", "ftp://ftp.example.com/pub/bar"),
-    ("ftp://ftp.example.com/pub/file", "child/", "ftp://ftp.example.com/pub/child/"),
-    ("ftp://ftp.example.com/pub/file", "grandchild", "ftp://ftp.example.com/pub/grandchild"),
-    ("ftp://ftp.example.com/pub/file", "a%20b", "ftp://ftp.example.com/pub/a%20b"),
-    ("ftp://ftp.example.com/pub/file", "  leading-space", "ftp://ftp.example.com/pub/leading-space"),
-    ("ftp://ftp.example.com/pub/file", "with\ttab", "ftp://ftp.example.com/pub/withtab"),
+    (
+      "ftp://ftp.example.com/pub/file", "child/", "ftp://ftp.example.com/pub/child/",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "grandchild", "ftp://ftp.example.com/pub/grandchild",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "a%20b", "ftp://ftp.example.com/pub/a%20b",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "  leading-space", "ftp://ftp.example.com/pub/leading-space",
+    ),
+    (
+      "ftp://ftp.example.com/pub/file", "with\ttab", "ftp://ftp.example.com/pub/withtab",
+    ),
     ("ftp://ftp.example.com/pub/file", "mailto:x@y", "mailto:x@y"),
     ("ftp://ftp.example.com/pub/file", "file:other.json", "file:other.json"),
-    ("ftp://ftp.example.com/pub/file", "nested/../../up", "ftp://ftp.example.com/up"),
+    (
+      "ftp://ftp.example.com/pub/file", "nested/../../up", "ftp://ftp.example.com/up",
+    ),
     ("ftp://ftp.example.com/pub/file", "a//b", "ftp://ftp.example.com/pub/a/b"),
     ("ftp://ftp.example.com/pub/file", "//", "ftp://ftp.example.com/pub/file"),
     ("ftp://ftp.example.com/pub/file", "///x", "ftp://ftp.example.com/x"),
     ("//example.com/path", "", "//example.com/path"),
     ("//example.com/path", "#", "//example.com/path"),
     ("//example.com/path", "#foo", "//example.com/path#foo"),
-    ("//example.com/path", "#/definitions/a", "//example.com/path#/definitions/a"),
+    (
+      "//example.com/path", "#/definitions/a", "//example.com/path#/definitions/a",
+    ),
     ("//example.com/path", "#/$defs/a%25b", "//example.com/path#/$defs/a%25b"),
     ("//example.com/path", "g", "//example.com/g"),
     ("//example.com/path", "./g", "//example.com/g"),
@@ -916,7 +1216,9 @@ test "urljoin matches CPython" {
     ("//example.com/path", "http:", "http:"),
     ("//example.com/path", "urn:example:bar", "urn:example:bar"),
     ("//example.com/path", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("//example.com/path", "tag:example.com,2023:other", "tag:example.com,2023:other"),
+    (
+      "//example.com/path", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
     ("//example.com/path", "https://other.example/x", "https://other.example/x"),
     ("//example.com/path", "foo/bar/", "//example.com/foo/bar/"),
     ("//example.com/path", "bar", "//example.com/bar"),
@@ -974,7 +1276,9 @@ test "urljoin matches CPython" {
     ("relative/path", "http:", "http:"),
     ("relative/path", "urn:example:bar", "urn:example:bar"),
     ("relative/path", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("relative/path", "tag:example.com,2023:other", "tag:example.com,2023:other"),
+    (
+      "relative/path", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
     ("relative/path", "https://other.example/x", "https://other.example/x"),
     ("relative/path", "foo/bar/", "relative/foo/bar/"),
     ("relative/path", "bar", "relative/bar"),
@@ -1032,7 +1336,9 @@ test "urljoin matches CPython" {
     ("/absolute/path", "http:", "http:"),
     ("/absolute/path", "urn:example:bar", "urn:example:bar"),
     ("/absolute/path", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("/absolute/path", "tag:example.com,2023:other", "tag:example.com,2023:other"),
+    (
+      "/absolute/path", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
     ("/absolute/path", "https://other.example/x", "https://other.example/x"),
     ("/absolute/path", "foo/bar/", "/absolute/foo/bar/"),
     ("/absolute/path", "bar", "/absolute/bar"),
@@ -1050,8 +1356,12 @@ test "urljoin matches CPython" {
     ("http://[::1]:8080/a/", "", "http://[::1]:8080/a/"),
     ("http://[::1]:8080/a/", "#", "http://[::1]:8080/a/"),
     ("http://[::1]:8080/a/", "#foo", "http://[::1]:8080/a/#foo"),
-    ("http://[::1]:8080/a/", "#/definitions/a", "http://[::1]:8080/a/#/definitions/a"),
-    ("http://[::1]:8080/a/", "#/$defs/a%25b", "http://[::1]:8080/a/#/$defs/a%25b"),
+    (
+      "http://[::1]:8080/a/", "#/definitions/a", "http://[::1]:8080/a/#/definitions/a",
+    ),
+    (
+      "http://[::1]:8080/a/", "#/$defs/a%25b", "http://[::1]:8080/a/#/$defs/a%25b",
+    ),
     ("http://[::1]:8080/a/", "g", "http://[::1]:8080/a/g"),
     ("http://[::1]:8080/a/", "./g", "http://[::1]:8080/a/g"),
     ("http://[::1]:8080/a/", "g/", "http://[::1]:8080/a/g/"),
@@ -1090,14 +1400,20 @@ test "urljoin matches CPython" {
     ("http://[::1]:8080/a/", "http:", "http://[::1]:8080/a/"),
     ("http://[::1]:8080/a/", "urn:example:bar", "urn:example:bar"),
     ("http://[::1]:8080/a/", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://[::1]:8080/a/", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://[::1]:8080/a/", "https://other.example/x", "https://other.example/x"),
+    (
+      "http://[::1]:8080/a/", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://[::1]:8080/a/", "https://other.example/x", "https://other.example/x",
+    ),
     ("http://[::1]:8080/a/", "foo/bar/", "http://[::1]:8080/a/foo/bar/"),
     ("http://[::1]:8080/a/", "bar", "http://[::1]:8080/a/bar"),
     ("http://[::1]:8080/a/", "child/", "http://[::1]:8080/a/child/"),
     ("http://[::1]:8080/a/", "grandchild", "http://[::1]:8080/a/grandchild"),
     ("http://[::1]:8080/a/", "a%20b", "http://[::1]:8080/a/a%20b"),
-    ("http://[::1]:8080/a/", "  leading-space", "http://[::1]:8080/a/leading-space"),
+    (
+      "http://[::1]:8080/a/", "  leading-space", "http://[::1]:8080/a/leading-space",
+    ),
     ("http://[::1]:8080/a/", "with\ttab", "http://[::1]:8080/a/withtab"),
     ("http://[::1]:8080/a/", "mailto:x@y", "mailto:x@y"),
     ("http://[::1]:8080/a/", "file:other.json", "file:other.json"),
@@ -1105,81 +1421,221 @@ test "urljoin matches CPython" {
     ("http://[::1]:8080/a/", "a//b", "http://[::1]:8080/a/a/b"),
     ("http://[::1]:8080/a/", "//", "http://[::1]:8080/a/"),
     ("http://[::1]:8080/a/", "///x", "http://[::1]:8080/x"),
-    ("http://user:pw@example.com:80/a/../b", "", "http://user:pw@example.com:80/a/../b"),
-    ("http://user:pw@example.com:80/a/../b", "#", "http://user:pw@example.com:80/a/../b"),
-    ("http://user:pw@example.com:80/a/../b", "#foo", "http://user:pw@example.com:80/a/../b#foo"),
-    ("http://user:pw@example.com:80/a/../b", "#/definitions/a", "http://user:pw@example.com:80/a/../b#/definitions/a"),
-    ("http://user:pw@example.com:80/a/../b", "#/$defs/a%25b", "http://user:pw@example.com:80/a/../b#/$defs/a%25b"),
-    ("http://user:pw@example.com:80/a/../b", "g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "./g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "g/", "http://user:pw@example.com:80/g/"),
-    ("http://user:pw@example.com:80/a/../b", "/g", "http://user:pw@example.com:80/g"),
+    (
+      "http://user:pw@example.com:80/a/../b", "", "http://user:pw@example.com:80/a/../b",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "#", "http://user:pw@example.com:80/a/../b",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "#foo", "http://user:pw@example.com:80/a/../b#foo",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "#/definitions/a", "http://user:pw@example.com:80/a/../b#/definitions/a",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "#/$defs/a%25b", "http://user:pw@example.com:80/a/../b#/$defs/a%25b",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "./g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g/", "http://user:pw@example.com:80/g/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "/g", "http://user:pw@example.com:80/g",
+    ),
     ("http://user:pw@example.com:80/a/../b", "//g", "http://g"),
-    ("http://user:pw@example.com:80/a/../b", "?y", "http://user:pw@example.com:80/a/../b?y"),
-    ("http://user:pw@example.com:80/a/../b", "g?y", "http://user:pw@example.com:80/g?y"),
-    ("http://user:pw@example.com:80/a/../b", "g#s", "http://user:pw@example.com:80/g#s"),
-    ("http://user:pw@example.com:80/a/../b", "g?y#s", "http://user:pw@example.com:80/g?y#s"),
-    ("http://user:pw@example.com:80/a/../b", ";x", "http://user:pw@example.com:80/;x"),
-    ("http://user:pw@example.com:80/a/../b", "g;x", "http://user:pw@example.com:80/g;x"),
-    ("http://user:pw@example.com:80/a/../b", "g;x?y#s", "http://user:pw@example.com:80/g;x?y#s"),
-    ("http://user:pw@example.com:80/a/../b", ".", "http://user:pw@example.com:80/"),
-    ("http://user:pw@example.com:80/a/../b", "./", "http://user:pw@example.com:80/"),
-    ("http://user:pw@example.com:80/a/../b", "..", "http://user:pw@example.com:80/"),
-    ("http://user:pw@example.com:80/a/../b", "../", "http://user:pw@example.com:80/"),
-    ("http://user:pw@example.com:80/a/../b", "../g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "../..", "http://user:pw@example.com:80/"),
-    ("http://user:pw@example.com:80/a/../b", "../../", "http://user:pw@example.com:80/"),
-    ("http://user:pw@example.com:80/a/../b", "../../g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "../../../g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "../../../../g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "/./g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "/../g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "g.", "http://user:pw@example.com:80/g."),
-    ("http://user:pw@example.com:80/a/../b", ".g", "http://user:pw@example.com:80/.g"),
-    ("http://user:pw@example.com:80/a/../b", "g..", "http://user:pw@example.com:80/g.."),
-    ("http://user:pw@example.com:80/a/../b", "..g", "http://user:pw@example.com:80/..g"),
-    ("http://user:pw@example.com:80/a/../b", "./../g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "./g/.", "http://user:pw@example.com:80/g/"),
-    ("http://user:pw@example.com:80/a/../b", "g/./h", "http://user:pw@example.com:80/g/h"),
-    ("http://user:pw@example.com:80/a/../b", "g/../h", "http://user:pw@example.com:80/h"),
-    ("http://user:pw@example.com:80/a/../b", "g;x=1/./y", "http://user:pw@example.com:80/g;x=1/y"),
-    ("http://user:pw@example.com:80/a/../b", "g;x=1/../y", "http://user:pw@example.com:80/y"),
-    ("http://user:pw@example.com:80/a/../b", "http:g", "http://user:pw@example.com:80/g"),
-    ("http://user:pw@example.com:80/a/../b", "http:", "http://user:pw@example.com:80/a/../b"),
-    ("http://user:pw@example.com:80/a/../b", "urn:example:bar", "urn:example:bar"),
-    ("http://user:pw@example.com:80/a/../b", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://user:pw@example.com:80/a/../b", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://user:pw@example.com:80/a/../b", "https://other.example/x", "https://other.example/x"),
-    ("http://user:pw@example.com:80/a/../b", "foo/bar/", "http://user:pw@example.com:80/foo/bar/"),
-    ("http://user:pw@example.com:80/a/../b", "bar", "http://user:pw@example.com:80/bar"),
-    ("http://user:pw@example.com:80/a/../b", "child/", "http://user:pw@example.com:80/child/"),
-    ("http://user:pw@example.com:80/a/../b", "grandchild", "http://user:pw@example.com:80/grandchild"),
-    ("http://user:pw@example.com:80/a/../b", "a%20b", "http://user:pw@example.com:80/a%20b"),
-    ("http://user:pw@example.com:80/a/../b", "  leading-space", "http://user:pw@example.com:80/leading-space"),
-    ("http://user:pw@example.com:80/a/../b", "with\ttab", "http://user:pw@example.com:80/withtab"),
+    (
+      "http://user:pw@example.com:80/a/../b", "?y", "http://user:pw@example.com:80/a/../b?y",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g?y", "http://user:pw@example.com:80/g?y",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g#s", "http://user:pw@example.com:80/g#s",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g?y#s", "http://user:pw@example.com:80/g?y#s",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", ";x", "http://user:pw@example.com:80/;x",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g;x", "http://user:pw@example.com:80/g;x",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g;x?y#s", "http://user:pw@example.com:80/g;x?y#s",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", ".", "http://user:pw@example.com:80/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "./", "http://user:pw@example.com:80/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "..", "http://user:pw@example.com:80/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "../", "http://user:pw@example.com:80/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "../g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "../..", "http://user:pw@example.com:80/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "../../", "http://user:pw@example.com:80/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "../../g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "../../../g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "../../../../g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "/./g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "/../g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g.", "http://user:pw@example.com:80/g.",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", ".g", "http://user:pw@example.com:80/.g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g..", "http://user:pw@example.com:80/g..",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "..g", "http://user:pw@example.com:80/..g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "./../g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "./g/.", "http://user:pw@example.com:80/g/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g/./h", "http://user:pw@example.com:80/g/h",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g/../h", "http://user:pw@example.com:80/h",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g;x=1/./y", "http://user:pw@example.com:80/g;x=1/y",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "g;x=1/../y", "http://user:pw@example.com:80/y",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "http:g", "http://user:pw@example.com:80/g",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "http:", "http://user:pw@example.com:80/a/../b",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "urn:example:bar", "urn:example:bar",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "https://other.example/x", "https://other.example/x",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "foo/bar/", "http://user:pw@example.com:80/foo/bar/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "bar", "http://user:pw@example.com:80/bar",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "child/", "http://user:pw@example.com:80/child/",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "grandchild", "http://user:pw@example.com:80/grandchild",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "a%20b", "http://user:pw@example.com:80/a%20b",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "  leading-space", "http://user:pw@example.com:80/leading-space",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "with\ttab", "http://user:pw@example.com:80/withtab",
+    ),
     ("http://user:pw@example.com:80/a/../b", "mailto:x@y", "mailto:x@y"),
-    ("http://user:pw@example.com:80/a/../b", "file:other.json", "file:other.json"),
-    ("http://user:pw@example.com:80/a/../b", "nested/../../up", "http://user:pw@example.com:80/up"),
-    ("http://user:pw@example.com:80/a/../b", "a//b", "http://user:pw@example.com:80/a/b"),
-    ("http://user:pw@example.com:80/a/../b", "//", "http://user:pw@example.com:80/a/../b"),
-    ("http://user:pw@example.com:80/a/../b", "///x", "http://user:pw@example.com:80/x"),
-    ("http://example.com/%7Efoo/bar%20baz", "", "http://example.com/%7Efoo/bar%20baz"),
-    ("http://example.com/%7Efoo/bar%20baz", "#", "http://example.com/%7Efoo/bar%20baz"),
-    ("http://example.com/%7Efoo/bar%20baz", "#foo", "http://example.com/%7Efoo/bar%20baz#foo"),
-    ("http://example.com/%7Efoo/bar%20baz", "#/definitions/a", "http://example.com/%7Efoo/bar%20baz#/definitions/a"),
-    ("http://example.com/%7Efoo/bar%20baz", "#/$defs/a%25b", "http://example.com/%7Efoo/bar%20baz#/$defs/a%25b"),
+    (
+      "http://user:pw@example.com:80/a/../b", "file:other.json", "file:other.json",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "nested/../../up", "http://user:pw@example.com:80/up",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "a//b", "http://user:pw@example.com:80/a/b",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "//", "http://user:pw@example.com:80/a/../b",
+    ),
+    (
+      "http://user:pw@example.com:80/a/../b", "///x", "http://user:pw@example.com:80/x",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "", "http://example.com/%7Efoo/bar%20baz",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "#", "http://example.com/%7Efoo/bar%20baz",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "#foo", "http://example.com/%7Efoo/bar%20baz#foo",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "#/definitions/a", "http://example.com/%7Efoo/bar%20baz#/definitions/a",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "#/$defs/a%25b", "http://example.com/%7Efoo/bar%20baz#/$defs/a%25b",
+    ),
     ("http://example.com/%7Efoo/bar%20baz", "g", "http://example.com/%7Efoo/g"),
-    ("http://example.com/%7Efoo/bar%20baz", "./g", "http://example.com/%7Efoo/g"),
-    ("http://example.com/%7Efoo/bar%20baz", "g/", "http://example.com/%7Efoo/g/"),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "./g", "http://example.com/%7Efoo/g",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g/", "http://example.com/%7Efoo/g/",
+    ),
     ("http://example.com/%7Efoo/bar%20baz", "/g", "http://example.com/g"),
     ("http://example.com/%7Efoo/bar%20baz", "//g", "http://g"),
-    ("http://example.com/%7Efoo/bar%20baz", "?y", "http://example.com/%7Efoo/bar%20baz?y"),
-    ("http://example.com/%7Efoo/bar%20baz", "g?y", "http://example.com/%7Efoo/g?y"),
-    ("http://example.com/%7Efoo/bar%20baz", "g#s", "http://example.com/%7Efoo/g#s"),
-    ("http://example.com/%7Efoo/bar%20baz", "g?y#s", "http://example.com/%7Efoo/g?y#s"),
-    ("http://example.com/%7Efoo/bar%20baz", ";x", "http://example.com/%7Efoo/;x"),
-    ("http://example.com/%7Efoo/bar%20baz", "g;x", "http://example.com/%7Efoo/g;x"),
-    ("http://example.com/%7Efoo/bar%20baz", "g;x?y#s", "http://example.com/%7Efoo/g;x?y#s"),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "?y", "http://example.com/%7Efoo/bar%20baz?y",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g?y", "http://example.com/%7Efoo/g?y",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g#s", "http://example.com/%7Efoo/g#s",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g?y#s", "http://example.com/%7Efoo/g?y#s",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", ";x", "http://example.com/%7Efoo/;x",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g;x", "http://example.com/%7Efoo/g;x",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g;x?y#s", "http://example.com/%7Efoo/g;x?y#s",
+    ),
     ("http://example.com/%7Efoo/bar%20baz", ".", "http://example.com/%7Efoo/"),
     ("http://example.com/%7Efoo/bar%20baz", "./", "http://example.com/%7Efoo/"),
     ("http://example.com/%7Efoo/bar%20baz", "..", "http://example.com/"),
@@ -1188,44 +1644,104 @@ test "urljoin matches CPython" {
     ("http://example.com/%7Efoo/bar%20baz", "../..", "http://example.com/"),
     ("http://example.com/%7Efoo/bar%20baz", "../../", "http://example.com/"),
     ("http://example.com/%7Efoo/bar%20baz", "../../g", "http://example.com/g"),
-    ("http://example.com/%7Efoo/bar%20baz", "../../../g", "http://example.com/g"),
-    ("http://example.com/%7Efoo/bar%20baz", "../../../../g", "http://example.com/g"),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "../../../g", "http://example.com/g",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "../../../../g", "http://example.com/g",
+    ),
     ("http://example.com/%7Efoo/bar%20baz", "/./g", "http://example.com/g"),
     ("http://example.com/%7Efoo/bar%20baz", "/../g", "http://example.com/g"),
-    ("http://example.com/%7Efoo/bar%20baz", "g.", "http://example.com/%7Efoo/g."),
-    ("http://example.com/%7Efoo/bar%20baz", ".g", "http://example.com/%7Efoo/.g"),
-    ("http://example.com/%7Efoo/bar%20baz", "g..", "http://example.com/%7Efoo/g.."),
-    ("http://example.com/%7Efoo/bar%20baz", "..g", "http://example.com/%7Efoo/..g"),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g.", "http://example.com/%7Efoo/g.",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", ".g", "http://example.com/%7Efoo/.g",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g..", "http://example.com/%7Efoo/g..",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "..g", "http://example.com/%7Efoo/..g",
+    ),
     ("http://example.com/%7Efoo/bar%20baz", "./../g", "http://example.com/g"),
-    ("http://example.com/%7Efoo/bar%20baz", "./g/.", "http://example.com/%7Efoo/g/"),
-    ("http://example.com/%7Efoo/bar%20baz", "g/./h", "http://example.com/%7Efoo/g/h"),
-    ("http://example.com/%7Efoo/bar%20baz", "g/../h", "http://example.com/%7Efoo/h"),
-    ("http://example.com/%7Efoo/bar%20baz", "g;x=1/./y", "http://example.com/%7Efoo/g;x=1/y"),
-    ("http://example.com/%7Efoo/bar%20baz", "g;x=1/../y", "http://example.com/%7Efoo/y"),
-    ("http://example.com/%7Efoo/bar%20baz", "http:g", "http://example.com/%7Efoo/g"),
-    ("http://example.com/%7Efoo/bar%20baz", "http:", "http://example.com/%7Efoo/bar%20baz"),
-    ("http://example.com/%7Efoo/bar%20baz", "urn:example:bar", "urn:example:bar"),
-    ("http://example.com/%7Efoo/bar%20baz", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://example.com/%7Efoo/bar%20baz", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://example.com/%7Efoo/bar%20baz", "https://other.example/x", "https://other.example/x"),
-    ("http://example.com/%7Efoo/bar%20baz", "foo/bar/", "http://example.com/%7Efoo/foo/bar/"),
-    ("http://example.com/%7Efoo/bar%20baz", "bar", "http://example.com/%7Efoo/bar"),
-    ("http://example.com/%7Efoo/bar%20baz", "child/", "http://example.com/%7Efoo/child/"),
-    ("http://example.com/%7Efoo/bar%20baz", "grandchild", "http://example.com/%7Efoo/grandchild"),
-    ("http://example.com/%7Efoo/bar%20baz", "a%20b", "http://example.com/%7Efoo/a%20b"),
-    ("http://example.com/%7Efoo/bar%20baz", "  leading-space", "http://example.com/%7Efoo/leading-space"),
-    ("http://example.com/%7Efoo/bar%20baz", "with\ttab", "http://example.com/%7Efoo/withtab"),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "./g/.", "http://example.com/%7Efoo/g/",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g/./h", "http://example.com/%7Efoo/g/h",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g/../h", "http://example.com/%7Efoo/h",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g;x=1/./y", "http://example.com/%7Efoo/g;x=1/y",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "g;x=1/../y", "http://example.com/%7Efoo/y",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "http:g", "http://example.com/%7Efoo/g",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "http:", "http://example.com/%7Efoo/bar%20baz",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "urn:example:bar", "urn:example:bar",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "https://other.example/x", "https://other.example/x",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "foo/bar/", "http://example.com/%7Efoo/foo/bar/",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "bar", "http://example.com/%7Efoo/bar",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "child/", "http://example.com/%7Efoo/child/",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "grandchild", "http://example.com/%7Efoo/grandchild",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "a%20b", "http://example.com/%7Efoo/a%20b",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "  leading-space", "http://example.com/%7Efoo/leading-space",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "with\ttab", "http://example.com/%7Efoo/withtab",
+    ),
     ("http://example.com/%7Efoo/bar%20baz", "mailto:x@y", "mailto:x@y"),
-    ("http://example.com/%7Efoo/bar%20baz", "file:other.json", "file:other.json"),
-    ("http://example.com/%7Efoo/bar%20baz", "nested/../../up", "http://example.com/up"),
-    ("http://example.com/%7Efoo/bar%20baz", "a//b", "http://example.com/%7Efoo/a/b"),
-    ("http://example.com/%7Efoo/bar%20baz", "//", "http://example.com/%7Efoo/bar%20baz"),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "file:other.json", "file:other.json",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "nested/../../up", "http://example.com/up",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "a//b", "http://example.com/%7Efoo/a/b",
+    ),
+    (
+      "http://example.com/%7Efoo/bar%20baz", "//", "http://example.com/%7Efoo/bar%20baz",
+    ),
     ("http://example.com/%7Efoo/bar%20baz", "///x", "http://example.com/x"),
     ("HTTP://Example.COM/A", "", "HTTP://Example.COM/A"),
     ("HTTP://Example.COM/A", "#", "http://Example.COM/A"),
     ("HTTP://Example.COM/A", "#foo", "http://Example.COM/A#foo"),
-    ("HTTP://Example.COM/A", "#/definitions/a", "http://Example.COM/A#/definitions/a"),
-    ("HTTP://Example.COM/A", "#/$defs/a%25b", "http://Example.COM/A#/$defs/a%25b"),
+    (
+      "HTTP://Example.COM/A", "#/definitions/a", "http://Example.COM/A#/definitions/a",
+    ),
+    (
+      "HTTP://Example.COM/A", "#/$defs/a%25b", "http://Example.COM/A#/$defs/a%25b",
+    ),
     ("HTTP://Example.COM/A", "g", "http://Example.COM/g"),
     ("HTTP://Example.COM/A", "./g", "http://Example.COM/g"),
     ("HTTP://Example.COM/A", "g/", "http://Example.COM/g/"),
@@ -1264,14 +1780,20 @@ test "urljoin matches CPython" {
     ("HTTP://Example.COM/A", "http:", "http://Example.COM/A"),
     ("HTTP://Example.COM/A", "urn:example:bar", "urn:example:bar"),
     ("HTTP://Example.COM/A", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("HTTP://Example.COM/A", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("HTTP://Example.COM/A", "https://other.example/x", "https://other.example/x"),
+    (
+      "HTTP://Example.COM/A", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "HTTP://Example.COM/A", "https://other.example/x", "https://other.example/x",
+    ),
     ("HTTP://Example.COM/A", "foo/bar/", "http://Example.COM/foo/bar/"),
     ("HTTP://Example.COM/A", "bar", "http://Example.COM/bar"),
     ("HTTP://Example.COM/A", "child/", "http://Example.COM/child/"),
     ("HTTP://Example.COM/A", "grandchild", "http://Example.COM/grandchild"),
     ("HTTP://Example.COM/A", "a%20b", "http://Example.COM/a%20b"),
-    ("HTTP://Example.COM/A", "  leading-space", "http://Example.COM/leading-space"),
+    (
+      "HTTP://Example.COM/A", "  leading-space", "http://Example.COM/leading-space",
+    ),
     ("HTTP://Example.COM/A", "with\ttab", "http://Example.COM/withtab"),
     ("HTTP://Example.COM/A", "mailto:x@y", "mailto:x@y"),
     ("HTTP://Example.COM/A", "file:other.json", "file:other.json"),
@@ -1281,9 +1803,15 @@ test "urljoin matches CPython" {
     ("HTTP://Example.COM/A", "///x", "http://Example.COM/x"),
     ("http://example.com/a/./b/../c", "", "http://example.com/a/./b/../c"),
     ("http://example.com/a/./b/../c", "#", "http://example.com/a/./b/../c"),
-    ("http://example.com/a/./b/../c", "#foo", "http://example.com/a/./b/../c#foo"),
-    ("http://example.com/a/./b/../c", "#/definitions/a", "http://example.com/a/./b/../c#/definitions/a"),
-    ("http://example.com/a/./b/../c", "#/$defs/a%25b", "http://example.com/a/./b/../c#/$defs/a%25b"),
+    (
+      "http://example.com/a/./b/../c", "#foo", "http://example.com/a/./b/../c#foo",
+    ),
+    (
+      "http://example.com/a/./b/../c", "#/definitions/a", "http://example.com/a/./b/../c#/definitions/a",
+    ),
+    (
+      "http://example.com/a/./b/../c", "#/$defs/a%25b", "http://example.com/a/./b/../c#/$defs/a%25b",
+    ),
     ("http://example.com/a/./b/../c", "g", "http://example.com/a/g"),
     ("http://example.com/a/./b/../c", "./g", "http://example.com/a/g"),
     ("http://example.com/a/./b/../c", "g/", "http://example.com/a/g/"),
@@ -1316,32 +1844,54 @@ test "urljoin matches CPython" {
     ("http://example.com/a/./b/../c", "./g/.", "http://example.com/a/g/"),
     ("http://example.com/a/./b/../c", "g/./h", "http://example.com/a/g/h"),
     ("http://example.com/a/./b/../c", "g/../h", "http://example.com/a/h"),
-    ("http://example.com/a/./b/../c", "g;x=1/./y", "http://example.com/a/g;x=1/y"),
+    (
+      "http://example.com/a/./b/../c", "g;x=1/./y", "http://example.com/a/g;x=1/y",
+    ),
     ("http://example.com/a/./b/../c", "g;x=1/../y", "http://example.com/a/y"),
     ("http://example.com/a/./b/../c", "http:g", "http://example.com/a/g"),
     ("http://example.com/a/./b/../c", "http:", "http://example.com/a/./b/../c"),
     ("http://example.com/a/./b/../c", "urn:example:bar", "urn:example:bar"),
-    ("http://example.com/a/./b/../c", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("http://example.com/a/./b/../c", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("http://example.com/a/./b/../c", "https://other.example/x", "https://other.example/x"),
-    ("http://example.com/a/./b/../c", "foo/bar/", "http://example.com/a/foo/bar/"),
+    (
+      "http://example.com/a/./b/../c", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "http://example.com/a/./b/../c", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "http://example.com/a/./b/../c", "https://other.example/x", "https://other.example/x",
+    ),
+    (
+      "http://example.com/a/./b/../c", "foo/bar/", "http://example.com/a/foo/bar/",
+    ),
     ("http://example.com/a/./b/../c", "bar", "http://example.com/a/bar"),
     ("http://example.com/a/./b/../c", "child/", "http://example.com/a/child/"),
-    ("http://example.com/a/./b/../c", "grandchild", "http://example.com/a/grandchild"),
+    (
+      "http://example.com/a/./b/../c", "grandchild", "http://example.com/a/grandchild",
+    ),
     ("http://example.com/a/./b/../c", "a%20b", "http://example.com/a/a%20b"),
-    ("http://example.com/a/./b/../c", "  leading-space", "http://example.com/a/leading-space"),
-    ("http://example.com/a/./b/../c", "with\ttab", "http://example.com/a/withtab"),
+    (
+      "http://example.com/a/./b/../c", "  leading-space", "http://example.com/a/leading-space",
+    ),
+    (
+      "http://example.com/a/./b/../c", "with\ttab", "http://example.com/a/withtab",
+    ),
     ("http://example.com/a/./b/../c", "mailto:x@y", "mailto:x@y"),
     ("http://example.com/a/./b/../c", "file:other.json", "file:other.json"),
-    ("http://example.com/a/./b/../c", "nested/../../up", "http://example.com/up"),
+    (
+      "http://example.com/a/./b/../c", "nested/../../up", "http://example.com/up",
+    ),
     ("http://example.com/a/./b/../c", "a//b", "http://example.com/a/a/b"),
     ("http://example.com/a/./b/../c", "//", "http://example.com/a/./b/../c"),
     ("http://example.com/a/./b/../c", "///x", "http://example.com/x"),
     ("svn+ssh://host/repo/trunk", "", "svn+ssh://host/repo/trunk"),
     ("svn+ssh://host/repo/trunk", "#", "svn+ssh://host/repo/trunk"),
     ("svn+ssh://host/repo/trunk", "#foo", "svn+ssh://host/repo/trunk#foo"),
-    ("svn+ssh://host/repo/trunk", "#/definitions/a", "svn+ssh://host/repo/trunk#/definitions/a"),
-    ("svn+ssh://host/repo/trunk", "#/$defs/a%25b", "svn+ssh://host/repo/trunk#/$defs/a%25b"),
+    (
+      "svn+ssh://host/repo/trunk", "#/definitions/a", "svn+ssh://host/repo/trunk#/definitions/a",
+    ),
+    (
+      "svn+ssh://host/repo/trunk", "#/$defs/a%25b", "svn+ssh://host/repo/trunk#/$defs/a%25b",
+    ),
     ("svn+ssh://host/repo/trunk", "g", "svn+ssh://host/repo/g"),
     ("svn+ssh://host/repo/trunk", "./g", "svn+ssh://host/repo/g"),
     ("svn+ssh://host/repo/trunk", "g/", "svn+ssh://host/repo/g/"),
@@ -1380,14 +1930,22 @@ test "urljoin matches CPython" {
     ("svn+ssh://host/repo/trunk", "http:", "http:"),
     ("svn+ssh://host/repo/trunk", "urn:example:bar", "urn:example:bar"),
     ("svn+ssh://host/repo/trunk", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("svn+ssh://host/repo/trunk", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("svn+ssh://host/repo/trunk", "https://other.example/x", "https://other.example/x"),
+    (
+      "svn+ssh://host/repo/trunk", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "svn+ssh://host/repo/trunk", "https://other.example/x", "https://other.example/x",
+    ),
     ("svn+ssh://host/repo/trunk", "foo/bar/", "svn+ssh://host/repo/foo/bar/"),
     ("svn+ssh://host/repo/trunk", "bar", "svn+ssh://host/repo/bar"),
     ("svn+ssh://host/repo/trunk", "child/", "svn+ssh://host/repo/child/"),
-    ("svn+ssh://host/repo/trunk", "grandchild", "svn+ssh://host/repo/grandchild"),
+    (
+      "svn+ssh://host/repo/trunk", "grandchild", "svn+ssh://host/repo/grandchild",
+    ),
     ("svn+ssh://host/repo/trunk", "a%20b", "svn+ssh://host/repo/a%20b"),
-    ("svn+ssh://host/repo/trunk", "  leading-space", "svn+ssh://host/repo/leading-space"),
+    (
+      "svn+ssh://host/repo/trunk", "  leading-space", "svn+ssh://host/repo/leading-space",
+    ),
     ("svn+ssh://host/repo/trunk", "with\ttab", "svn+ssh://host/repo/withtab"),
     ("svn+ssh://host/repo/trunk", "mailto:x@y", "mailto:x@y"),
     ("svn+ssh://host/repo/trunk", "file:other.json", "file:other.json"),
@@ -1437,9 +1995,15 @@ test "urljoin matches CPython" {
     ("itms-services://example/a/b", "http:g", "http:g"),
     ("itms-services://example/a/b", "http:", "http:"),
     ("itms-services://example/a/b", "urn:example:bar", "urn:example:bar"),
-    ("itms-services://example/a/b", "urn:example:foo#bar", "urn:example:foo#bar"),
-    ("itms-services://example/a/b", "tag:example.com,2023:other", "tag:example.com,2023:other"),
-    ("itms-services://example/a/b", "https://other.example/x", "https://other.example/x"),
+    (
+      "itms-services://example/a/b", "urn:example:foo#bar", "urn:example:foo#bar",
+    ),
+    (
+      "itms-services://example/a/b", "tag:example.com,2023:other", "tag:example.com,2023:other",
+    ),
+    (
+      "itms-services://example/a/b", "https://other.example/x", "https://other.example/x",
+    ),
     ("itms-services://example/a/b", "foo/bar/", "foo/bar/"),
     ("itms-services://example/a/b", "bar", "bar"),
     ("itms-services://example/a/b", "child/", "child/"),
@@ -1464,30 +2028,114 @@ test "urljoin matches CPython" {
 ///|
 test "urlsplit and urlparse match CPython" {
   let cases : Array[(String, Array[String], Array[String])] = [
-    ("http://example.com/a/b?c=d#e", ["http", "example.com", "/a/b", "c=d", "e"], ["http", "example.com", "/a/b", "", "c=d", "e"]),
-    ("HTTP://EXAMPLE.com", ["http", "EXAMPLE.com", "", "", ""], ["http", "EXAMPLE.com", "", "", "", ""]),
-    ("urn:example:foo#bar", ["urn", "", "example:foo", "", "bar"], ["urn", "", "example:foo", "", "", "bar"]),
-    ("tag:example.com,2023:x", ["tag", "", "example.com,2023:x", "", ""], ["tag", "", "example.com,2023:x", "", "", ""]),
-    ("mailto:a@b.c", ["mailto", "", "a@b.c", "", ""], ["mailto", "", "a@b.c", "", "", ""]),
-    ("//netloc/path?q#f", ["", "netloc", "/path", "q", "f"], ["", "netloc", "/path", "", "q", "f"]),
-    ("path;params?q#f", ["", "", "path;params", "q", "f"], ["", "", "path", "params", "q", "f"]),
-    ("http://a/b;c/d;e?f#g", ["http", "a", "/b;c/d;e", "f", "g"], ["http", "a", "/b;c/d", "e", "f", "g"]),
-    ("1http://x", ["", "", "1http://x", "", ""], ["", "", "1http://x", "", "", ""]),
-    ("a+b-c.d:rest", ["a+b-c.d", "", "rest", "", ""], ["a+b-c.d", "", "rest", "", "", ""]),
+    (
+      "http://example.com/a/b?c=d#e",
+      ["http", "example.com", "/a/b", "c=d", "e"],
+      ["http", "example.com", "/a/b", "", "c=d", "e"],
+    ),
+    (
+      "HTTP://EXAMPLE.com",
+      ["http", "EXAMPLE.com", "", "", ""],
+      ["http", "EXAMPLE.com", "", "", "", ""],
+    ),
+    (
+      "urn:example:foo#bar",
+      ["urn", "", "example:foo", "", "bar"],
+      ["urn", "", "example:foo", "", "", "bar"],
+    ),
+    (
+      "tag:example.com,2023:x",
+      ["tag", "", "example.com,2023:x", "", ""],
+      ["tag", "", "example.com,2023:x", "", "", ""],
+    ),
+    (
+      "mailto:a@b.c",
+      ["mailto", "", "a@b.c", "", ""],
+      ["mailto", "", "a@b.c", "", "", ""],
+    ),
+    (
+      "//netloc/path?q#f",
+      ["", "netloc", "/path", "q", "f"],
+      ["", "netloc", "/path", "", "q", "f"],
+    ),
+    (
+      "path;params?q#f",
+      ["", "", "path;params", "q", "f"],
+      ["", "", "path", "params", "q", "f"],
+    ),
+    (
+      "http://a/b;c/d;e?f#g",
+      ["http", "a", "/b;c/d;e", "f", "g"],
+      ["http", "a", "/b;c/d", "e", "f", "g"],
+    ),
+    (
+      "1http://x",
+      ["", "", "1http://x", "", ""],
+      ["", "", "1http://x", "", "", ""],
+    ),
+    (
+      "a+b-c.d:rest",
+      ["a+b-c.d", "", "rest", "", ""],
+      ["a+b-c.d", "", "rest", "", "", ""],
+    ),
     ("a_b:rest", ["", "", "a_b:rest", "", ""], ["", "", "a_b:rest", "", "", ""]),
     (":nope", ["", "", ":nope", "", ""], ["", "", ":nope", "", "", ""]),
-    ("http://[::1]/", ["http", "[::1]", "/", "", ""], ["http", "[::1]", "/", "", "", ""]),
-    ("http://[::ffff:1.2.3.4]:80/", ["http", "[::ffff:1.2.3.4]:80", "/", "", ""], ["http", "[::ffff:1.2.3.4]:80", "/", "", "", ""]),
-    ("http://[fe80::1%25eth0]/", ["http", "[fe80::1%25eth0]", "/", "", ""], ["http", "[fe80::1%25eth0]", "/", "", "", ""]),
-    ("http://[v1.fe]/", ["http", "[v1.fe]", "/", "", ""], ["http", "[v1.fe]", "/", "", "", ""]),
-    ("  \u{0}http://example.com/  ", ["http", "example.com", "/  ", "", ""], ["http", "example.com", "/  ", "", "", ""]),
-    ("ht\ttp://exa\nmple.com/\r", ["http", "example.com", "/", "", ""], ["http", "example.com", "/", "", "", ""]),
-    ("#only-fragment", ["", "", "", "", "only-fragment"], ["", "", "", "", "", "only-fragment"]),
-    ("?only-query", ["", "", "", "only-query", ""], ["", "", "", "", "only-query", ""]),
+    (
+      "http://[::1]/",
+      ["http", "[::1]", "/", "", ""],
+      ["http", "[::1]", "/", "", "", ""],
+    ),
+    (
+      "http://[::ffff:1.2.3.4]:80/",
+      ["http", "[::ffff:1.2.3.4]:80", "/", "", ""],
+      ["http", "[::ffff:1.2.3.4]:80", "/", "", "", ""],
+    ),
+    (
+      "http://[fe80::1%25eth0]/",
+      ["http", "[fe80::1%25eth0]", "/", "", ""],
+      ["http", "[fe80::1%25eth0]", "/", "", "", ""],
+    ),
+    (
+      "http://[v1.fe]/",
+      ["http", "[v1.fe]", "/", "", ""],
+      ["http", "[v1.fe]", "/", "", "", ""],
+    ),
+    (
+      "  \u{0}http://example.com/  ",
+      ["http", "example.com", "/  ", "", ""],
+      ["http", "example.com", "/  ", "", "", ""],
+    ),
+    (
+      "ht\ttp://exa\nmple.com/\r",
+      ["http", "example.com", "/", "", ""],
+      ["http", "example.com", "/", "", "", ""],
+    ),
+    (
+      "#only-fragment",
+      ["", "", "", "", "only-fragment"],
+      ["", "", "", "", "", "only-fragment"],
+    ),
+    (
+      "?only-query",
+      ["", "", "", "only-query", ""],
+      ["", "", "", "", "only-query", ""],
+    ),
     ("", ["", "", "", "", ""], ["", "", "", "", "", ""]),
-    ("file:///etc/passwd", ["file", "", "/etc/passwd", "", ""], ["file", "", "/etc/passwd", "", "", ""]),
-    ("http://user@[::1]:99/x", ["http", "user@[::1]:99", "/x", "", ""], ["http", "user@[::1]:99", "/x", "", "", ""]),
-    ("http://example.com:80", ["http", "example.com:80", "", "", ""], ["http", "example.com:80", "", "", "", ""]),
+    (
+      "file:///etc/passwd",
+      ["file", "", "/etc/passwd", "", ""],
+      ["file", "", "/etc/passwd", "", "", ""],
+    ),
+    (
+      "http://user@[::1]:99/x",
+      ["http", "user@[::1]:99", "/x", "", ""],
+      ["http", "user@[::1]:99", "/x", "", "", ""],
+    ),
+    (
+      "http://example.com:80",
+      ["http", "example.com:80", "", "", ""],
+      ["http", "example.com:80", "", "", "", ""],
+    ),
   ]
   for case in cases {
     let (url, s, p) = case
@@ -1498,7 +2146,10 @@ test "urlsplit and urlparse match CPython" {
       [got.scheme, got.netloc, got.path, got.params, got.query, got.fragment],
       p,
     )
-    assert_eq(@urllib.urlsplit(url).geturl(), @urllib.urlunsplit(s[0], s[1], s[2], s[3], s[4]))
+    assert_eq(
+      @urllib.urlsplit(url).geturl(),
+      @urllib.urlunsplit(s[0], s[1], s[2], s[3], s[4]),
+    )
   }
 }
 
@@ -1512,8 +2163,12 @@ test "urlsplit raises ValueError like CPython" {
     ("http://[vz.x]/", "IPvFuture address is invalid"),
     ("http://[::1]x/", "Invalid IPv6 URL"),
     ("http://x[::1]/", "Invalid IPv6 URL"),
-    ("http://[::1::2]/", "'::1::2' does not appear to be an IPv4 or IPv6 address"),
-    ("http://[12345::]/", "'12345::' does not appear to be an IPv4 or IPv6 address"),
+    (
+      "http://[::1::2]/", "'::1::2' does not appear to be an IPv4 or IPv6 address",
+    ),
+    (
+      "http://[12345::]/", "'12345::' does not appear to be an IPv4 or IPv6 address",
+    ),
     ("http://[hello]/", "'hello' does not appear to be an IPv4 or IPv6 address"),
     ("http://[a@b]@x/", "'x' does not appear to be an IPv4 or IPv6 address"),
   ]
