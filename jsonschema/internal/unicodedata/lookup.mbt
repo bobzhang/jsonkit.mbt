@@ -180,3 +180,41 @@ pub fn alnum_set() -> Array[(Int, Int)] {
 pub fn space_set() -> Array[(Int, Int)] {
   pairs(space_ranges)
 }
+
+///|
+fn in_pairs(set : ArrayView[(Int, Int)], cp : Int) -> Bool {
+  for lo = 0, hi = set.length(); lo < hi; {
+    let mid = lo + (hi - lo) / 2
+    if cp < set[mid].0 {
+      continue lo, mid
+    } else if cp > set[mid].1 {
+      continue mid + 1, hi
+    } else {
+      break true
+    }
+  } nobreak {
+    false
+  }
+}
+
+///|
+/// The code points case-insensitively equivalent (for Python's `re` with
+/// `IGNORECASE`, `str` patterns) to some member of `set` (sorted, merged
+/// inclusive ranges), as extra single-code-point ranges.
+pub fn case_fold_extras(set : ArrayView[(Int, Int)]) -> Array[(Int, Int)] {
+  let roots : Set[Int] = Set([])
+  let n = case_classes.length() / 2
+  for i in 0..<n {
+    if in_pairs(set, case_classes[2 * i]) {
+      roots.add(case_classes[2 * i + 1])
+    }
+  }
+  let out = []
+  for i in 0..<n {
+    if roots.contains(case_classes[2 * i + 1]) {
+      let cp = case_classes[2 * i]
+      out.push((cp, cp))
+    }
+  }
+  out
+}

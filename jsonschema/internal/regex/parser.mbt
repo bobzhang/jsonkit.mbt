@@ -19,6 +19,17 @@ fn Parser::error(_self : Parser, msg : String) -> PatternError {
 }
 
 ///|
+fn Parser::case_mode(self : Parser) -> CaseMode {
+  if !self.flags.ignorecase {
+    Sensitive
+  } else if self.flags.ascii {
+    AsciiFold
+  } else {
+    UnicodeFold
+  }
+}
+
+///|
 fn Parser::next(self : Parser) -> Int? {
   if self.pos < self.src.length() {
     Some(self.src[self.pos])
@@ -167,7 +178,8 @@ fn Parser::parse_seq(
             } else {
               [(0, 9), (11, 0x10FFFF)]
             },
-            ignorecase=false,
+            negate=false,
+            case_=Sensitive,
           ),
         )
       '^' =>
@@ -191,7 +203,7 @@ fn Parser::parse_seq(
           min = 1
         } else if this == '{' {
           if self.next() == Some('}') {
-            items.push(Literal(this, ignorecase=self.flags.ignorecase))
+            items.push(Literal(this, case_=self.case_mode()))
             continue
           }
           let lo = []
@@ -208,7 +220,7 @@ fn Parser::parse_seq(
             }
           }
           if !self.matches('}') {
-            items.push(Literal(this, ignorecase=self.flags.ignorecase))
+            items.push(Literal(this, case_=self.case_mode()))
             self.pos = here
             continue
           }
@@ -246,7 +258,7 @@ fn Parser::parse_seq(
         let possessive = !lazy_ && self.matches('+')
         items[items.length() - 1] = Repeat(item, min~, max~, lazy_~, possessive~)
       }
-      _ => items.push(Literal(this, ignorecase=self.flags.ignorecase))
+      _ => items.push(Literal(this, case_=self.case_mode()))
     }
   }
   if items.length() == 1 {
@@ -372,18 +384,18 @@ fn Parser::escape(self : Parser) -> Node raise PatternError {
   guard self.get() is Some(c) else {
     raise self.error("bad escape (end of pattern)")
   }
-  let ic = self.flags.ignorecase
+  let ic = self.case_mode()
   match c {
     'A' => return At(BeginString)
     'Z' => return At(EndString)
-    'b' => return At(Boundary)
-    'B' => return At(NonBoundary)
+    'b' => return At(Boundary(ascii=self.flags.ascii))
+    'B' => return At(NonBoundary(ascii=self.flags.ascii))
     'd' | 'D' | 's' | 'S' | 'w' | 'W' =>
-      return Set(category_set(c, self.flags.ascii), ignorecase=false)
+      return Set(category_set(c, self.flags.ascii), negate=false, case_=Sensitive)
     _ => ()
   }
   if self.literal_escape(c, false) is Some(v) {
-    return Literal(v, ignorecase=ic)
+    return Literal(v, case_=ic)
   }
   if is_digit(c) {
     // octal escape *or* decimal group reference
@@ -400,7 +412,7 @@ fn Parser::escape(self : Parser) -> Node raise PatternError {
         if v > 0o377 {
           raise self.error("octal escape value outside of range 0-0o377")
         }
-        return Literal(v, ignorecase=ic)
+        return Literal(v, case_=ic)
       }
     }
     let mut group = 0
@@ -412,14 +424,14 @@ fn Parser::escape(self : Parser) -> Node raise PatternError {
         raise self.error("cannot refer to an open group")
       }
       self.check_lookbehind_group(group)
-      return Backref(group, ignorecase=ic)
+      return Backref(group, case_=ic)
     }
     raise self.error("invalid group reference " + group.to_string())
   }
   if is_ascii_letter(c) {
     raise self.error("bad escape \\" + cps_to_string([c]))
   }
-  Literal(c, ignorecase=ic)
+  Literal(c, case_=ic)
 }
 
 ///|
@@ -508,15 +520,7 @@ fn Parser::parse_class(self : Parser) -> Node raise PatternError {
       }
     }
   }
-  let set = normalize_set(ranges)
-  Set(
-    if negate {
-      complement_set(set)
-    } else {
-      set
-    },
-    ignorecase=self.flags.ignorecase,
-  )
+  Set(normalize_set(ranges), negate~, case_=self.case_mode())
 }
 
 ///|
@@ -608,7 +612,7 @@ fn Parser::parse_group(
           raise self.error("cannot refer to an open group")
         }
         self.check_lookbehind_group(gid)
-        return Some(Backref(gid, ignorecase=self.flags.ignorecase))
+        return Some(Backref(gid, case_=self.case_mode()))
       } else {
         match self.get() {
           None => raise self.error("unexpected end of pattern")
@@ -650,13 +654,15 @@ fn Parser::parse_group(
       if !self.matches(')') {
         raise self.error("missing ), unterminated subpattern")
       }
+      let mut width = 0
       if !ahead {
         let (lo, hi) = self.width(p)
         if lo != hi {
           raise self.error("look-behind requires fixed-width pattern")
         }
+        width = lo
       }
-      return Some(Look(p, ahead~, negate=kind == '!'))
+      return Some(Look(p, ahead~, negate=kind == '!', width~))
     } else if char == '(' {
       // conditional backreference group
       let cond = self.get_until(')', "group name")

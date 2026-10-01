@@ -177,11 +177,11 @@ test "extend" {
 
 * Draft 3 / 4 `integer`: needs `loads` (or `Json::number(x, repr="1.0")`)
   to tell `1.0` from `1`; whole numbers without a spelling are ints.
-* Regular expressions: lookaround assertions, atomic groups, possessive
-  quantifiers and conditional groups are *accepted* (so `format: regex`
-  agrees with Python) but cannot be matched (`UnsupportedPattern` is
-  raised); `\N{...}` is rejected; case-insensitive character classes fold
-  ASCII only; `\b` uses the engine's word characters.
+* Regular expressions: `\N{...}` escapes are rejected (no Unicode name
+  table). Everything else -- including lookaround, atomic groups, possessive
+  quantifiers, conditionals, backreferences, Unicode `\b` and CPython's
+  case-insensitive equivalences -- follows CPython 3.13's `re`
+  (differentially tested against it).
 * No network access: the default registry holds the meta-schemas only
   (upstream fetches unknown remote `$ref`s with a deprecation warning).
 * Unresolvable references raise `bobzhang/referencing` errors directly

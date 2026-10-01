@@ -1,7 +1,27 @@
 ///|
+/// How the end-of-string assertions are translated (see `Pattern`).
+priv enum EndMode {
+  /// The subject does not end with a newline: `$` is the end of the text.
+  Plain
+  /// Every newline of the subject but a final one is replaced by the
+  /// sentinel U+10FFFF (and every pattern element matching a newline also
+  /// matches the sentinel), so that the engine's multi-line `$` -- "at the
+  /// end or before a newline" -- is exactly Python's `$`: "at the end or
+  /// before a final newline".
+  Newlines
+  /// Fallback when the subject itself contains the sentinel, or the pattern
+  /// mixes `$` with multi-line anchors: `$` consumes an optional final
+  /// newline.
+  Consuming
+} derive(Eq)
+
+///|
+const SENTINEL : Int = 0x10FFFF
+
+///|
 priv struct Emitter {
   sb : StringBuilder
-  global_ignorecase : Bool
+  mode : EndMode
 }
 
 ///|
@@ -17,9 +37,8 @@ fn is_ascii_alnum(c : Int) -> Bool {
 }
 
 ///|
-/// ASCII simple case folding of a set (the engine's character classes are
-/// case-sensitive).
-fn fold_set(set : Array[(Int, Int)]) -> Array[(Int, Int)] {
+/// ASCII-only case folding of a set (`(?ai)`).
+fn fold_set_ascii(set : Array[(Int, Int)]) -> Array[(Int, Int)] {
   let extra = []
   for r in set {
     let (lo, hi) = r
@@ -39,11 +58,49 @@ fn fold_set(set : Array[(Int, Int)]) -> Array[(Int, Int)] {
 }
 
 ///|
+/// The code points a (possibly negated, possibly case-insensitive) class
+/// matches: like CPython, the positive set is case-folded first and only
+/// then complemented.
+fn class_members(
+  set : Array[(Int, Int)],
+  negate : Bool,
+  case_ : CaseMode,
+) -> Array[(Int, Int)] {
+  let folded = match case_ {
+    Sensitive => set
+    UnicodeFold => normalize_set(set + @unicodedata.case_fold_extras(set))
+    AsciiFold => fold_set_ascii(set)
+  }
+  if negate {
+    complement_set(folded)
+  } else {
+    folded
+  }
+}
+
+///|
 fn Emitter::emit_set(self : Emitter, set : Array[(Int, Int)]) -> Unit {
-  // drop surrogate code points, which the engine cannot represent
+  let set = if self.mode == Newlines &&
+    set.iter().any(r => r.0 <= 10 && 10 <= r.1) {
+    set + [(SENTINEL, SENTINEL)]
+  } else {
+    set
+  }
+  // drop surrogate code points, which the engine cannot represent (and the
+  // sentinel, when in use)
   let ranges = []
   for r in set {
     let (lo, hi) = r
+    let hi = if self.mode == Newlines &&
+      hi == SENTINEL &&
+      !set.contains((SENTINEL, SENTINEL)) {
+      hi - 1
+    } else {
+      hi
+    }
+    if hi < lo {
+      continue
+    }
     if hi < 0xD800 || lo > 0xDFFF {
       ranges.push(r)
     } else {
@@ -73,27 +130,14 @@ fn Emitter::emit_set(self : Emitter, set : Array[(Int, Int)]) -> Unit {
 
 ///|
 fn Emitter::emit_literal(self : Emitter, c : Int) -> Unit {
-  if is_ascii_alnum(c) || (c > 0x7F && (c < 0xD800 || c > 0xDFFF)) {
+  if self.mode == Newlines && c == SENTINEL {
+    self.sb.write_string("[^\\u{0}-\\u{10ffff}]")
+  } else if is_ascii_alnum(c) || (c > 0x7F && (c < 0xD800 || c > 0xDFFF)) {
     @unicodedata.write_code_point(self.sb, c)
   } else if c >= 0xD800 && c <= 0xDFFF {
     self.sb.write_string("[^\\u{0}-\\u{10ffff}]")
   } else {
     write_hex_escape(self.sb, c)
-  }
-}
-
-///|
-fn Emitter::with_case(
-  self : Emitter,
-  ignorecase : Bool,
-  f : () -> Unit raise UnsupportedPattern,
-) -> Unit raise UnsupportedPattern {
-  if ignorecase == self.global_ignorecase {
-    f()
-  } else {
-    self.sb.write_string(if ignorecase { "(?i:" } else { "(?-i:" })
-    f()
-    self.sb.write_char(')')
   }
 }
 
@@ -109,26 +153,33 @@ fn needs_wrapping(n : Node) -> Bool {
 ///|
 fn Emitter::emit(self : Emitter, n : Node) -> Unit raise UnsupportedPattern {
   match n {
-    Literal(c, ignorecase~) =>
-      if ignorecase && is_ascii_letter(c) {
-        self.emit_set(fold_set([(c, c)]))
-      } else if ignorecase && c > 0x7F {
-        self.with_case(true, () => self.emit_literal(c))
-      } else {
+    Literal(c, case_~) => {
+      let members = class_members([(c, c)], false, case_)
+      if self.mode == Newlines && c == '\n' {
+        self.emit_set(members)
+      } else if members.length() == 1 && members[0] == (c, c) {
         self.emit_literal(c)
+      } else {
+        self.emit_set(members)
       }
-    Set(set, ignorecase~) =>
-      self.emit_set(if ignorecase { fold_set(set) } else { set })
+    }
+    Set(set, negate~, case_~) =>
+      self.emit_set(class_members(set, negate, case_))
     At(kind) =>
       self.sb.write_string(
         match kind {
           BeginString => "^"
           BeginLine => "(?m:^)"
-          EndDollar => "(?:\\u{a}?$)"
+          EndDollar =>
+            match self.mode {
+              Plain => "$"
+              Newlines => "(?m:$)"
+              Consuming => "(?:\\u{a}?$)"
+            }
           EndLine => "(?m:$)"
           EndString => "$"
-          Boundary => "\\b"
-          NonBoundary => "\\B"
+          // word boundaries are matched by the backtracking matcher
+          Boundary(_) | NonBoundary(_) => raise UnsupportedPattern("\\b")
         },
       )
     Seq(items) =>
@@ -190,8 +241,8 @@ fn Emitter::emit(self : Emitter, n : Node) -> Unit raise UnsupportedPattern {
 
 ///|
 /// Translate a parsed Python pattern into `moonbitlang/regexp` syntax.
-fn translate(n : Node, flags : Flags) -> String raise UnsupportedPattern {
-  let e = { sb: StringBuilder(), global_ignorecase: flags.ignorecase, }
+fn translate(n : Node, mode : EndMode) -> String raise UnsupportedPattern {
+  let e = { sb: StringBuilder(), mode }
   e.emit(n)
   e.sb.to_string()
 }

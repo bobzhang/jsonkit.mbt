@@ -24,19 +24,28 @@ priv struct Flags {
 
 ///|
 priv enum Node {
-  Literal(Int, ignorecase~ : Bool)
+  Literal(Int, case_~ : CaseMode)
   /// sorted, merged inclusive code point ranges
-  Set(Array[(Int, Int)], ignorecase~ : Bool)
+  Set(Array[(Int, Int)], negate~ : Bool, case_~ : CaseMode)
   /// `^`, `$`, `\A`, `\Z`, `\b`, `\B`
   At(AtKind)
   Seq(Array[Node])
   Alt(Array[Node])
   Group(Int?, Node) // capture index (1-based) or non-capturing
   Repeat(Node, min~ : Int, max~ : Int?, lazy_~ : Bool, possessive~ : Bool)
-  Backref(Int, ignorecase~ : Bool)
-  Look(Node, ahead~ : Bool, negate~ : Bool)
+  Backref(Int, case_~ : CaseMode)
+  Look(Node, ahead~ : Bool, negate~ : Bool, width~ : Int)
   Atomic(Node)
   Conditional(Int, Node, Node?)
+}
+
+///|
+/// How a literal / character class matches case: as written, with `re`'s
+/// Unicode case-insensitive equivalences, or (`(?ai)`) ASCII-only.
+priv enum CaseMode {
+  Sensitive
+  UnicodeFold
+  AsciiFold
 }
 
 ///|
@@ -46,8 +55,8 @@ priv enum AtKind {
   EndDollar // $ (non-multiline): end or before a final newline
   EndLine // $ (multiline)
   EndString // \Z
-  Boundary
-  NonBoundary
+  Boundary(ascii~ : Bool)
+  NonBoundary(ascii~ : Bool)
 }
 
 ///|

@@ -145,6 +145,50 @@ def main():
     chunks.append(fmt_ints("compose_triples", flat_comp,
                            "Primary composites as sorted `(first, second, composite)` triples."))
 
+    # Case-insensitive equivalence classes of `re` (str patterns, Unicode).
+    import re
+    import re._casefix as casefix
+    parent = {}
+
+    def find(x):
+        while parent.get(x, x) != x:
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[max(ra, rb)] = min(ra, rb)
+
+    for cp in range(MAX):
+        if is_surrogate(cp):
+            continue
+        c = chr(cp)
+        cands = set()
+        for v in (c.lower(), c.upper(), c.title(), c.swapcase()):
+            if len(v) == 1:
+                cands.add(ord(v))
+        low = c.lower()
+        for v in (casefix._EXTRA_CASES.get(ord(low), ()) if len(low) == 1 else ()):
+            cands.add(v)
+        pat = re.compile("(?i)" + re.escape(c))
+        for x in cands:
+            if x != cp and pat.fullmatch(chr(x)):
+                union(cp, x)
+    groups = {}
+    for cp in list(parent):
+        groups.setdefault(find(cp), set()).add(cp)
+    flat_pairs = []
+    for root in sorted(groups):
+        members = sorted(groups[root] | {root})
+        for m in members:
+            flat_pairs += [m, root]
+    flat_pairs_sorted = []
+    for m, root in sorted(zip(flat_pairs[0::2], flat_pairs[1::2])):
+        flat_pairs_sorted += [m, root]
+    chunks.append(fmt_ints("case_classes", flat_pairs_sorted,
+                           "`(code point, class representative)` pairs, sorted by code point, of `re`'s case-insensitive equivalence classes (code points absent are alone)."))
+
     def intranges(name, r, doc):
         out = []
         for v in r:
