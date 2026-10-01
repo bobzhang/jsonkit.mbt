@@ -15,7 +15,7 @@ pub suberror LibError {
 }
 
 ///|
-pub impl Show for LibError with output(self, logger) {
+pub impl Show for LibError with fn output(self, logger) {
   match self {
     AddressValueError(m)
     | IDNAError(m)

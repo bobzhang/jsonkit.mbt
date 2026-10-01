@@ -67,7 +67,7 @@ pub fn compile(pattern : String) -> Pattern raise PatternError {
   let (node, _, groups) = parse(pattern)
   let core = if core_eligible(node) {
     // an engine rejection would be a bug; fall back to the backtracker
-    @string.Regex(translate(node)) catch {
+    try @string.Regex(translate(node)) catch {
       _ => None
     } noraise {
       re => Some(re)
@@ -80,7 +80,11 @@ pub fn compile(pattern : String) -> Pattern raise PatternError {
     node,
     has_dollar: has_end_assertion(node),
     core,
-    backtrack: if core is None { Some(lower_node(node)) } else { None },
+    backtrack: if core is None {
+      Some(lower_node(node))
+    } else {
+      None
+    },
     groups,
   }
   if cache.length() >= MAX_CACHE {
@@ -114,10 +118,12 @@ fn Pattern::core_search(
   re : @string.Regex,
   s : StringView,
 ) -> (Int, Array[String?])? {
-  let to_result = (m : @string.MatchResult) => (
-    m.before().length(),
-    Array::makei(self.groups + 1, i => m.group(i).map(v => v.to_owned())),
-  )
+  let to_result = (m : @string.MatchResult) => {
+    (
+      m.before().length(),
+      Array::makei(self.groups + 1, i => m.group(i).map(v => v.to_owned())),
+    )
+  }
   let first = re.execute(s).map(to_result)
   let n = s.length()
   if !self.has_dollar || n == 0 || s.code_unit_at(n - 1) != '\n' {
@@ -133,10 +139,7 @@ fn Pattern::core_search(
 
 ///|
 /// `re.search(pattern, s) is not None`.
-pub fn Pattern::search(
-  self : Pattern,
-  s : StringView,
-) -> Bool {
+pub fn Pattern::search(self : Pattern, s : StringView) -> Bool {
   self.search_groups(s) is Some(_)
 }
 
@@ -169,13 +172,15 @@ pub fn Pattern::search_groups(
     (Some(re), _) => self.core_search(re, s).map(r => r.1)
     (None, Some(root)) => {
       let cps = @unicodedata.code_points(s)
-      backtrack_search(root, self.groups, cps).map(spans => spans.map(span => if span.0 <
-        0 ||
-        span.1 < 0 {
-        None
-      } else {
-        Some(@unicodedata.from_code_points(cps[span.0:span.1]))
-      }))
+      backtrack_search(root, self.groups, cps).map(spans => {
+        spans.map(span => {
+          if span.0 < 0 || span.1 < 0 {
+            None
+          } else {
+            Some(@unicodedata.from_code_points(cps[span.0:span.1]))
+          }
+        })
+      })
     }
     (None, None) => None
   }

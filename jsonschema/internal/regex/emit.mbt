@@ -232,7 +232,7 @@ fn Emitter::emit(self : Emitter, n : Node) -> Unit {
 ///|
 /// Translate a `core_eligible` pattern into `@string.Regex` syntax.
 fn translate(n : Node) -> String {
-  let e = { sb: StringBuilder() }
+  let e = { sb: StringBuilder(), }
   e.emit(n)
   e.sb.to_string()
 }

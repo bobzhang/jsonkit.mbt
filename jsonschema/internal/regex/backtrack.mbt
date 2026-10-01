@@ -43,7 +43,8 @@ fn lower_node(n : Node) -> BNode {
         },
       )
     Backref(g, case_~) => BBackref(g, case_)
-    Look(p, ahead~, negate~, width~) => BLook(lower_node(p), ahead, negate, width)
+    Look(p, ahead~, negate~, width~) =>
+      BLook(lower_node(p), ahead, negate, width)
     Atomic(p) => BAtomic(lower_node(p))
     Conditional(g, yes, no) =>
       BCond(g, lower_node(yes), no.map(x => lower_node(x)))
@@ -171,7 +172,8 @@ fn Matcher::run(
       }
       count >= min && k(cur)
     }
-    BRepeat(p, min, max, mode) => self.run_repeat(p, min, max, mode == 1, 0, pos, k)
+    BRepeat(p, min, max, mode) =>
+      self.run_repeat(p, min, max, mode == 1, 0, pos, k)
     BBackref(g, case_) => {
       let s = self.starts[g]
       let e = self.ends[g]
@@ -252,7 +254,8 @@ fn Matcher::run_repeat(
     Some(m) => count < m
     None => true
   }
-  let more = () => can_more &&
+  let more = () => {
+    can_more &&
     self.run(p, pos, next => {
       // like sre, an iteration matching the empty string ends the loop
       if next == pos && count >= min {
@@ -261,6 +264,7 @@ fn Matcher::run_repeat(
         self.run_repeat(p, min, max, lazy_, count + 1, next, k)
       }
     })
+  }
   if count < min {
     more()
   } else if lazy_ {
@@ -278,7 +282,7 @@ fn backtrack_search(
   groups : Int,
   input : Array[Int],
 ) -> Array[(Int, Int)]? {
-  for start in 0..=input.length() {
+  for start in 0..<=input.length() {
     let m = {
       input,
       starts: Array::make(groups + 1, -1),

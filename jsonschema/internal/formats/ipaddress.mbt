@@ -114,7 +114,9 @@ fn ipv6_check(ip : ArrayView[Int]) -> Unit raise LibError {
   if parts[parts.length() - 1].contains('.') {
     let last = parts.pop().unwrap()
     let v = ipv4_int(last)
-    parts.push(@unicodedata.code_points(((v >> 16) & 0xFFFFL).to_string(radix=16)))
+    parts.push(
+      @unicodedata.code_points(((v >> 16) & 0xFFFFL).to_string(radix=16)),
+    )
     parts.push(@unicodedata.code_points((v & 0xFFFFL).to_string(radix=16)))
   }
   if parts.length() > 9 {
@@ -143,9 +145,7 @@ fn ipv6_check(ip : ArrayView[Int]) -> Unit raise LibError {
       if parts[n - 1].length() == 0 {
         lo -= 1
         if lo != 0 {
-          raise AddressValueError(
-            "Trailing ':' only permitted as part of '::'",
-          )
+          raise AddressValueError("Trailing ':' only permitted as part of '::'")
         }
       }
       if 8 - (hi + lo) < 1 {

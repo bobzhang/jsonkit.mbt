@@ -236,7 +236,7 @@ pub suberror ArithmeticError {
 }
 
 ///|
-pub impl Show for ArithmeticError with output(self, logger) {
+pub impl Show for ArithmeticError with fn output(self, logger) {
   match self {
     OverflowError(m) => logger.write_string("OverflowError: \{m}")
     ValueError(m) => logger.write_string("ValueError: \{m}")
