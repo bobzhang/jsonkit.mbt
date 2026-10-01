@@ -169,14 +169,14 @@ fn uniq_key(value : Json, sb : StringBuilder) -> Bool {
       sb.write_string(s)
     }
     Number(d, ..) => {
-      if d.is_nan() {
-        return false
-      }
       sb.write_char('n')
-      if d.is_inf() {
-        sb.write_string(if d > 0.0 { "inf" } else { "-inf" })
-      } else if @pycompat.is_int(value) {
+      if @pycompat.is_int(value) {
+        // exact, also for ints too large for a double
         sb.write_string(@pycompat.int_value(value).to_string())
+      } else if d.is_nan() {
+        return false
+      } else if d.is_inf() {
+        sb.write_string(if d > 0.0 { "inf" } else { "-inf" })
       } else if @pycompat.is_whole(d) {
         sb.write_string(@pycompat.bigint_of_whole_double(d).to_string())
       } else {

@@ -174,40 +174,72 @@ fn rational_of(j : Json) -> Rational {
 /// else:
 ///     failed = instance % dB
 /// ```
-pub fn multiple_of_failed(instance : Json, db : Json) -> Bool {
+pub fn multiple_of_failed(
+  instance : Json,
+  db : Json,
+) -> Bool raise ArithmeticError {
+  // float(x) of a Python int: OverflowError when it does not fit a double
+  let to_float = (j : Json) => {
+    let v = number_value(j)
+    if is_int(j) && v.is_inf() {
+      raise OverflowError("int too large to convert to float")
+    }
+    v
+  }
   if is_float(db) {
     let dbv = number_value(db)
-    let iv = number_value(instance)
+    let iv = to_float(instance)
+    if dbv == 0.0 {
+      raise ZeroDivisionError("float division by zero")
+    }
     let quotient = iv / dbv
     if quotient.is_nan() {
-      // Python's int(nan) raises ValueError; treat as failure.
-      true
-    } else if quotient.is_inf() || iv.is_inf() {
-      if iv.is_inf() && is_float(instance) {
-        // Fraction(inf) raises OverflowError; treat as failure.
-        true
-      } else {
-        let a = rational_of(instance)
-        let b = rational_of(db)
-        // (a.num / a.den) / (b.num / b.den) = a.num * b.den / (a.den * b.num)
-        let n = a.num * b.den
-        let d = a.den * b.num
-        !n.mod(d).is_zero()
+      raise ValueError("cannot convert float NaN to integer")
+    } else if quotient.is_inf() {
+      // int(quotient) overflows: upstream falls back to exact fractions
+      if iv.is_inf() {
+        raise OverflowError("cannot convert Infinity to integer ratio")
       }
+      let a = rational_of(instance)
+      let b = rational_of(db)
+      // (a.num / a.den) / (b.num / b.den) = a.num * b.den / (a.den * b.num)
+      let n = a.num * b.den
+      let d = a.den * b.num
+      !n.mod(d).is_zero()
     } else {
       quotient.trunc() != quotient
     }
   } else if is_float(instance) {
     // float % int
-    let r = number_value(instance) % number_value(db)
+    let dbv = to_float(db)
+    if dbv == 0.0 {
+      raise ZeroDivisionError("float modulo by zero")
+    }
+    let r = number_value(instance) % dbv
     r.is_nan() || r != 0.0
   } else {
     let a = int_value(instance)
     let b = int_value(db)
     if b.is_zero() {
-      true
-    } else {
-      !a.mod(b).is_zero()
+      raise ZeroDivisionError("integer modulo by zero")
     }
+    !a.mod(b).is_zero()
+  }
+}
+
+///|
+/// Python arithmetic errors raised by the numeric helpers.
+pub suberror ArithmeticError {
+  OverflowError(String)
+  ValueError(String)
+  ZeroDivisionError(String)
+}
+
+///|
+pub impl Show for ArithmeticError with output(self, logger) {
+  match self {
+    OverflowError(m) => logger.write_string("OverflowError: \{m}")
+    ValueError(m) => logger.write_string("ValueError: \{m}")
+    ZeroDivisionError(m) => logger.write_string("ZeroDivisionError: \{m}")
   }
 }

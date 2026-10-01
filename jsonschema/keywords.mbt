@@ -320,7 +320,10 @@ fn kw_multiple_of(
     if !validator.is_type(instance, "number") {
       return true
     }
-    if @pycompat.multiple_of_failed(instance, db) {
+    let failed = @pycompat.multiple_of_failed(instance, db) catch {
+      e => raise PythonError("\{e}")
+    }
+    if failed {
       return yield_(err("\{r(instance)} is not a multiple of \{py_str(db)}"))
     }
     true
