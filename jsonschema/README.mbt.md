@@ -3,7 +3,7 @@
 A faithful MoonBit port of [python-jsonschema](https://github.com/python-jsonschema/jsonschema):
 JSON Schema validation for drafts 3, 4, 6, 7, 2019-09 and 2020-12, with the
 same keyword semantics, error messages, error paths, `best_match` heuristics
-and format checks as upstream (running with all of its `format` extras
+and format checks as upstream (running with its `format-nongpl` extras
 installed). `$ref`, `$dynamicRef` and `$recursiveRef` are resolved by
 [`bobzhang/referencing`](../referencing).
 
@@ -165,8 +165,15 @@ test "extend" {
 | `bobzhang/jsonschema/specifications` | `jsonschema-specifications` (meta-schemas, parsed lazily) |
 | `bobzhang/jsonschema/internal/pycompat` | `json.loads`, `repr`, `pprint.pformat`, `reprlib`, `textwrap`, Python numerics |
 | `bobzhang/jsonschema/internal/regex` | `re`: a port of CPython's parser, run on MoonBit core's `@string.Regex` or, for constructs it lacks, a backtracking matcher following `sre` |
-| `bobzhang/jsonschema/internal/formats` | `ipaddress`, `fqdn`, `idna`, `rfc3987`, `rfc3339-validator`, `isoduration`, `jsonpointer`, `uri-template`, `webcolors` |
+| `bobzhang/jsonschema/internal/formats` | `ipaddress`, `fqdn`, `idna`, `rfc3986-validator`, `rfc3987-syntax`, `rfc3339-validator`, `isoduration`, `jsonpointer`, `uri-template`, `webcolors` |
 | `bobzhang/jsonschema/internal/unicodedata` | the `unicodedata` / `idna` tables these need |
+
+## Licenses
+
+The module is MIT-licensed, except `internal/formats/fqdn.mbt`, a port of
+`fqdn`, which stays under the MPL-2.0. See `NOTICE` for the third-party
+works (python-jsonschema, CPython, the Unicode data, the format-checking
+libraries, the JSON-Schema-Test-Suite, ...) this module derives from.
 
 `scripts/` regenerates the embedded data (`gen_unicodedata.py`,
 `gen_format_data.py`, `gen_specifications.py`) and the suite tests
@@ -174,6 +181,10 @@ test "extend" {
 `suite/gen_*_test.mbt`).
 
 ## Deviations from upstream
+
+* Format checks follow upstream's `format-nongpl` configuration:
+  `uri` / `uri-reference` use rfc3986-validator and `iri` /
+  `iri-reference` use rfc3987-syntax (not the GPL `rfc3987` package).
 
 * Draft 3 / 4 `integer`: needs `loads` (or `Json::number(x, repr="1.0")`)
   to tell `1.0` from `1`; whole numbers without a spelling are ints.

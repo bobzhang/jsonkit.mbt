@@ -8,7 +8,7 @@ test "TestDraft202012Format: draft2020-12/optional/format/iri-reference.json" {
       "draft2020-12",
       "optional/format/iri-reference.json",
       format_checker=true,
-      upstream="vvvvvvvvvivvivvvvviii",
+      upstream="vvvvvvvvvivviiiiiiiii",
       (
         #|[
         #|    {
@@ -129,7 +129,7 @@ test "TestDraft202012Format: draft2020-12/optional/format/iri-reference.json" {
       ),
     ),
     content=(
-      #|passed 19, upstream-xfail 2, skipped 0
+      #|passed 18, upstream-xfail 3, skipped 0
     ),
   )
 }

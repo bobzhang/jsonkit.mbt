@@ -38,7 +38,7 @@ pub fn py_lower(ArrayView[Int]) -> Array[Int]
 
 pub fn relative_json_pointer(String) -> Bool raise LibError
 
-pub fn rfc3987_parse(String, rule~ : String) -> Unit raise LibError
+pub fn rfc3987_syntax_is_valid(String, String) -> Bool raise LibError
 
 pub fn strptime_hms(String) -> Unit raise LibError
 
@@ -47,6 +47,8 @@ pub fn uri_template_validate(String) -> Bool
 pub fn uuid_round_trips(String) -> Bool raise LibError
 
 pub fn validate_rfc3339(String) -> Bool raise
+
+pub fn validate_rfc3986(String, rule~ : String) -> Bool raise LibError
 
 // Errors
 pub suberror LibError {

@@ -1,6 +1,7 @@
-// The format checks of `jsonschema._format`, with all of upstream's optional
-// format dependencies (fqdn, idna, rfc3987, rfc3339-validator, webcolors,
-// jsonpointer, uri-template, isoduration) ported in internal/formats.
+// The format checks of `jsonschema._format` in upstream's `format-nongpl`
+// configuration: all of its optional format dependencies (fqdn, idna,
+// rfc3986-validator, rfc3987-syntax, rfc3339-validator, webcolors,
+// jsonpointer, uri-template, isoduration) are ported in internal/formats.
 
 ///|
 /// The format checker for draft 3.
@@ -114,29 +115,25 @@ fn is_idn_host_name(instance : Json) -> Bool raise {
 ///|
 fn is_iri(instance : Json) -> Bool raise {
   guard instance is String(s) else { return true }
-  @formats.rfc3987_parse(s, rule="IRI")
-  true
+  @formats.rfc3987_syntax_is_valid("iri", s)
 }
 
 ///|
 fn is_iri_reference(instance : Json) -> Bool raise {
   guard instance is String(s) else { return true }
-  @formats.rfc3987_parse(s, rule="IRI_reference")
-  true
+  @formats.rfc3987_syntax_is_valid("iri_reference", s)
 }
 
 ///|
 fn is_uri(instance : Json) -> Bool raise {
   guard instance is String(s) else { return true }
-  @formats.rfc3987_parse(s, rule="URI")
-  true
+  @formats.validate_rfc3986(s, rule="URI")
 }
 
 ///|
 fn is_uri_reference(instance : Json) -> Bool raise {
   guard instance is String(s) else { return true }
-  @formats.rfc3987_parse(s, rule="URI_reference")
-  true
+  @formats.validate_rfc3986(s, rule="URI_reference")
 }
 
 ///|
@@ -249,6 +246,15 @@ fn init {
     draft202012="idn-hostname",
     raises=is_idna_error_cause,
   )
+  checks_drafts(is_uri, name="uri")
+  checks_drafts(
+    is_uri_reference,
+    draft6="uri-reference",
+    draft7="uri-reference",
+    draft201909="uri-reference",
+    draft202012="uri-reference",
+    raises=is_value_error_cause,
+  )
   checks_drafts(
     is_iri,
     draft7="iri",
@@ -261,15 +267,6 @@ fn init {
     draft7="iri-reference",
     draft201909="iri-reference",
     draft202012="iri-reference",
-    raises=is_value_error_cause,
-  )
-  checks_drafts(is_uri, name="uri", raises=is_value_error_cause)
-  checks_drafts(
-    is_uri_reference,
-    draft6="uri-reference",
-    draft7="uri-reference",
-    draft201909="uri-reference",
-    draft202012="uri-reference",
     raises=is_value_error_cause,
   )
   checks_drafts(is_datetime, name="date-time")

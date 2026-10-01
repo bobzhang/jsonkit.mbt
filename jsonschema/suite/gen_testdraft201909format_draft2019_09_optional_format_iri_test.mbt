@@ -8,7 +8,7 @@ test "TestDraft201909Format: draft2019-09/optional/format/iri.json" {
       "draft2019-09",
       "optional/format/iri.json",
       format_checker=true,
-      upstream="vvvvvvvvviiivviiiivvvvvvvv",
+      upstream="vvvvvvvvviiivviiiiiiivvvii",
       (
         #|[
         #|    {
@@ -154,7 +154,7 @@ test "TestDraft201909Format: draft2019-09/optional/format/iri.json" {
       ),
     ),
     content=(
-      #|passed 24, upstream-xfail 2, skipped 0
+      #|passed 23, upstream-xfail 3, skipped 0
     ),
   )
 }

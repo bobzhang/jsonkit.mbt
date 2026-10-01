@@ -1,0 +1,107 @@
+bobzhang/jsonschema
+===================
+
+This module is a MoonBit port of python-jsonschema. Unless noted otherwise
+in a file's header, it is distributed under the MIT License (see LICENSE).
+
+It contains code ported from, and data generated from or embedded verbatim
+from, the following third-party works.
+
+python-jsonschema
+  Source: https://github.com/python-jsonschema/jsonschema
+  License: MIT
+  Copyright (c) 2013 Julian Berman
+  Used for: the validators, keywords, type and format checkers, errors and
+  the unit tests ported throughout this module.
+
+jsonschema-specifications
+  Source: https://github.com/python-jsonschema/jsonschema-specifications
+  License: MIT
+  Copyright (c) 2022 Julian Berman
+  Used for: the meta-schemas and vocabularies embedded in
+  specifications/schemas.mbt (the schemas themselves are published by the
+  JSON Schema project).
+
+JSON-Schema-Test-Suite
+  Source: https://github.com/json-schema-org/JSON-Schema-Test-Suite
+  License: MIT
+  Copyright (c) 2012 Julian Berman
+  Used for: the test files and remotes embedded in suite/gen_*_test.mbt.
+
+CPython (Python standard library)
+  Source: https://github.com/python/cpython
+  License: PSF-2.0 (Python Software Foundation License Version 2)
+  Copyright (c) 2001 Python Software Foundation; All Rights Reserved
+  Used for: the ports of re (internal/regex: the re._parser port, the
+  sre-style matcher, the re._casefix case equivalences), json.loads, repr,
+  pprint, reprlib, textwrap and float/int semantics (internal/pycompat),
+  ipaddress, the punycode codec, datetime.strptime / date.fromisoformat
+  checks (internal/formats), and the unicodedata / str predicates the
+  tables in internal/unicodedata were generated from.
+
+Unicode Character Database
+  Source: https://www.unicode.org/ucd/
+  License: Unicode License v3 (Unicode-3.0)
+  Copyright (c) 1991-2025 Unicode, Inc.
+  Used for: the character property, normalization and case tables in
+  internal/unicodedata/tables.mbt (generated via CPython's unicodedata and
+  the idna package).
+
+idna
+  Source: https://github.com/kjd/idna
+  License: BSD-3-Clause
+  Copyright (c) 2013-2026, Kim Davies and contributors.
+  Used for: the IDNA 2008 checks in internal/formats/idna.mbt and the
+  idnadata tables in internal/unicodedata/tables.mbt.
+
+fqdn
+  Source: https://github.com/ypcrts/fqdn
+  License: MPL-2.0
+  Copyright: ypcrts and contributors
+  Used for: internal/formats/fqdn.mbt, which remains under the MPL-2.0
+  (see its header; https://mozilla.org/MPL/2.0/).
+
+rfc3986-validator
+  Source: https://github.com/naimetti/rfc3986-validator
+  License: MIT
+  Copyright (c) 2019, Nicolas Aimetti
+  Used for: the uri / uri-reference regular expressions in
+  internal/formats/data.mbt.
+
+rfc3987-syntax
+  Source: https://github.com/willynilly/rfc3987-syntax
+  License: MIT
+  Copyright (c) 2025 Will Riley
+  Used for: the iri / iri-reference grammar, converted to regular
+  expressions in internal/formats/data.mbt.
+
+rfc3339-validator
+  Source: https://github.com/naimetti/rfc3339-validator
+  License: MIT
+  Copyright (c) 2019, Nicolas Aimetti
+  Used for: the date-time check in internal/formats/dates.mbt.
+
+isoduration
+  Source: https://github.com/bolsote/isoduration
+  License: ISC
+  Copyright (c) 2020 Víctor Muñoz <victorm@marshland.es>
+  Used for: the duration check in internal/formats/isoduration.mbt.
+
+jsonpointer
+  Source: https://github.com/stefankoegl/python-json-pointer
+  License: BSD-3-Clause (Modified BSD License)
+  Copyright (c) 2011 Stefan Kögl <stefan@skoegl.net>
+  Used for: the json-pointer checks in internal/formats/jsonpointer.mbt.
+
+uri-template
+  Source: https://gitlab.linss.com/open-source/python/uri-template
+  License: MIT
+  Copyright (c) 2020 Peter Linss
+  Used for: the uri-template check in internal/formats/uri_template.mbt.
+
+webcolors
+  Source: https://github.com/ubernostrum/webcolors
+  License: BSD-3-Clause
+  Copyright (c) James Bennett, and contributors.
+  Used for: the CSS3 color names in internal/formats/data.mbt and the
+  draft 3 color check.

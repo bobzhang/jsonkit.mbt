@@ -143,7 +143,8 @@ test "individual formats" {
   assert_false(check("087.10.0.1", "ipv4"))
   assert_true(check("::ffff:1.2.3.4", "ipv6"))
   assert_false(check("fe80::1%eth0", "ipv6"))
-  // Python's `$` accepts a trailing newline in rfc3987 / rfc3339 patterns
+  // Python's `$` accepts a trailing newline in the rfc3986-validator /
+  // rfc3339-validator patterns
   assert_true(check("http://example.com\n", "uri"))
   assert_true(check("1963-06-19T08:30:06.283185Z\n", "date-time"))
   assert_false(check("1963-06-19\n", "date"))

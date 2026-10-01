@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: MPL-2.0
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+//
+// A port of the `fqdn` Python package (fqdn 1.5/1.6, by ypcrts and
+// contributors, MPL-2.0). Unlike the rest of this module (MIT), this file is
+// covered by the MPL-2.0.
+
 ///|
 /// Whether a (lowercased) code point matches `[-A-Z\d]` under Python's
 /// `re.IGNORECASE` (Unicode digits, and the case-insensitive aliases of

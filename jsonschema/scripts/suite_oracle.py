@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Record how upstream python-jsonschema (with all ``format`` extras installed)
+Record how upstream python-jsonschema (with its ``format-nongpl`` extras
+installed, i.e. without the GPL ``rfc3987`` package)
 fares on each JSON-Schema-Test-Suite test, mirroring the test classes of
 upstream's ``jsonschema/tests/test_jsonschema_test_suite.py``.
 
@@ -10,7 +11,9 @@ and whether upstream skips it, so the port is held to *upstream's*
 behaviour, including the cases where upstream disagrees with the suite.
 
 Usage (needs upstream jsonschema importable, plus referencing,
-jsonschema-specifications and the format extras):
+jsonschema-specifications and the ``format-nongpl`` extras -- fqdn, idna,
+isoduration, jsonpointer, rfc3339-validator, rfc3986-validator,
+rfc3987-syntax, uri-template, webcolors -- but *not* rfc3987):
 
     JSON_SCHEMA_TEST_SUITE=upstream/JSON-Schema-Test-Suite \\
     PYTHONPATH=upstream/jsonschema python jsonschema/scripts/suite_oracle.py
