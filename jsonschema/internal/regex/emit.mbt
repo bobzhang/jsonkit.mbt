@@ -1,27 +1,13 @@
-///|
-/// How the end-of-string assertions are translated (see `Pattern`).
-priv enum EndMode {
-  /// The subject does not end with a newline: `$` is the end of the text.
-  Plain
-  /// Every newline of the subject but a final one is replaced by the
-  /// sentinel U+10FFFF (and every pattern element matching a newline also
-  /// matches the sentinel), so that the engine's multi-line `$` -- "at the
-  /// end or before a newline" -- is exactly Python's `$`: "at the end or
-  /// before a final newline".
-  Newlines
-  /// Fallback when the subject itself contains the sentinel, or the pattern
-  /// mixes `$` with multi-line anchors: `$` consumes an optional final
-  /// newline.
-  Consuming
-} derive(Eq)
+// Translation of parsed patterns to the syntax of MoonBit core's
+// `@string.Regex` (lexmatch regexes) for the patterns it can run exactly.
 
 ///|
-const SENTINEL : Int = 0x10FFFF
+/// The largest repetition count `@string.Regex` accepts.
+const MAX_CORE_REPEAT : Int = 256
 
 ///|
 priv struct Emitter {
   sb : StringBuilder
-  mode : EndMode
 }
 
 ///|
@@ -80,27 +66,11 @@ fn class_members(
 
 ///|
 fn Emitter::emit_set(self : Emitter, set : Array[(Int, Int)]) -> Unit {
-  let set = if self.mode == Newlines &&
-    set.iter().any(r => r.0 <= 10 && 10 <= r.1) {
-    set + [(SENTINEL, SENTINEL)]
-  } else {
-    set
-  }
-  // drop surrogate code points, which the engine cannot represent (and the
-  // sentinel, when in use)
+  // drop surrogate code points: the engine matches supplementary characters
+  // as surrogate pairs, so classes must not match lone surrogates
   let ranges = []
   for r in set {
     let (lo, hi) = r
-    let hi = if self.mode == Newlines &&
-      hi == SENTINEL &&
-      !set.contains((SENTINEL, SENTINEL)) {
-      hi - 1
-    } else {
-      hi
-    }
-    if hi < lo {
-      continue
-    }
     if hi < 0xD800 || lo > 0xDFFF {
       ranges.push(r)
     } else {
@@ -130,10 +100,8 @@ fn Emitter::emit_set(self : Emitter, set : Array[(Int, Int)]) -> Unit {
 
 ///|
 fn Emitter::emit_literal(self : Emitter, c : Int) -> Unit {
-  if self.mode == Newlines && c == SENTINEL {
-    self.sb.write_string("[^\\u{0}-\\u{10ffff}]")
-  } else if is_ascii_alnum(c) || (c > 0x7F && (c < 0xD800 || c > 0xDFFF)) {
-    @unicodedata.write_code_point(self.sb, c)
+  if is_ascii_alnum(c) {
+    self.sb.write_char(Int::unsafe_to_char(c))
   } else if c >= 0xD800 && c <= 0xDFFF {
     self.sb.write_string("[^\\u{0}-\\u{10ffff}]")
   } else {
@@ -144,20 +112,62 @@ fn Emitter::emit_literal(self : Emitter, c : Int) -> Unit {
 ///|
 fn needs_wrapping(n : Node) -> Bool {
   match n {
-    Literal(_) | Set(_) | Group(_) | Backref(_) => false
+    Literal(_) | Set(_) | Group(_) => false
     Seq(items) => items.length() != 1
     _ => true
   }
 }
 
 ///|
-fn Emitter::emit(self : Emitter, n : Node) -> Unit raise UnsupportedPattern {
+/// Whether `@string.Regex` runs the pattern exactly like CPython: no
+/// multi-line anchors, Unicode word boundaries, lookaround, atomic or
+/// possessive constructs, conditionals or backreferences; repetition counts
+/// within the engine's limit; `$` only where nothing can follow it (see
+/// `Pattern::search`), and never together with `\Z`.
+fn core_eligible(n : Node) -> Bool {
+  fn ok(n : Node, tail : Bool) -> Bool {
+    match n {
+      Literal(_) | Set(_) => true
+      At(BeginString | EndString) => true
+      At(EndDollar) => tail
+      At(_) => false
+      Seq(items) => {
+        // an item is in tail position when only `$`s follow it
+        let mut tail_from = items.length()
+        while tail_from > 0 && items[tail_from - 1] is At(EndDollar) {
+          tail_from -= 1
+        }
+        for i, item in items {
+          let item_tail = tail && i >= tail_from - 1
+          if !ok(item, item_tail) {
+            return false
+          }
+        }
+        true
+      }
+      Alt(items) => items.iter().all(item => ok(item, tail))
+      Group(_, p) => ok(p, tail)
+      Repeat(p, min~, max~, possessive~, ..) =>
+        !possessive &&
+        min <= MAX_CORE_REPEAT &&
+        (match max {
+          Some(m) => m <= MAX_CORE_REPEAT
+          None => true
+        }) &&
+        ok(p, tail && max is Some(0 | 1))
+      Backref(_) | Look(_, ..) | Atomic(_) | Conditional(_, _, _) => false
+    }
+  }
+
+  ok(n, true) && !(has_end_assertion(n) && has_end_string(n))
+}
+
+///|
+fn Emitter::emit(self : Emitter, n : Node) -> Unit {
   match n {
     Literal(c, case_~) => {
       let members = class_members([(c, c)], false, case_)
-      if self.mode == Newlines && c == '\n' {
-        self.emit_set(members)
-      } else if members.length() == 1 && members[0] == (c, c) {
+      if members.length() == 1 && members[0] == (c, c) {
         self.emit_literal(c)
       } else {
         self.emit_set(members)
@@ -165,23 +175,8 @@ fn Emitter::emit(self : Emitter, n : Node) -> Unit raise UnsupportedPattern {
     }
     Set(set, negate~, case_~) =>
       self.emit_set(class_members(set, negate, case_))
-    At(kind) =>
-      self.sb.write_string(
-        match kind {
-          BeginString => "^"
-          BeginLine => "(?m:^)"
-          EndDollar =>
-            match self.mode {
-              Plain => "$"
-              Newlines => "(?m:$)"
-              Consuming => "(?:\\u{a}?$)"
-            }
-          EndLine => "(?m:$)"
-          EndString => "$"
-          // word boundaries are matched by the backtracking matcher
-          Boundary(_) | NonBoundary(_) => raise UnsupportedPattern("\\b")
-        },
-      )
+    At(BeginString) => self.sb.write_char('^')
+    At(_) => self.sb.write_char('$')
     Seq(items) =>
       for it in items {
         if it is Alt(_) {
@@ -209,10 +204,7 @@ fn Emitter::emit(self : Emitter, n : Node) -> Unit raise UnsupportedPattern {
       self.emit(p)
       self.sb.write_char(')')
     }
-    Repeat(p, min~, max~, lazy_~, possessive~) => {
-      if possessive {
-        raise UnsupportedPattern("possessive quantifiers")
-      }
+    Repeat(p, min~, max~, lazy_~, ..) => {
       if needs_wrapping(p) {
         self.sb.write_string("(?:")
         self.emit(p)
@@ -232,17 +224,15 @@ fn Emitter::emit(self : Emitter, n : Node) -> Unit raise UnsupportedPattern {
         self.sb.write_char('?')
       }
     }
-    Backref(g, ..) => self.sb.write_string("(?:\\\{g})")
-    Look(_, ..) => raise UnsupportedPattern("lookaround assertions")
-    Atomic(_) => raise UnsupportedPattern("atomic groups")
-    Conditional(_, _, _) => raise UnsupportedPattern("conditional groups")
+    // excluded by `core_eligible`
+    Backref(_) | Look(_, ..) | Atomic(_) | Conditional(_, _, _) => ()
   }
 }
 
 ///|
-/// Translate a parsed Python pattern into `moonbitlang/regexp` syntax.
-fn translate(n : Node, mode : EndMode) -> String raise UnsupportedPattern {
-  let e = { sb: StringBuilder(), mode }
+/// Translate a `core_eligible` pattern into `@string.Regex` syntax.
+fn translate(n : Node) -> String {
+  let e = { sb: StringBuilder() }
   e.emit(n)
   e.sb.to_string()
 }

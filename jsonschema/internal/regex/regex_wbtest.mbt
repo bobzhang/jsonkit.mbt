@@ -20,11 +20,7 @@ test "differential: re.compile / re.search against CPython" {
           }
         }
         for i, s in regex_subjects {
-          let got = p.search(s) catch {
-            UnsupportedPattern(_) =>
-              // lookarounds etc. are accepted but not executable
-              break
-          }
+          let got = p.search(s)
           if got != results[i] {
             failures.push("\{pattern} on \{s.escape()}: got \{got}")
           }

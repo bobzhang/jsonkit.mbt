@@ -4,7 +4,6 @@ version = "0.1.0"
 
 import {
   "bobzhang/referencing@0.1.0",
-  "moonbitlang/regexp@0.3.5",
 }
 
 readme = "README.md"

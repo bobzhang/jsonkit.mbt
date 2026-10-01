@@ -164,7 +164,7 @@ test "extend" {
 | `bobzhang/jsonschema` | `jsonschema` (`validators`, `_keywords`, `_legacy_keywords`, `_types`, `_format`, `_utils`, `exceptions`) |
 | `bobzhang/jsonschema/specifications` | `jsonschema-specifications` (meta-schemas, parsed lazily) |
 | `bobzhang/jsonschema/internal/pycompat` | `json.loads`, `repr`, `pprint.pformat`, `reprlib`, `textwrap`, Python numerics |
-| `bobzhang/jsonschema/internal/regex` | a port of `re`'s parser on top of `moonbitlang/regexp` (`re.search` semantics) |
+| `bobzhang/jsonschema/internal/regex` | `re`: a port of CPython's parser, run on MoonBit core's `@string.Regex` or, for constructs it lacks, a backtracking matcher following `sre` |
 | `bobzhang/jsonschema/internal/formats` | `ipaddress`, `fqdn`, `idna`, `rfc3987`, `rfc3339-validator`, `isoduration`, `jsonpointer`, `uri-template`, `webcolors` |
 | `bobzhang/jsonschema/internal/unicodedata` | the `unicodedata` / `idna` tables these need |
 
@@ -181,7 +181,8 @@ test "extend" {
   table). Everything else -- including lookaround, atomic groups, possessive
   quantifiers, conditionals, backreferences, Unicode `\b` and CPython's
   case-insensitive equivalences -- follows CPython 3.13's `re`
-  (differentially tested against it).
+  (differentially tested against it). Lone surrogates in subjects are
+  never matched by character classes.
 * No network access: the default registry holds the meta-schemas only
   (upstream fetches unknown remote `$ref`s with a deprecation warning).
 * Unresolvable references raise `bobzhang/referencing` errors directly

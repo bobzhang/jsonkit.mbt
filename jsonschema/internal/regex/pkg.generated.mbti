@@ -17,17 +17,14 @@ pub suberror PatternError {
   PatternError(String)
 } derive(@debug.Debug)
 
-pub suberror UnsupportedPattern {
-  UnsupportedPattern(String)
-} derive(@debug.Debug)
-
 // Types and methods
 pub struct Pattern {
   pattern : String
   // private fields
 }
-pub fn Pattern::search(Self, StringView) -> Bool raise UnsupportedPattern
-pub fn Pattern::search_groups(Self, StringView) -> Array[String?]? raise UnsupportedPattern
+pub fn Pattern::engine(Self) -> String
+pub fn Pattern::search(Self, StringView) -> Bool
+pub fn Pattern::search_groups(Self, StringView) -> Array[String?]?
 
 // Type aliases
 

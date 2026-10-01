@@ -94,9 +94,7 @@ pub fn strptime_hms(instance : String) -> Unit raise LibError {
   ) catch {
     _ => panic()
   }
-  let groups = pattern.search_groups(instance) catch {
-    _ => panic()
-  }
+  let groups = pattern.search_groups(instance)
   guard groups is Some(groups) else {
     raise ValueError("time data does not match format '%H:%M:%S'")
   }

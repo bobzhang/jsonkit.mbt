@@ -1,8 +1,8 @@
 // A backtracking matcher over the parsed pattern, following CPython's `sre`
 // (leftmost-first alternation, greedy / lazy / possessive repeats, atomic
 // groups, lookaround, backreferences, conditional groups, Unicode `\b`).
-// It is used for the patterns the `moonbitlang/regexp` engine cannot run
-// faithfully.
+// It is used for the patterns MoonBit core's `@string.Regex` cannot run
+// exactly.
 
 ///|
 /// The parsed pattern with every character class resolved to the code
@@ -47,21 +47,6 @@ fn lower_node(n : Node) -> BNode {
     Atomic(p) => BAtomic(lower_node(p))
     Conditional(g, yes, no) =>
       BCond(g, lower_node(yes), no.map(x => lower_node(x)))
-  }
-}
-
-///|
-/// Whether the pattern needs the backtracking matcher.
-fn needs_backtracking(n : Node) -> Bool {
-  match n {
-    At(Boundary(_) | NonBoundary(_)) | Look(_, ..) | Atomic(_) | Conditional(_, _, _) =>
-      true
-    // the engine treats references to unset groups as empty
-    Backref(_) => true
-    Repeat(p, possessive~, ..) => possessive || needs_backtracking(p)
-    Literal(_) | Set(_) | At(_) => false
-    Seq(items) | Alt(items) => items.iter().any(needs_backtracking)
-    Group(_, p) => needs_backtracking(p)
   }
 }
 

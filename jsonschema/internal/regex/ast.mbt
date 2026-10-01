@@ -5,14 +5,6 @@ pub suberror PatternError {
 } derive(Debug)
 
 ///|
-/// Raised for valid Python patterns that the underlying engine
-/// (`moonbitlang/regexp`) cannot execute: lookaround assertions, atomic
-/// groups, possessive quantifiers and conditional groups.
-pub suberror UnsupportedPattern {
-  UnsupportedPattern(String)
-} derive(Debug)
-
-///|
 /// Python regex flags (subset relevant to `str` patterns).
 priv struct Flags {
   ignorecase : Bool
