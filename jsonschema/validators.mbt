@@ -54,6 +54,19 @@ pub struct Validator {
 }
 
 ///|
+/// `repr(validator)`: e.g. `Draft7Validator(schema={'type': 'string'},
+/// format_checker=None)` (the schema is abbreviated like `reprlib.repr`).
+pub impl Show for Validator with output(self, logger) {
+  let fc = match self.format_checker {
+    Some(fc) => fc.to_string()
+    None => "None"
+  }
+  logger.write_string(
+    "\{self.cls.name}(schema=\{@pycompat.short_repr(self.schema)}, format_checker=\{fc})",
+  )
+}
+
+///|
 /// `jsonschema_specifications.REGISTRY`: all meta-schemas and vocabularies.
 pub fn specifications_registry() -> @referencing.Registry {
   match specifications_cache.val {
@@ -283,6 +296,12 @@ pub fn ValidatorClass::new(
   let combined = match registry {
     None => specifications_registry()
     Some(r) => specifications_registry().combine([r])
+  }
+  if (schema is True || schema is False) &&
+    (self.specification.name == "draft-03" ||
+    self.specification.name == "draft-04") {
+    // `referencing.jsonschema._legacy_id` does `"$ref" in contents`.
+    raise PythonError("TypeError: argument of type 'bool' is not iterable")
   }
   let resource = self.specification.create_resource(schema)
   let resolver = combined.resolver_with_root(resource)
