@@ -19,8 +19,17 @@ fn bool_as_number(x : Json) -> Double? {
 }
 
 ///|
+/// `PyObject_RichCompareBool(x, y, Py_EQ)`: identical objects are equal
+/// (this only matters for NaN).  Used for container elements and `in`.
+fn py_eq_bool(x : Json, y : Json) -> Bool {
+  physical_equal(x, y) || py_eq(x, y)
+}
+
+///|
 /// Python's `x == y` for JSON values: `1 == 1.0`, and (nested) `True == 1`,
-/// `False == 0`; dicts compare regardless of key order.
+/// `False == 0`; dicts compare regardless of key order.  Container elements
+/// are compared with the identity shortcut (`py_eq_bool`), so a list holding
+/// the very same NaN object equals itself, while a bare NaN never does.
 fn py_eq(x : Json, y : Json) -> Bool {
   match (x, y) {
     (Null, Null) => true
@@ -34,7 +43,7 @@ fn py_eq(x : Json, y : Json) -> Bool {
         return false
       }
       for i in 0..<a.length() {
-        if !py_eq(a[i], b[i]) {
+        if !py_eq_bool(a[i], b[i]) {
           return false
         }
       }
@@ -46,7 +55,7 @@ fn py_eq(x : Json, y : Json) -> Bool {
       }
       for k, v in a {
         match b.get(k) {
-          Some(w) => if !py_eq(v, w) { return false }
+          Some(w) => if !py_eq_bool(v, w) { return false }
           None => return false
         }
       }
@@ -166,4 +175,51 @@ fn is_false(value : Json) -> Bool {
 /// `_is_true`
 fn is_true(value : Json) -> Bool {
   !is_false(value)
+}
+
+///|
+/// The code points of a string.  Python strings are code point sequences;
+/// a lone surrogate is a code point of its own and never matches half of a
+/// surrogate pair.
+fn code_points(s : String) -> Array[Char] {
+  s.to_array()
+}
+
+///|
+fn chars_match_at(hay : Array[Char], needle : Array[Char], at : Int) -> Bool {
+  for i, c in needle {
+    if hay[at + i] != c {
+      return false
+    }
+  }
+  true
+}
+
+///|
+/// Python's `needle in hay` for strings.
+fn py_str_contains(hay : String, needle : String) -> Bool {
+  let h = code_points(hay)
+  let n = code_points(needle)
+  for at in 0..<=(h.length() - n.length()) {
+    if chars_match_at(h, n, at) {
+      return true
+    }
+  }
+  false
+}
+
+///|
+/// Python's `s.startswith(prefix)`.
+fn py_str_startswith(s : String, prefix : String) -> Bool {
+  let h = code_points(s)
+  let n = code_points(prefix)
+  n.length() <= h.length() && chars_match_at(h, n, 0)
+}
+
+///|
+/// Python's `s.endswith(suffix)`.
+fn py_str_endswith(s : String, suffix : String) -> Bool {
+  let h = code_points(s)
+  let n = code_points(suffix)
+  n.length() <= h.length() && chars_match_at(h, n, h.length() - n.length())
 }

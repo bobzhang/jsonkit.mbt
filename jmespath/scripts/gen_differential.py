@@ -15,6 +15,7 @@ Usage:  python3 jmespath/scripts/gen_differential.py
 """
 import json
 import os
+import random
 import re
 import sys
 
@@ -24,6 +25,46 @@ ROOT = os.path.dirname(PKG)
 sys.path.insert(0, os.path.join(ROOT, "upstream", "jmespath.py"))
 
 import jmespath  # noqa: E402
+
+def _random_sort_cases():
+    """Sorting inputs that exercise CPython's timsort, including NaN
+    (no total order), duplicates of equal int/float values (stability is
+    visible through the 1 vs 1.0 spelling) and long runs (galloping)."""
+    rng = random.Random(20261001)
+    cases = []
+    atoms = ["0", "1", "2", "1.0", "2.0", "0.5", "NaN", "3", "-1"]
+    for size in [3, 5, 8, 16, 33, 64, 65, 100, 130, 200, 257, 400]:
+        for _ in range(3):
+            kind = rng.choice(["random", "runs", "nan_heavy"])
+            items = []
+            if kind == "runs":
+                while len(items) < size:
+                    run = sorted(rng.randint(0, 50) for _ in range(rng.randint(1, 40)))
+                    if rng.random() < 0.5:
+                        run.reverse()
+                    items += [str(x) if rng.random() < 0.7 else "%d.0" % x
+                              for x in run]
+                    if rng.random() < 0.3:
+                        items.append("NaN")
+                items = items[:size]
+            elif kind == "nan_heavy":
+                items = [rng.choice(["NaN", "NaN", "1", "2", "1.0"])
+                         for _ in range(size)]
+            else:
+                items = [rng.choice(atoms) for _ in range(size)]
+            data = "[" + ", ".join(items) + "]"
+            cases.append(("sort(@)", data))
+            objs = "[" + ", ".join('{"k": %s, "i": %d}' % (x, i)
+                                     for i, x in enumerate(items)) + "]"
+            cases.append(("sort_by(@, &k)[*].i", objs))
+    for size in [10, 70, 300]:
+        words = [rng.choice(["a", "b", "ab", "\\u00e9", "\\ud83d\\ude00",
+                             "\\uffff", ""]) for _ in range(size)]
+        cases.append(("sort(@)", "[" + ", ".join('"%s"' % w for w in words) + "]"))
+    return cases
+
+
+RANDOM_SORT_CASES = _random_sort_cases()
 
 PEOPLE = '''[{"name": "a", "age": 30}, {"name": "b", "age": 20},
              {"name": "c", "age": 30}, {"name": "d", "age": 10}]'''
@@ -318,8 +359,52 @@ CASES = [
     ("@", "1."),
     ("@", ".5"),
     ("@", "tru"),
-    ("@", '"\u00e9\u00e9" x'),
-]
+    ("@", '"éé" x'),
+    # --- review fixes: slices with steps near the Int limits
+    ("[1::2147483647]", "[0, 1, 2]"),
+    ("[0::2147483647]", "[0, 1, 2]"),
+    ("[::-2147483647]", "[0, 1, 2]"),
+    ("[::-2147483648]", "[0, 1, 2]"),
+    ("[1::-2147483648]", "[0, 1, 2]"),
+    ("[-2147483648:2147483647]", "[0, 1, 2]"),
+    ("[2147483647:-2147483648:-1]", "[0, 1, 2]"),
+    ("[::99999999999]", "[0, 1, 2]"),
+    ("[::-99999999999]", "[0, 1, 2]"),
+    # --- review fixes: CPython sum() int -> float transition
+    ("sum(@)", "[1, 1e16, -1e16]"),
+    ("sum(@)", "[1e16, 1, -1e16]"),
+    ("sum(@)", "[0.5, 1e16, 1, 1, -1e16]"),
+    ("sum(@)", "[3, 0.1, 1e16, -1e16, 0.2]"),
+    ("avg(@)", "[1, 1e16, -1e16]"),
+    # --- review fixes: identity shortcut in container ==, `in`
+    ("@ == @", "[NaN]"),
+    ("@[0] == @[0]", "[NaN]"),
+    ("@ == `[NaN]`", "[NaN]"),
+    ("`[NaN]` == `[NaN]`", "{}"),
+    ("{a: @[0]} == {a: @[0]}", "[NaN]"),
+    ("[@[0]] == [@[1]]", "[NaN, NaN]"),
+    ("contains(@, `NaN`)", "[NaN]"),
+    ("contains(@, @[1])", "[1, NaN]"),
+    ("contains(@, to_number('nan'))", "[NaN]"),
+    ("[to_number('nan')] == [to_number('nan')]", "{}"),
+    ("@ == @", "[1e400]"),
+    # --- review fixes: string searches by code point
+    ('contains(@, `"\\ud83d"`)', '"\\ud83d\\ude00"'),
+    ('contains(@, `"\\ude00"`)', '"\\ud83d\\ude00"'),
+    ('starts_with(@, `"\\ud83d"`)', '"\\ud83d\\ude00"'),
+    ('ends_with(@, `"\\ude00"`)', '"\\ud83d\\ude00"'),
+    ('contains(@, `"\\ud83d"`)', '"a\\ud83db"'),
+    ("starts_with(@, '')", '""'),
+    ("contains(@, '')", '""'),
+    ("contains(@, 'ab')", '"a"'),
+    # --- review fixes: int()/float() whitespace
+    ("to_number(@)", '"\\u001c1"'),
+    ("to_number(@)", '"1\\u001f"'),
+    ("to_number(@)", '"\\u00a01\\u2000"'),
+    ("to_number(@)", '"\\u000b1.5\\u000c"'),
+    ("to_number(@)", '"\\u00851e2\\u3000"'),
+    ("to_number(@)", '"\\u001d2.5"'),
+] + RANDOM_SORT_CASES
 
 
 def outcome(expression, given_text):

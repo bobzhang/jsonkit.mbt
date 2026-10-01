@@ -125,6 +125,12 @@ fn JsonScanner::scanstring(
 }
 
 ///|
+/// Python's json module maps every `NaN` to one shared float object
+/// (`json.decoder.NaN`); identity matters for container equality and `in`,
+/// so `loads` returns this single value for every `NaN`.
+let json_nan_constant : Json = make_float(@double.not_a_number)
+
+///|
 /// `_match_number_unicode`.  Returns `None` when there is no number here
 /// (`StopIteration` upstream).
 fn JsonScanner::match_number(self : JsonScanner, start : Int) -> (Json, Int)? {
@@ -204,8 +210,7 @@ fn JsonScanner::scan_once(
     'n' if self.starts_with_at(idx, "null") => (Json::null(), idx + 4)
     't' if self.starts_with_at(idx, "true") => (Json::boolean(true), idx + 4)
     'f' if self.starts_with_at(idx, "false") => (Json::boolean(false), idx + 5)
-    'N' if self.starts_with_at(idx, "NaN") =>
-      (make_float(@double.not_a_number), idx + 3)
+    'N' if self.starts_with_at(idx, "NaN") => (json_nan_constant, idx + 3)
     'I' if self.starts_with_at(idx, "Infinity") =>
       (make_float(@double.infinity), idx + 8)
     '-' if self.starts_with_at(idx, "-Infinity") =>

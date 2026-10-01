@@ -319,16 +319,19 @@ fn py_slice(
   }
   let start = adjust(start, if step < 0 { length - 1 } else { 0 })
   let stop = adjust(stop, if step < 0 { -1 } else { length })
+  // Iterate in 64-bit arithmetic: `i += step` may overflow `Int`.
   let result = []
-  let mut i = start
-  if step > 0 {
+  let step = step.to_int64()
+  let stop = stop.to_int64()
+  let mut i = start.to_int64()
+  if step > 0L {
     while i < stop {
-      result.push(items[i])
+      result.push(items[i.to_int()])
       i += step
     }
   } else {
     while i > stop {
-      result.push(items[i])
+      result.push(items[i.to_int()])
       i += step
     }
   }

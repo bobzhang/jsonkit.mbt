@@ -184,15 +184,28 @@ fn py_isspace(c : Char) -> Bool {
 }
 
 ///|
-/// Python's `str.strip()`.
-fn py_strip(s : String) -> String {
+/// The whitespace `int()` and `float()` strip.  CPython first maps
+/// non-ASCII whitespace to ' ' (`_PyUnicode_TransformDecimalAndSpaceToASCII`)
+/// and then strips ASCII whitespace only (`Py_ISSPACE`), so e.g. U+001C,
+/// which `str.isspace()` accepts, is rejected.
+fn py_numeric_isspace(c : Char) -> Bool {
+  match c.to_int() {
+    0x09..=0x0d | 0x20 => true
+    code if code >= 127 => py_isspace(c)
+    _ => false
+  }
+}
+
+///|
+/// Strips whitespace like `int()` / `float()` (see `py_numeric_isspace`).
+fn py_numeric_strip(s : String) -> String {
   let chars = s.to_array()
   let mut start = 0
-  while start < chars.length() && py_isspace(chars[start]) {
+  while start < chars.length() && py_numeric_isspace(chars[start]) {
     start += 1
   }
   let mut end = chars.length()
-  while end > start && py_isspace(chars[end - 1]) {
+  while end > start && py_numeric_isspace(chars[end - 1]) {
     end -= 1
   }
   String::from_array(chars[start:end])
@@ -234,7 +247,7 @@ fn scan_py_digits(chars : Array[Char], i : Int) -> Int? {
 ///|
 /// Python's `int(s)` for strings (base 10).  Returns `None` on `ValueError`.
 fn py_int_parse(s : String) -> Json? {
-  let chars = py_strip(s).to_array()
+  let chars = py_numeric_strip(s).to_array()
   let mut i = 0
   let mut negative = false
   if i < chars.length() && chars[i] is ('+' | '-') {
@@ -269,7 +282,7 @@ fn py_int_parse(s : String) -> Json? {
 ///|
 /// Python's `float(s)` for strings.  Returns `None` on `ValueError`.
 fn py_float_parse(s : String) -> Json? {
-  let stripped = py_strip(s)
+  let stripped = py_numeric_strip(s)
   let chars = stripped.to_array()
   let mut i = 0
   let mut negative = false

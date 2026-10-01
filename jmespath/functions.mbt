@@ -350,11 +350,15 @@ fn py_sum(items : Array[Json]) -> Json {
   if idx == items.length() {
     return make_int(i_result)
   }
-  let mut f_result = i_result
+  // Leaving the int loop, CPython computes `result + item` generically, so
+  // the first float is added without compensation.
+  guard items[idx] is Number(first, ..) else { make_int(i_result) }
+  let mut f_result = i_result + first
   let mut c = 0.0
-  for item in items[idx:] {
+  for item in items[idx + 1:] {
     guard item is Number(x, repr~) else { continue }
     if number_is_float(x, repr) {
+      // Neumaier compensated summation.
       let t = f_result + x
       if f_result.abs() >= x.abs() {
         c += f_result - t + x
@@ -363,6 +367,7 @@ fn py_sum(items : Array[Json]) -> Json {
       }
       f_result = t
     } else {
+      // Ints are added without compensation.
       f_result += x
     }
   }
@@ -373,58 +378,19 @@ fn py_sum(items : Array[Json]) -> Json {
 }
 
 ///|
-/// Python's `sorted()` (a stable sort that only uses `<`).
-fn py_sorted(
-  items : Array[Json],
-  lt : (Json, Json) -> Bool raise JMESPathError,
-) -> Array[Json] raise JMESPathError {
-  let n = items.length()
-  if n <= 1 {
-    return items.copy()
-  }
-  let mid = n / 2
-  let left = py_sorted(items[:mid].to_owned(), lt)
-  let right = py_sorted(items[mid:].to_owned(), lt)
-  let result = []
-  let mut i = 0
-  let mut j = 0
-  while i < left.length() && j < right.length() {
-    // Take from the right only when strictly smaller: keeps stability.
-    if lt(right[j], left[i]) {
-      result.push(right[j])
-      j += 1
-    } else {
-      result.push(left[i])
-      i += 1
-    }
-  }
-  for x in left[i:] {
-    result.push(x)
-  }
-  for x in right[j:] {
-    result.push(x)
-  }
-  result
-}
-
-///|
-/// `sorted(array, key=keyfunc)`: keys are computed first, in order.
+/// `sorted(array, key=keyfunc)`: keys are computed first, in order, then
+/// sorted with CPython's algorithm.
 fn py_sorted_by_key(
   items : Array[Json],
   keyfunc : (Json) -> Json raise JMESPathError,
 ) -> Array[Json] raise JMESPathError {
-  let keyed = []
-  for i, item in items {
-    keyed.push(Json::array([keyfunc(item), Json::number(i.to_double())]))
+  let keys = []
+  for item in items {
+    keys.push(keyfunc(item))
   }
-  let sorted = py_sorted(keyed, (a, b) => {
-    guard a is Array(a) && b is Array(b) else { false }
-    py_order("<", a[0], b[0])
-  })
-  sorted.map(pair => {
-    guard pair is Array(pair) && pair[1] is Number(i, ..) else { Json::null() }
-    items[i.to_int()]
-  })
+  let values = items.copy()
+  py_list_sort(keys, values)
+  values
 }
 
 ///|
@@ -555,12 +521,13 @@ fn func_contains(args : Array[Value]) -> Json raise JMESPathError {
   match args[0] {
     Data(Array(items)) =>
       match search {
-        Data(v) => Json::boolean(items.iter().any(item => py_eq(item, v)))
+        // `x in list` uses PyObject_RichCompareBool (identity first).
+        Data(v) => Json::boolean(items.iter().any(item => py_eq_bool(item, v)))
         Expref(_) => Json::boolean(false)
       }
     Data(String(subject)) =>
       match search {
-        Data(String(s)) => Json::boolean(subject.contains(s))
+        Data(String(s)) => Json::boolean(py_str_contains(subject, s))
         other =>
           raise TypeError(
             "'in <string>' requires string as left operand, not \{other.py_type_name()}",
@@ -584,12 +551,12 @@ fn func_length(args : Array[Value]) -> Json {
 
 ///|
 fn func_ends_with(args : Array[Value]) -> Json {
-  Json::boolean(arg_string(args[0]).has_suffix(arg_string(args[1])))
+  Json::boolean(py_str_endswith(arg_string(args[0]), arg_string(args[1])))
 }
 
 ///|
 fn func_starts_with(args : Array[Value]) -> Json {
-  Json::boolean(arg_string(args[0]).has_prefix(arg_string(args[1])))
+  Json::boolean(py_str_startswith(arg_string(args[0]), arg_string(args[1])))
 }
 
 ///|
@@ -714,7 +681,10 @@ fn func_merge(args : Array[Value]) -> Json raise JMESPathError {
 
 ///|
 fn func_sort(args : Array[Value]) -> Json raise JMESPathError {
-  Json::array(py_sorted(arg_array(args[0]), (a, b) => py_order("<", a, b)))
+  let items = arg_array(args[0])
+  let keys = items.copy()
+  py_list_sort(keys, items.copy())
+  Json::array(keys)
 }
 
 ///|
