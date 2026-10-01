@@ -40,108 +40,120 @@ fn draft_specification(
 ///|
 /// JSON Schema draft 2020-12.
 pub fn draft202012() -> Specification {
-  cached_specification("draft202012", () => draft_specification(
-  name="draft2020-12",
-  id_of=dollar_id,
-  anchors_in=anchors_2020,
-  in_value=[
-    "additionalProperties", "contains", "contentSchema", "else", "if", "items", "not",
-    "propertyNames", "then", "unevaluatedItems", "unevaluatedProperties",
-  ],
-  in_subarray=["allOf", "anyOf", "oneOf", "prefixItems"],
-  in_subvalues=[
-    "$defs", "definitions", "dependentSchemas", "patternProperties", "properties",
-  ],
-  quirks=NoQuirks,
-  pointer_quirks=NoPointerQuirks,
-  ))
+  cached_specification("draft202012", () => {
+    draft_specification(
+      name="draft2020-12",
+      id_of=dollar_id,
+      anchors_in=anchors_2020,
+      in_value=[
+        "additionalProperties", "contains", "contentSchema", "else", "if", "items",
+        "not", "propertyNames", "then", "unevaluatedItems", "unevaluatedProperties",
+      ],
+      in_subarray=["allOf", "anyOf", "oneOf", "prefixItems"],
+      in_subvalues=[
+        "$defs", "definitions", "dependentSchemas", "patternProperties", "properties",
+      ],
+      quirks=NoQuirks,
+      pointer_quirks=NoPointerQuirks,
+    )
+  })
 }
 
 ///|
 /// JSON Schema draft 2019-09.
 pub fn draft201909() -> Specification {
-  cached_specification("draft201909", () => draft_specification(
-  name="draft2019-09",
-  id_of=dollar_id,
-  anchors_in=anchors_2019,
-  in_value=[
-    "additionalItems", "additionalProperties", "contains", "contentSchema", "else",
-    "if", "not", "propertyNames", "then", "unevaluatedItems", "unevaluatedProperties",
-  ],
-  in_subarray=["allOf", "anyOf", "oneOf"],
-  in_subvalues=[
-    "$defs", "definitions", "dependentSchemas", "patternProperties", "properties",
-  ],
-  quirks=CrazyItems,
-  pointer_quirks=ItemsPointer,
-  ))
+  cached_specification("draft201909", () => {
+    draft_specification(
+      name="draft2019-09",
+      id_of=dollar_id,
+      anchors_in=anchors_2019,
+      in_value=[
+        "additionalItems", "additionalProperties", "contains", "contentSchema", "else",
+        "if", "not", "propertyNames", "then", "unevaluatedItems", "unevaluatedProperties",
+      ],
+      in_subarray=["allOf", "anyOf", "oneOf"],
+      in_subvalues=[
+        "$defs", "definitions", "dependentSchemas", "patternProperties", "properties",
+      ],
+      quirks=CrazyItems,
+      pointer_quirks=ItemsPointer,
+    )
+  })
 }
 
 ///|
 /// JSON Schema draft 7.
 pub fn draft7() -> Specification {
-  cached_specification("draft7", () => draft_specification(
-  name="draft-07",
-  id_of=legacy_dollar_id,
-  anchors_in=legacy_anchor_in_dollar_id,
-  in_value=[
-    "additionalItems", "additionalProperties", "contains", "else", "if", "not", "propertyNames",
-    "then",
-  ],
-  in_subarray=["allOf", "anyOf", "oneOf"],
-  in_subvalues=["definitions", "patternProperties", "properties"],
-  quirks=CrazyItemsDependencies,
-  pointer_quirks=ItemsDependenciesPointer,
-  ))
+  cached_specification("draft7", () => {
+    draft_specification(
+      name="draft-07",
+      id_of=legacy_dollar_id,
+      anchors_in=legacy_anchor_in_dollar_id,
+      in_value=[
+        "additionalItems", "additionalProperties", "contains", "else", "if", "not",
+        "propertyNames", "then",
+      ],
+      in_subarray=["allOf", "anyOf", "oneOf"],
+      in_subvalues=["definitions", "patternProperties", "properties"],
+      quirks=CrazyItemsDependencies,
+      pointer_quirks=ItemsDependenciesPointer,
+    )
+  })
 }
 
 ///|
 /// JSON Schema draft 6.
 pub fn draft6() -> Specification {
-  cached_specification("draft6", () => draft_specification(
-  name="draft-06",
-  id_of=legacy_dollar_id,
-  anchors_in=legacy_anchor_in_dollar_id,
-  in_value=[
-    "additionalItems", "additionalProperties", "contains", "not", "propertyNames",
-  ],
-  in_subarray=["allOf", "anyOf", "oneOf"],
-  in_subvalues=["definitions", "patternProperties", "properties"],
-  quirks=CrazyItemsDependencies,
-  pointer_quirks=ItemsDependenciesPointer,
-  ))
+  cached_specification("draft6", () => {
+    draft_specification(
+      name="draft-06",
+      id_of=legacy_dollar_id,
+      anchors_in=legacy_anchor_in_dollar_id,
+      in_value=[
+        "additionalItems", "additionalProperties", "contains", "not", "propertyNames",
+      ],
+      in_subarray=["allOf", "anyOf", "oneOf"],
+      in_subvalues=["definitions", "patternProperties", "properties"],
+      quirks=CrazyItemsDependencies,
+      pointer_quirks=ItemsDependenciesPointer,
+    )
+  })
 }
 
 ///|
 /// JSON Schema draft 4.
 pub fn draft4() -> Specification {
-  cached_specification("draft4", () => draft_specification(
-  name="draft-04",
-  id_of=legacy_id,
-  anchors_in=legacy_anchor_in_id,
-  in_value=["not"],
-  pointer_in_value=["additionalItems", "additionalProperties", "not"],
-  in_subarray=["allOf", "anyOf", "oneOf"],
-  in_subvalues=["definitions", "patternProperties", "properties"],
-  quirks=CrazyAPItemsDependencies,
-  pointer_quirks=ItemsDependenciesPointer,
-  ))
+  cached_specification("draft4", () => {
+    draft_specification(
+      name="draft-04",
+      id_of=legacy_id,
+      anchors_in=legacy_anchor_in_id,
+      in_value=["not"],
+      pointer_in_value=["additionalItems", "additionalProperties", "not"],
+      in_subarray=["allOf", "anyOf", "oneOf"],
+      in_subvalues=["definitions", "patternProperties", "properties"],
+      quirks=CrazyAPItemsDependencies,
+      pointer_quirks=ItemsDependenciesPointer,
+    )
+  })
 }
 
 ///|
 /// JSON Schema draft 3.
 pub fn draft3() -> Specification {
-  cached_specification("draft3", () => draft_specification(
-  name="draft-03",
-  id_of=legacy_id,
-  anchors_in=legacy_anchor_in_id,
-  in_value=[],
-  pointer_in_value=["additionalItems", "additionalProperties"],
-  in_subarray=["extends"],
-  in_subvalues=["definitions", "patternProperties", "properties"],
-  quirks=CrazyAPItemsDependencies,
-  pointer_quirks=ItemsDependenciesPointer,
-  ))
+  cached_specification("draft3", () => {
+    draft_specification(
+      name="draft-03",
+      id_of=legacy_id,
+      anchors_in=legacy_anchor_in_id,
+      in_value=[],
+      pointer_in_value=["additionalItems", "additionalProperties"],
+      in_subarray=["extends"],
+      in_subvalues=["definitions", "patternProperties", "properties"],
+      quirks=CrazyAPItemsDependencies,
+      pointer_quirks=ItemsDependenciesPointer,
+    )
+  })
 }
 
 ///|
@@ -221,7 +233,12 @@ pub fn specification_with(
 /// the outermost resource which also declares a dynamic anchor with this
 /// name, and enters it as a subresource.
 pub fn dynamic_anchor(name~ : String, resource~ : Resource) -> Anchor {
-  Anchor::custom(name~, resource~, kind="DynamicAnchor", resolve=resolve_dynamic)
+  Anchor::custom(
+    name~,
+    resource~,
+    kind="DynamicAnchor",
+    resolve=resolve_dynamic,
+  )
 }
 
 ///|
@@ -245,7 +262,7 @@ fn resolve_dynamic(anchor_ : Anchor, resolver : Resolver) -> Resolved raise {
       last = anchor.value.resource
     }
   }
-  { contents: last.contents, resolver: resolver.in_subresource(last) }
+  { contents: last.contents, resolver: resolver.in_subresource(last), }
 }
 
 ///|

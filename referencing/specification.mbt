@@ -45,7 +45,7 @@ pub fn Specification::new(
   anchors_in~ : (Specification, Json) -> Array[Anchor],
   maybe_in_subresource~ : (Array[Segment], Resolver, Resource) -> Resolver raise,
 ) -> Specification {
-  { name, id_of, subresources_of, maybe_in_subresource, anchors_in }
+  { name, id_of, subresources_of, maybe_in_subresource, anchors_in, }
 }
 
 ///|
@@ -89,7 +89,7 @@ pub fn Specification::create_resource(
   self : Specification,
   contents : Json,
 ) -> Resource {
-  { contents, specification: self }
+  { contents, specification: self, }
 }
 
 ///|
@@ -147,7 +147,7 @@ pub fn Specification::detect(
 /// Specifications compare equal when they are the same object, or have the
 /// same name and the very same callbacks (as with upstream's attrs equality,
 /// where functions compare by identity).
-pub impl Eq for Specification with equal(self, other) {
+pub impl Eq for Specification with fn equal(self, other) {
   physical_equal(self, other) ||
   (
     self.name == other.name &&
@@ -160,6 +160,6 @@ pub impl Eq for Specification with equal(self, other) {
 
 ///|
 /// `<Specification name='...'>`, as Python's `repr`.
-pub impl Show for Specification with output(self, logger) {
+pub impl Show for Specification with fn output(self, logger) {
   logger.write_string("<Specification name=\{py_str_repr(self.name)}>")
 }

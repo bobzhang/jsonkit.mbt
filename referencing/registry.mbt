@@ -61,7 +61,10 @@ pub fn Registry::new(
 /// (Python's `registry[uri]`). Trailing `#`s are ignored.
 ///
 /// Raises `NoSuchResource` if it is not present.
-pub fn Registry::at(self : Registry, uri : String) -> Resource raise ReferencingError {
+pub fn Registry::at(
+  self : Registry,
+  uri : String,
+) -> Resource raise ReferencingError {
   match self.resources.get(rstrip_hash(uri)) {
     Some(resource) => resource
     None => raise NoSuchResource(reference=uri)
@@ -135,7 +138,7 @@ pub fn Registry::with_identified_resources(
     uncrawled = uncrawled.add(id)
     resources = resources.add(id, resource)
   }
-  { ..self, resources, uncrawled }
+  { ..self, resources, uncrawled, }
 }
 
 ///|
@@ -159,11 +162,11 @@ pub fn Registry::get_or_retrieve(
   uri : String,
 ) -> Retrieved[Resource] raise {
   if self.resources.get(uri) is Some(resource) {
-    return { registry: self, value: resource }
+    return { registry: self, value: resource, }
   }
   let registry = self.crawl()
   if registry.resources.get(uri) is Some(resource) {
-    return { registry, value: resource }
+    return { registry, value: resource, }
   }
   guard registry.retrieve is Some(retrieve) else {
     raise NoSuchResource(reference=uri)
@@ -173,7 +176,7 @@ pub fn Registry::get_or_retrieve(
     NoSuchResource(..) as error => raise error
     error => raise Unretrievable(reference=uri, cause=Some(error))
   }
-  { registry: registry.with_resource(uri, resource), value: resource }
+  { registry: registry.with_resource(uri, resource), value: resource, }
 }
 
 ///|
@@ -207,16 +210,16 @@ pub fn Registry::anchor(
   name : String,
 ) -> Retrieved[Anchor] raise {
   if self.anchors.get((uri, name)) is Some(value) {
-    return { value, registry: self }
+    return { value, registry: self, }
   }
   let registry = self.crawl()
   if registry.anchors.get((uri, name)) is Some(value) {
-    return { value, registry }
+    return { value, registry, }
   }
   let resource = self.at(uri)
   if resource.id() is Some(canonical_uri) &&
     registry.anchors.get((canonical_uri, name)) is Some(value) {
-    return { value, registry }
+    return { value, registry, }
   }
   if name.contains("/") {
     raise InvalidAnchor(reference=uri, resource~, anchor=name)
@@ -261,7 +264,7 @@ pub fn Registry::crawl(self : Registry) -> Registry raise @urllib.ValueError {
       uncrawled.push((uri, each))
     }
   }
-  { ..self, resources, anchors, uncrawled: @hashset.HashSet::new() }
+  { ..self, resources, anchors, uncrawled: @hashset.HashSet::new(), }
 }
 
 ///|
@@ -290,7 +293,7 @@ pub fn Registry::with_resources(
     uncrawled = uncrawled.add(uri)
     resources = resources.add(uri, pair.1)
   }
-  { ..self, resources, uncrawled }
+  { ..self, resources, uncrawled, }
 }
 
 ///|
@@ -328,13 +331,13 @@ pub fn Registry::combine(
   let mut uncrawled = self.uncrawled
   let mut retrieve = self.retrieve
   for registry in registries {
-    resources = registry.resources.fold(init=resources, (acc, k, v) => acc.add(
-      k, v,
-    ))
+    resources = registry.resources.fold(init=resources, (acc, k, v) => {
+      acc.add(k, v)
+    })
     anchors = registry.anchors.fold(init=anchors, (acc, k, v) => acc.add(k, v))
-    uncrawled = registry.uncrawled.iter().fold(init=uncrawled, (acc, k) => acc.add(
-      k,
-    ))
+    uncrawled = registry.uncrawled
+      .iter()
+      .fold(init=uncrawled, (acc, k) => acc.add(k))
     if registry.retrieve is Some(theirs) {
       if retrieve is Some(ours) && !physical_equal(theirs, ours) {
         raise @urllib.ValueError(
@@ -344,7 +347,7 @@ pub fn Registry::combine(
       retrieve = Some(theirs)
     }
   }
-  { resources, anchors, uncrawled, retrieve }
+  { resources, anchors, uncrawled, retrieve, }
 }
 
 ///|
@@ -367,22 +370,20 @@ pub fn Registry::resolver_with_root(
 ///|
 /// Registries are equal when they have equal resources, anchors and uncrawled
 /// URIs, and the same retrieval function (compared by identity).
-pub impl Eq for Registry with equal(self, other) {
+pub impl Eq for Registry with fn equal(self, other) {
   self.resources == other.resources &&
   self.anchors == other.anchors &&
   self.uncrawled == other.uncrawled &&
-  (
-    match (self.retrieve, other.retrieve) {
-      (None, None) => true
-      (Some(a), Some(b)) => physical_equal(a, b)
-      _ => false
-    }
-  )
+  (match (self.retrieve, other.retrieve) {
+    (None, None) => true
+    (Some(a), Some(b)) => physical_equal(a, b)
+    _ => false
+  })
 }
 
 ///|
 /// `<Registry (2 resources, 1 uncrawled)>`, as Python's `repr`.
-pub impl Show for Registry with output(self, logger) {
+pub impl Show for Registry with fn output(self, logger) {
   let size = self.length()
   let pluralized = if size == 1 { "resource" } else { "resources" }
   let summary = if !self.uncrawled.is_empty() {

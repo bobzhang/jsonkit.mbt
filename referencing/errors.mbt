@@ -41,7 +41,10 @@ pub(all) suberror ReferencingError {
 /// Python's `except referencing.exceptions.Unresolvable` would catch it.
 pub fn ReferencingError::is_unresolvable(self : ReferencingError) -> Bool {
   self
-  is (Unresolvable(..) | PointerToNowhere(..) | NoSuchAnchor(..) | InvalidAnchor(..))
+  is (Unresolvable(..)
+  | PointerToNowhere(..)
+  | NoSuchAnchor(..)
+  | InvalidAnchor(..))
 }
 
 ///|
@@ -62,16 +65,20 @@ pub fn ReferencingError::reference(self : ReferencingError) -> String? {
 ///|
 /// Structural equality (as upstream's attrs-based `__eq__`), where errors of
 /// different kinds are never equal and an `Unretrievable`'s cause is ignored.
-pub impl Eq for ReferencingError with equal(self, other) {
+pub impl Eq for ReferencingError with fn equal(self, other) {
   match (self, other) {
     (NoSuchResource(reference=a), NoSuchResource(reference=b)) => a == b
     (NoInternalID(resource=a), NoInternalID(resource=b)) => a == b
     (Unretrievable(reference=a, ..), Unretrievable(reference=b, ..)) => a == b
-    (CannotDetermineSpecification(contents=a), CannotDetermineSpecification(contents=b)) =>
-      a == b
+    (
+      CannotDetermineSpecification(contents=a),
+      CannotDetermineSpecification(contents=b),
+    ) => a == b
     (Unresolvable(reference=a), Unresolvable(reference=b)) => a == b
-    (PointerToNowhere(reference=a, resource=r), PointerToNowhere(reference=b, resource=s)) =>
-      a == b && r == s
+    (
+      PointerToNowhere(reference=a, resource=r),
+      PointerToNowhere(reference=b, resource=s),
+    ) => a == b && r == s
     (
       NoSuchAnchor(reference=a, resource=r, anchor=x),
       NoSuchAnchor(reference=b, resource=s, anchor=y),
@@ -87,12 +94,12 @@ pub impl Eq for ReferencingError with equal(self, other) {
 
 ///|
 /// Renders exactly what Python's `str(error)` renders.
-pub impl Show for ReferencingError with output(self, logger) {
+pub impl Show for ReferencingError with fn output(self, logger) {
   match self {
     // KeyError subclasses: str() is the repr() of the single argument
     NoSuchResource(reference~) | Unretrievable(reference~, ..) =>
       logger.write_string(py_str_repr(reference))
-    NoInternalID(resource~) => logger.write_string(resource.to_string())
+    NoInternalID(resource~) => logger.write_string(Show::to_string(resource))
     CannotDetermineSpecification(contents~) =>
       logger.write_string(py_str(contents))
     Unresolvable(reference~) => logger.write_string(reference)
@@ -116,4 +123,34 @@ pub impl Show for ReferencingError with output(self, logger) {
       )
     UnknownDialect(uri~) => logger.write_string(uri)
   }
+}
+
+///|
+/// Recover a `ReferencingError` from a generic `Error` (as raised by e.g.
+/// `Resolver::lookup`), if it is one.
+pub fn ReferencingError::from_error(error : Error) -> ReferencingError? {
+  match error {
+    NoSuchResource(reference~) => Some(NoSuchResource(reference~))
+    NoInternalID(resource~) => Some(NoInternalID(resource~))
+    Unretrievable(reference~, cause~) => Some(Unretrievable(reference~, cause~))
+    CannotDetermineSpecification(contents~) =>
+      Some(CannotDetermineSpecification(contents~))
+    Unresolvable(reference~) => Some(Unresolvable(reference~))
+    PointerToNowhere(reference~, resource~) =>
+      Some(PointerToNowhere(reference~, resource~))
+    NoSuchAnchor(reference~, resource~, anchor~) =>
+      Some(NoSuchAnchor(reference~, resource~, anchor~))
+    InvalidAnchor(reference~, resource~, anchor~) =>
+      Some(InvalidAnchor(reference~, resource~, anchor~))
+    UnknownDialect(uri~) => Some(UnknownDialect(uri~))
+    _ => None
+  }
+}
+
+///|
+/// Whether a generic `Error` is an `Unresolvable` (or a "subclass" thereof),
+/// i.e. whether Python's `except referencing.exceptions.Unresolvable` would
+/// catch it.
+pub fn is_unresolvable(error : Error) -> Bool {
+  ReferencingError::from_error(error) is Some(e) && e.is_unresolvable()
 }

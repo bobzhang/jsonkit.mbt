@@ -41,7 +41,7 @@ pub fn Resolver::new(
   registry~ : Registry,
   previous? : @list.List[String] = @list.empty(),
 ) -> Resolver {
-  { base_uri, registry, previous }
+  { base_uri, registry, previous, }
 }
 
 ///|
@@ -100,7 +100,7 @@ pub fn Resolver::lookup(self : Resolver, reference : String) -> Resolved raise {
     return retrieved.value.resolve(resolver)
   }
   let resolver = self.evolve(registry=retrieved.registry, base_uri=uri)
-  { contents: retrieved.value.contents, resolver }
+  { contents: retrieved.value.contents, resolver, }
 }
 
 ///|
@@ -113,7 +113,7 @@ pub fn Resolver::in_subresource(
 ) -> Resolver raise @urllib.ValueError {
   match subresource.id() {
     None => self
-    Some(id) => { ..self, base_uri: @urllib.urljoin(self.base_uri, id) }
+    Some(id) => { ..self, base_uri: @urllib.urljoin(self.base_uri, id), }
   }
 }
 
@@ -137,12 +137,12 @@ fn Resolver::evolve(
   } else {
     self.previous
   }
-  { base_uri, registry, previous }
+  { base_uri, registry, previous, }
 }
 
 ///|
 /// `Resolver(_base_uri='...', _registry=<Registry (...)>)`, as Python's `repr`.
-pub impl Show for Resolver with output(self, logger) {
+pub impl Show for Resolver with fn output(self, logger) {
   logger.write_string(
     "Resolver(_base_uri=\{py_str_repr(self.base_uri)}, _registry=\{self.registry})",
   )

@@ -14,8 +14,11 @@ pub struct Resource {
 ///|
 /// Create a resource with an explicit specification
 /// (Python's `Resource(contents=..., specification=...)`).
-pub fn Resource::new(contents : Json, specification~ : Specification) -> Resource {
-  { contents, specification }
+pub fn Resource::new(
+  contents : Json,
+  specification~ : Specification,
+) -> Resource {
+  { contents, specification, }
 }
 
 ///|
@@ -29,7 +32,10 @@ pub fn Resource::from_contents(
   contents : Json,
   default_specification? : Specification,
 ) -> Resource raise ReferencingError {
-  let specification = Specification::detect(contents, default?=default_specification)
+  let specification = Specification::detect(
+    contents,
+    default?=default_specification,
+  )
   specification.create_resource(contents)
 }
 
@@ -56,10 +62,7 @@ pub fn Resource::subresources(self : Resource) -> Array[Resource] {
   self.specification
   .subresources_of(self.contents)
   .map(each => {
-    let specification = Specification::detect(
-      each,
-      default=self.specification,
-    ) catch {
+    let specification = Specification::detect(each, default=self.specification) catch {
       _ => self.specification
     }
     specification.create_resource(each)
@@ -90,7 +93,7 @@ pub fn Resource::pointer(
   resolver : Resolver,
 ) -> Resolved raise {
   if pointer == "" {
-    return { contents: self.contents, resolver }
+    return { contents: self.contents, resolver, }
   }
   let mut contents = self.contents
   let mut resolver = resolver
@@ -124,7 +127,9 @@ pub fn Resource::pointer(
         (Index(index), Json::string(chars[i].to_string()))
       }
       Object(obj) => {
-        let key = raw.replace_all(old="~1", new="/").replace_all(old="~0", new="~")
+        let key = raw
+          .replace_all(old="~1", new="/")
+          .replace_all(old="~0", new="~")
         guard obj.get(key) is Some(value) else {
           raise PointerToNowhere(reference=pointer, resource=self)
         }
@@ -144,20 +149,20 @@ pub fn Resource::pointer(
       segments = []
     }
   }
-  { contents, resolver }
+  { contents, resolver, }
 }
 
 ///|
 /// Resources are equal when their contents are equal and their specifications
 /// are equal.
-pub impl Eq for Resource with equal(self, other) {
+pub impl Eq for Resource with fn equal(self, other) {
   self.contents == other.contents && self.specification == other.specification
 }
 
 ///|
 /// `Resource(contents=..., _specification=<Specification name='...'>)`, as
 /// Python's `repr`.
-pub impl Show for Resource with output(self, logger) {
+pub impl Show for Resource with fn output(self, logger) {
   logger.write_string(
     "Resource(contents=\{py_repr(self.contents)}, _specification=\{self.specification})",
   )

@@ -27,10 +27,7 @@ fn py_str_repr(s : String) -> String {
 
 ///|
 fn py_number_repr(d : Double, repr : String?) -> String {
-  if repr is Some(r) &&
-    !r.contains(".") &&
-    !r.contains("e") &&
-    !r.contains("E") {
+  if repr is Some(r) && !r.contains(".") && !r.contains("e") && !r.contains("E") {
     return r
   }
   if d == d.floor() && d.abs() < 1.0e16 {

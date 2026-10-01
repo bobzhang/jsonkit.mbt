@@ -17,7 +17,7 @@ pub struct Anchor {
 ///|
 /// Create a simple anchor in a `Resource`.
 pub fn Anchor::new(name~ : String, resource~ : Resource) -> Anchor {
-  { name, resource, kind: "Anchor", resolve_impl: None }
+  { name, resource, kind: "Anchor", resolve_impl: None, }
 }
 
 ///|
@@ -31,7 +31,7 @@ pub fn Anchor::custom(
   kind~ : String,
   resolve~ : (Anchor, Resolver) -> Resolved raise,
 ) -> Anchor {
-  { name, resource, kind, resolve_impl: Some(resolve) }
+  { name, resource, kind, resolve_impl: Some(resolve), }
 }
 
 ///|
@@ -45,13 +45,13 @@ pub fn Anchor::kind(self : Anchor) -> String {
 /// Return the resource for this anchor.
 pub fn Anchor::resolve(self : Anchor, resolver : Resolver) -> Resolved raise {
   match self.resolve_impl {
-    None => { contents: self.resource.contents, resolver }
+    None => { contents: self.resource.contents, resolver, }
     Some(f) => f(self, resolver)
   }
 }
 
 ///|
-pub impl Eq for Anchor with equal(self, other) {
+pub impl Eq for Anchor with fn equal(self, other) {
   self.kind == other.kind &&
   self.name == other.name &&
   self.resource == other.resource
@@ -59,7 +59,7 @@ pub impl Eq for Anchor with equal(self, other) {
 
 ///|
 /// `Anchor(name='...', resource=Resource(...))`, as Python's `repr`.
-pub impl Show for Anchor with output(self, logger) {
+pub impl Show for Anchor with fn output(self, logger) {
   logger.write_string(
     "\{self.kind}(name=\{py_str_repr(self.name)}, resource=\{self.resource})",
   )

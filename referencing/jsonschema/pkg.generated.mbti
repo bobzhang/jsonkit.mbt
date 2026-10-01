@@ -1,0 +1,49 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "bobzhang/referencing/jsonschema"
+
+import {
+  "bobzhang/referencing",
+}
+
+// Values
+pub fn anchors_2019(@referencing.Specification, Json) -> Array[@referencing.Anchor]
+
+pub fn anchors_2020(@referencing.Specification, Json) -> Array[@referencing.Anchor]
+
+pub fn dollar_id(Json) -> String?
+
+pub fn draft201909() -> @referencing.Specification
+
+pub fn draft202012() -> @referencing.Specification
+
+pub fn draft3() -> @referencing.Specification
+
+pub fn draft4() -> @referencing.Specification
+
+pub fn draft6() -> @referencing.Specification
+
+pub fn draft7() -> @referencing.Specification
+
+pub fn dynamic_anchor(name~ : String, resource~ : @referencing.Resource) -> @referencing.Anchor
+
+pub let empty_registry : @referencing.Registry
+
+pub fn legacy_anchor_in_dollar_id(@referencing.Specification, Json) -> Array[@referencing.Anchor]
+
+pub fn legacy_anchor_in_id(@referencing.Specification, Json) -> Array[@referencing.Anchor]
+
+pub fn legacy_dollar_id(Json) -> String?
+
+pub fn legacy_id(Json) -> String?
+
+pub fn lookup_recursive_ref(@referencing.Resolver) -> @referencing.Resolved raise
+
+pub fn specification_with(String, default? : @referencing.Specification) -> @referencing.Specification raise @referencing.ReferencingError
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

@@ -10,12 +10,14 @@ pub type RetrieveCache = ((String) -> Resource raise) -> (String) -> Resource ra
 pub fn unbounded_cache() -> RetrieveCache {
   retrieve => {
     let cache : Map[String, Resource] = Map([])
-    uri => match cache.get(uri) {
-      Some(resource) => resource
-      None => {
-        let resource = retrieve(uri)
-        cache[uri] = resource
-        resource
+    uri => {
+      match cache.get(uri) {
+        Some(resource) => resource
+        None => {
+          let resource = retrieve(uri)
+          cache[uri] = resource
+          resource
+        }
       }
     }
   }
@@ -29,21 +31,23 @@ pub fn lru_cache(maxsize~ : Int) -> RetrieveCache {
     // `Map` preserves insertion order: the first entry is the least recently
     // used one.
     let cache : Map[String, Resource] = Map([])
-    uri => match cache.get(uri) {
-      Some(resource) => {
-        cache.remove(uri)
-        cache[uri] = resource
-        resource
-      }
-      None => {
-        let resource = retrieve(uri)
-        cache[uri] = resource
-        if cache.length() > maxsize {
-          if cache.keys().head() is Some(oldest) {
-            cache.remove(oldest)
-          }
+    uri => {
+      match cache.get(uri) {
+        Some(resource) => {
+          cache.remove(uri)
+          cache[uri] = resource
+          resource
         }
-        resource
+        None => {
+          let resource = retrieve(uri)
+          cache[uri] = resource
+          if cache.length() > maxsize {
+            if cache.keys().head() is Some(oldest) {
+              cache.remove(oldest)
+            }
+          }
+          resource
+        }
       }
     }
   }
@@ -69,11 +73,18 @@ pub fn lru_cache(maxsize~ : Int) -> RetrieveCache {
 ///     calls.push(uri)
 ///     "{\"$schema\": \"https://json-schema.org/draft/2020-12/schema\", \"foo\": \"bar\"}"
 ///   })
-///   let one = @referencing.Registry::new(retrieve~).get_or_retrieve("urn:example:foo")
-///   let two = @referencing.Registry::new(retrieve~).get_or_retrieve("urn:example:foo")
-///   inspect(one.value.contents.stringify(), content=(
-///     #|{"$schema":"https://json-schema.org/draft/2020-12/schema","foo":"bar"}
-///   ))
+///   let one = @referencing.Registry::new(retrieve~).get_or_retrieve(
+///     "urn:example:foo",
+///   )
+///   let two = @referencing.Registry::new(retrieve~).get_or_retrieve(
+///     "urn:example:foo",
+///   )
+///   inspect(
+///     one.value.contents.stringify(),
+///     content=(
+///       #|{"$schema":"https://json-schema.org/draft/2020-12/schema","foo":"bar"}
+///     ),
+///   )
 ///   assert_true(physical_equal(one.value, two.value))
 ///   assert_eq(calls, ["urn:example:foo"])
 /// }
@@ -82,9 +93,9 @@ pub fn to_cached_resource(
   retrieve : (String) -> String raise,
   cache? : RetrieveCache = unbounded_cache(),
   loads? : (String) -> Json raise = s => @json.parse(s),
-  from_contents? : (Json) -> Resource raise = contents => Resource::from_contents(
-    contents,
-  ),
+  from_contents? : (Json) -> Resource raise = contents => {
+    Resource::from_contents(contents)
+  },
 ) -> (String) -> Resource raise {
   cache(uri => from_contents(loads(retrieve(uri))))
 }

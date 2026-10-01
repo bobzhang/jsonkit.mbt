@@ -1,0 +1,63 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "bobzhang/referencing/urllib"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn unquote(String) -> String
+
+pub fn urldefrag(String) -> DefragResult raise ValueError
+
+pub fn urljoin(String, String, allow_fragments? : Bool) -> String raise ValueError
+
+pub fn urlparse(String, scheme? : String, allow_fragments? : Bool) -> ParseResult raise ValueError
+
+pub fn urlsplit(String, scheme? : String, allow_fragments? : Bool) -> SplitResult raise ValueError
+
+pub fn urlunparse(String, String, String, String, String, String) -> String
+
+pub fn urlunsplit(String, String, String, String, String) -> String
+
+pub let uses_netloc : ReadOnlyArray[String]
+
+pub let uses_params : ReadOnlyArray[String]
+
+pub let uses_relative : ReadOnlyArray[String]
+
+// Errors
+pub(all) suberror ValueError {
+  ValueError(String)
+} derive(Eq, @debug.Debug)
+pub impl Show for ValueError
+
+// Types and methods
+pub(all) struct DefragResult {
+  url : String
+  fragment : String
+} derive(Eq, @debug.Debug)
+pub fn DefragResult::geturl(Self) -> String
+
+pub(all) struct ParseResult {
+  scheme : String
+  netloc : String
+  path : String
+  params : String
+  query : String
+  fragment : String
+} derive(Eq, @debug.Debug)
+pub fn ParseResult::geturl(Self) -> String
+
+pub(all) struct SplitResult {
+  scheme : String
+  netloc : String
+  path : String
+  query : String
+  fragment : String
+} derive(Eq, @debug.Debug)
+pub fn SplitResult::geturl(Self) -> String
+
+// Type aliases
+
+// Traits
