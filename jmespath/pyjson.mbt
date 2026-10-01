@@ -9,7 +9,11 @@ priv struct JsonScanner {
 }
 
 ///|
-fn JsonScanner::error(self : JsonScanner, msg : String, idx : Int) -> JSONDecodeError {
+fn JsonScanner::error(
+  self : JsonScanner,
+  msg : String,
+  idx : Int,
+) -> JSONDecodeError {
   // Python positions count code points, ours are UTF-16 offsets.
   let pos = self.s.char_length(end_offset=idx.clamp(min=0, max=self.len))
   JSONDecodeError(msg~, doc=self.s, pos~)
@@ -247,7 +251,9 @@ fn JsonScanner::parse_object(
       let comma_idx = idx
       idx = self.skip_ws(idx + 1)
       if idx <= end_idx && self.char_at(idx) == '}' {
-        raise self.error("Illegal trailing comma before end of object", comma_idx)
+        raise self.error(
+          "Illegal trailing comma before end of object", comma_idx,
+        )
       }
     }
   }
@@ -276,7 +282,9 @@ fn JsonScanner::parse_array(
       let comma_idx = idx
       idx = self.skip_ws(idx + 1)
       if idx <= end_idx && self.char_at(idx) == ']' {
-        raise self.error("Illegal trailing comma before end of array", comma_idx)
+        raise self.error(
+          "Illegal trailing comma before end of array", comma_idx,
+        )
       }
     }
   }
@@ -297,7 +305,7 @@ fn JsonScanner::parse_array(
 /// }
 /// ```
 pub fn loads(s : String) -> Json raise JSONDecodeError {
-  let scanner = JsonScanner::{ s, len: s.length() }
+  let scanner = JsonScanner::{ s, len: s.length(), }
   if s.has_prefix("\u{feff}") {
     raise scanner.error("Unexpected UTF-8 BOM (decode using utf-8-sig)", 0)
   }
@@ -327,7 +335,9 @@ fn dumps_string(buf : StringBuilder, s : String) -> Unit {
         buf.write_string("\\u")
         let hex = "0123456789abcdef"
         for shift in [12, 8, 4, 0] {
-          buf.write_char(Int::unsafe_to_char(hex.code_unit_at((c >> shift) & 0xf).to_int()))
+          buf.write_char(
+            Int::unsafe_to_char(hex.code_unit_at((c >> shift) & 0xf).to_int()),
+          )
         }
       }
     }
@@ -406,7 +416,9 @@ fn py_repr_string(buf : StringBuilder, s : String) -> Unit {
       let hex = "0123456789abcdef"
       buf.write_string("\\u")
       for shift in [12, 8, 4, 0] {
-        buf.write_char(Int::unsafe_to_char(hex.code_unit_at((code >> shift) & 0xf).to_int()))
+        buf.write_char(
+          Int::unsafe_to_char(hex.code_unit_at((code >> shift) & 0xf).to_int()),
+        )
       }
     } else {
       buf.write_char(c)

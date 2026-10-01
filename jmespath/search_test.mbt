@@ -49,7 +49,8 @@ test "search: can provide custom functions" {
   json_inspect(@jmespath.search("length(`[1, 2]`)", {}), content=2)
   // ... and the default table is not affected.
   try @jmespath.search("custom_add(`1`, `2`)", {}) catch {
-    UnknownFunctionError(msg) => assert_eq(msg, "Unknown function: custom_add()")
+    UnknownFunctionError(msg) =>
+      assert_eq(msg, "Unknown function: custom_add()")
     e => fail("unexpected error: \{e}")
   } noraise {
     _ => fail("expected UnknownFunctionError")

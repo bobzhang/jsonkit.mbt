@@ -58,7 +58,7 @@ pub struct Parser {
 
 ///|
 pub fn Parser::new() -> Parser {
-  { tokens: [], index: 0 }
+  { tokens: [], index: 0, }
 }
 
 ///|
@@ -141,7 +141,7 @@ fn Parser::parse_tokens(
     let t = self.lookahead_token(0)
     raise new_parse_error(t, "Unexpected token: \{t.value.py_str()}")
   }
-  { expression, parsed }
+  { expression, parsed, }
 }
 
 ///|
@@ -158,7 +158,7 @@ fn new_parse_error(token : Token, msg : String) -> JMESPathError {
 ///|
 fn Parser::expression(
   self : Parser,
-  binding_power~ : Int = 0,
+  binding_power? : Int = 0,
 ) -> Node raise JMESPathError {
   let left_token = self.lookahead_token(0)
   self.advance()
@@ -225,7 +225,8 @@ fn Parser::nud(self : Parser, token : Token) -> Node raise JMESPathError {
         let right = self.parse_index_expression()
         // We could optimize this and remove the identity() node.
         self.project_if_slice(Identity, right)
-      } else if self.current_token() == "star" && self.lookahead(1) == "rbracket" {
+      } else if self.current_token() == "star" &&
+        self.lookahead(1) == "rbracket" {
         self.advance()
         self.advance()
         let right = self.parse_projection_rhs(token_binding_power("star"))
@@ -235,7 +236,9 @@ fn Parser::nud(self : Parser, token : Token) -> Node raise JMESPathError {
       }
     "current" => Current
     "expref" => {
-      let expression = self.expression(binding_power=token_binding_power("expref"))
+      let expression = self.expression(
+        binding_power=token_binding_power("expref"),
+      )
       Expref(expression)
     }
     _ => self.error_nud_token(token)
@@ -382,7 +385,10 @@ fn Parser::parse_slice_expression(self : Parser) -> Node raise JMESPathError {
     if current_token == "colon" {
       index += 1
       if index == 3 {
-        self.raise_parse_error_for_token(self.lookahead_token(0), "syntax error")
+        self.raise_parse_error_for_token(
+          self.lookahead_token(0),
+          "syntax error",
+        )
       }
       self.advance()
     } else if current_token == "number" {
@@ -408,7 +414,10 @@ fn Parser::project_if_slice(
 ) -> Node raise JMESPathError {
   let index_expr = IndexExpression([left, right])
   if right is Slice(_, _, _) {
-    Projection(index_expr, self.parse_projection_rhs(token_binding_power("star")))
+    Projection(
+      index_expr,
+      self.parse_projection_rhs(token_binding_power("star")),
+    )
   } else {
     index_expr
   }
@@ -542,7 +551,10 @@ fn[T] Parser::error_led_token(
 }
 
 ///|
-fn Parser::match_(self : Parser, token_type : String) -> Unit raise JMESPathError {
+fn Parser::match_(
+  self : Parser,
+  token_type : String,
+) -> Unit raise JMESPathError {
   if self.current_token() == token_type {
     self.advance()
   } else {
@@ -641,7 +653,7 @@ pub fn ParsedResult::render_dot_file(self : ParsedResult) -> String {
 }
 
 ///|
-pub impl Show for ParsedResult with output(self, logger) {
+pub impl Show for ParsedResult with fn output(self, logger) {
   // Upstream's repr(ParsedResult) is repr(self.parsed), a Python dict.
   logger.write_string(py_repr(self.parsed.to_json()))
 }

@@ -20,7 +20,7 @@ pub(all) struct ArgSpec {
 
 ///|
 pub fn ArgSpec::new(types : Array[String], variadic? : Bool = false) -> ArgSpec {
-  { types, variadic }
+  { types, variadic, }
 }
 
 ///|
@@ -44,7 +44,7 @@ pub struct Functions {
 ///|
 /// A function table with all the builtin functions.
 pub fn Functions::new() -> Functions {
-  { function_table: builtin_function_table() }
+  { function_table: builtin_function_table(), }
 }
 
 ///|
@@ -54,14 +54,10 @@ pub fn Functions::new() -> Functions {
 /// ```mbt check
 /// test {
 ///   let functions = @jmespath.Functions::new()
-///   functions.register_function(
-///     "double",
-///     [@jmespath.ArgSpec::new(["number"])],
-///     args => {
-///       guard args[0] is Data(Number(n, ..)) else { Json::null() }
-///       Json::number(n * 2.0)
-///     },
-///   )
+///   functions.register_function("double", [@jmespath.ArgSpec::new(["number"])], args => {
+///     guard args[0] is Data(Number(n, ..)) else { Json::null() }
+///     Json::number(n * 2.0)
+///   })
 ///   let options = @jmespath.Options::new(custom_functions=functions)
 ///   let result = @jmespath.search("double(`21`)", Json::null(), options~)
 ///   json_inspect(result, content=42)
@@ -73,7 +69,7 @@ pub fn Functions::register_function(
   signature : Array[ArgSpec],
   function : FunctionImpl,
 ) -> Unit {
-  self.function_table[name] = { function, signature }
+  self.function_table[name] = { function, signature, }
 }
 
 ///|
@@ -628,9 +624,11 @@ fn func_ceil_floor(
 ///|
 fn func_join(args : Array[Value]) -> Json {
   let separator = arg_string(args[0])
-  let parts = arg_array(args[1]).map(item => match item {
-    String(s) => s
-    _ => ""
+  let parts = arg_array(args[1]).map(item => {
+    match item {
+      String(s) => s
+      _ => ""
+    }
   })
   Json::string(parts.join(separator))
 }
@@ -675,8 +673,7 @@ fn py_dict_update(
     }
     Data(Array(items)) => items
     Data(String(s)) => s.iter().map(c => Json::string(c.to_string())).collect()
-    other =>
-      raise TypeError("'\{other.py_type_name()}' object is not iterable")
+    other => raise TypeError("'\{other.py_type_name()}' object is not iterable")
   }
   for i, element in items {
     let pair : Array[Json] = match element {
@@ -803,7 +800,7 @@ fn builtin_function_table() -> Map[String, FunctionSpec] {
   let t = (types : Array[String]) => ArgSpec::new(types)
   let table : Map[String, FunctionSpec] = Map([])
   let def = (name : String, signature : Array[ArgSpec], function : FunctionImpl) => {
-    table[name] = { function, signature }
+    table[name] = { function, signature, }
   }
   def("abs", [t(["number"])], args => func_abs(args))
   def("avg", [t(["array-number"])], args => func_avg(args))
@@ -815,20 +812,22 @@ fn builtin_function_table() -> Map[String, FunctionSpec] {
   def("keys", [t(["object"])], args => func_keys(args))
   def("length", [t(["string", "array", "object"])], args => func_length(args))
   def("map", [t(["expref"]), t(["array"])], func_map)
-  def("max", [t(["array-number", "array-string"])], args => func_min_max(
-    args, ">",
-  ))
+  def("max", [t(["array-number", "array-string"])], args => {
+    func_min_max(args, ">")
+  })
   def("max_by", [t(["array"]), t(["expref"])], func_max_by)
   def("merge", [ArgSpec::new(["object"], variadic=true)], func_merge)
-  def("min", [t(["array-number", "array-string"])], args => func_min_max(
-    args, "<",
-  ))
+  def("min", [t(["array-number", "array-string"])], args => {
+    func_min_max(args, "<")
+  })
   def("min_by", [t(["array"]), t(["expref"])], func_min_by)
   def("not_null", [ArgSpec::new([], variadic=true)], func_not_null)
   def("reverse", [t(["array", "string"])], args => func_reverse(args))
   def("sort", [t(["array-string", "array-number"])], func_sort)
   def("sort_by", [t(["array"]), t(["expref"])], func_sort_by)
-  def("starts_with", [t(["string"]), t(["string"])], args => func_starts_with(args))
+  def("starts_with", [t(["string"]), t(["string"])], args => {
+    func_starts_with(args)
+  })
   def("sum", [t(["array-number"])], args => func_sum(args))
   def("to_array", [any], func_to_array)
   def("to_number", [any], func_to_number)

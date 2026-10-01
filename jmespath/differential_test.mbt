@@ -32,175 +32,90 @@ fn differential_outcome(expression : String, given : String) -> String {
 
 ///|
 test "differential/0: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1",
-    ),
-    "ok:\"1\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "1"), "ok:\"1\"")
 }
 
 ///|
 test "differential/1: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1.0",
-    ),
-    "ok:\"1.0\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "1.0"), "ok:\"1.0\"")
 }
 
 ///|
 test "differential/2: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1.5",
-    ),
-    "ok:\"1.5\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "1.5"), "ok:\"1.5\"")
 }
 
 ///|
 test "differential/3: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "-0.0",
-    ),
-    "ok:\"-0.0\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "-0.0"), "ok:\"-0.0\"")
 }
 
 ///|
 test "differential/4: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1e21",
-    ),
-    "ok:\"1e+21\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "1e21"), "ok:\"1e+21\"")
 }
 
 ///|
 test "differential/5: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1E+2",
-    ),
-    "ok:\"100.0\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "1E+2"), "ok:\"100.0\"")
 }
 
 ///|
 test "differential/6: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1e-7",
-    ),
-    "ok:\"1e-07\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "1e-7"), "ok:\"1e-07\"")
 }
 
 ///|
 test "differential/7: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "0.0001",
-    ),
-    "ok:\"0.0001\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "0.0001"), "ok:\"0.0001\"")
 }
 
 ///|
 test "differential/8: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1e16",
-    ),
-    "ok:\"1e+16\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "1e16"), "ok:\"1e+16\"")
 }
 
 ///|
 test "differential/9: to_string(@)" {
   assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1e15",
-    ),
+    differential_outcome("to_string(@)", "1e15"),
     "ok:\"1000000000000000.0\"",
   )
 }
 
 ///|
 test "differential/10: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "0.1",
-    ),
-    "ok:\"0.1\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "0.1"), "ok:\"0.1\"")
 }
 
 ///|
 test "differential/11: to_string(@)" {
   assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "123456789012345678901234567890",
-    ),
+    differential_outcome("to_string(@)", "123456789012345678901234567890"),
     "ok:\"123456789012345678901234567890\"",
   )
 }
 
 ///|
 test "differential/12: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "1e400",
-    ),
-    "ok:\"Infinity\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "1e400"), "ok:\"Infinity\"")
 }
 
 ///|
 test "differential/13: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "-1e400",
-    ),
-    "ok:\"-Infinity\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "-1e400"), "ok:\"-Infinity\"")
 }
 
 ///|
 test "differential/14: to_string(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(@)",
-      "NaN",
-    ),
-    "ok:\"NaN\"",
-  )
+  assert_eq(differential_outcome("to_string(@)", "NaN"), "ok:\"NaN\"")
 }
 
 ///|
 test "differential/15: to_string(@)" {
   assert_eq(
     differential_outcome(
-      "to_string(@)",
-      "[1, 2.0, \"\\u00e9\", \"\\ud83d\\ude00\", \"\\u007f\", \"\\u0000\\n\\t\\\"\\\\/\"]",
+      "to_string(@)", "[1, 2.0, \"\\u00e9\", \"\\ud83d\\ude00\", \"\\u007f\", \"\\u0000\\n\\t\\\"\\\\/\"]",
     ),
     "ok:\"[1,2.0,\\\"\\\\u00e9\\\",\\\"\\\\ud83d\\\\ude00\\\",\\\"\\\\u007f\\\",\\\"\\\\u0000\\\\n\\\\t\\\\\\\"\\\\\\\\/\\\"]\"",
   )
@@ -210,8 +125,7 @@ test "differential/15: to_string(@)" {
 test "differential/16: to_string(@)" {
   assert_eq(
     differential_outcome(
-      "to_string(@)",
-      "{\"a\": null, \"b\": [true, false], \"\\u00e9\": {}}",
+      "to_string(@)", "{\"a\": null, \"b\": [true, false], \"\\u00e9\": {}}",
     ),
     "ok:\"{\\\"a\\\":null,\\\"b\\\":[true,false],\\\"\\\\u00e9\\\":{}}\"",
   )
@@ -219,33 +133,18 @@ test "differential/16: to_string(@)" {
 
 ///|
 test "differential/17: to_string(`1.0`)" {
-  assert_eq(
-    differential_outcome(
-      "to_string(`1.0`)",
-      "{}",
-    ),
-    "ok:\"1.0\"",
-  )
+  assert_eq(differential_outcome("to_string(`1.0`)", "{}"), "ok:\"1.0\"")
 }
 
 ///|
 test "differential/18: to_string('é')" {
-  assert_eq(
-    differential_outcome(
-      "to_string('é')",
-      "{}",
-    ),
-    "ok:\"\\u00e9\"",
-  )
+  assert_eq(differential_outcome("to_string('é')", "{}"), "ok:\"\\u00e9\"")
 }
 
 ///|
 test "differential/19: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "[1.0, 2.50, 3e0, -0, 1E400, NaN, -Infinity]",
-    ),
+    differential_outcome("@", "[1.0, 2.50, 3e0, -0, 1E400, NaN, -Infinity]"),
     "ok:[1.0,2.5,3.0,0,Infinity,NaN,-Infinity]",
   )
 }
@@ -253,208 +152,103 @@ test "differential/19: @" {
 ///|
 test "differential/20: `[1.0, 1e3, NaN, -Infinity]`" {
   assert_eq(
-    differential_outcome(
-      "`[1.0, 1e3, NaN, -Infinity]`",
-      "{}",
-    ),
+    differential_outcome("`[1.0, 1e3, NaN, -Infinity]`", "{}"),
     "ok:[1.0,1000.0,NaN,-Infinity]",
   )
 }
 
 ///|
 test "differential/21: sum(@)" {
-  assert_eq(
-    differential_outcome(
-      "sum(@)",
-      "[1, 2, 3]",
-    ),
-    "ok:6",
-  )
+  assert_eq(differential_outcome("sum(@)", "[1, 2, 3]"), "ok:6")
 }
 
 ///|
 test "differential/22: sum(@)" {
-  assert_eq(
-    differential_outcome(
-      "sum(@)",
-      "[1, 2.5, 3]",
-    ),
-    "ok:6.5",
-  )
+  assert_eq(differential_outcome("sum(@)", "[1, 2.5, 3]"), "ok:6.5")
 }
 
 ///|
 test "differential/23: sum(@)" {
-  assert_eq(
-    differential_outcome(
-      "sum(@)",
-      "[0.1, 0.2, 0.3]",
-    ),
-    "ok:0.6",
-  )
+  assert_eq(differential_outcome("sum(@)", "[0.1, 0.2, 0.3]"), "ok:0.6")
 }
 
 ///|
 test "differential/24: sum(@)" {
-  assert_eq(
-    differential_outcome(
-      "sum(@)",
-      "[1e100, 1.0, -1e100]",
-    ),
-    "ok:1.0",
-  )
+  assert_eq(differential_outcome("sum(@)", "[1e100, 1.0, -1e100]"), "ok:1.0")
 }
 
 ///|
 test "differential/25: sum(@)" {
-  assert_eq(
-    differential_outcome(
-      "sum(@)",
-      "[]",
-    ),
-    "ok:0",
-  )
+  assert_eq(differential_outcome("sum(@)", "[]"), "ok:0")
 }
 
 ///|
 test "differential/26: sum(@)" {
-  assert_eq(
-    differential_outcome(
-      "sum(@)",
-      "[1.0]",
-    ),
-    "ok:1.0",
-  )
+  assert_eq(differential_outcome("sum(@)", "[1.0]"), "ok:1.0")
 }
 
 ///|
 test "differential/27: avg(@)" {
-  assert_eq(
-    differential_outcome(
-      "avg(@)",
-      "[1, 2, 3]",
-    ),
-    "ok:2.0",
-  )
+  assert_eq(differential_outcome("avg(@)", "[1, 2, 3]"), "ok:2.0")
 }
 
 ///|
 test "differential/28: avg(@)" {
   assert_eq(
-    differential_outcome(
-      "avg(@)",
-      "[0.1, 0.2, 0.3]",
-    ),
+    differential_outcome("avg(@)", "[0.1, 0.2, 0.3]"),
     "ok:0.19999999999999998",
   )
 }
 
 ///|
 test "differential/29: avg(@)" {
-  assert_eq(
-    differential_outcome(
-      "avg(@)",
-      "[]",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("avg(@)", "[]"), "ok:null")
 }
 
 ///|
 test "differential/30: abs(@)" {
-  assert_eq(
-    differential_outcome(
-      "abs(@)",
-      "-3",
-    ),
-    "ok:3",
-  )
+  assert_eq(differential_outcome("abs(@)", "-3"), "ok:3")
 }
 
 ///|
 test "differential/31: abs(@)" {
-  assert_eq(
-    differential_outcome(
-      "abs(@)",
-      "-1.5",
-    ),
-    "ok:1.5",
-  )
+  assert_eq(differential_outcome("abs(@)", "-1.5"), "ok:1.5")
 }
 
 ///|
 test "differential/32: abs(@)" {
-  assert_eq(
-    differential_outcome(
-      "abs(@)",
-      "-1.0",
-    ),
-    "ok:1.0",
-  )
+  assert_eq(differential_outcome("abs(@)", "-1.0"), "ok:1.0")
 }
 
 ///|
 test "differential/33: ceil(@)" {
-  assert_eq(
-    differential_outcome(
-      "ceil(@)",
-      "1.5",
-    ),
-    "ok:2",
-  )
+  assert_eq(differential_outcome("ceil(@)", "1.5"), "ok:2")
 }
 
 ///|
 test "differential/34: ceil(@)" {
-  assert_eq(
-    differential_outcome(
-      "ceil(@)",
-      "-0.5",
-    ),
-    "ok:0",
-  )
+  assert_eq(differential_outcome("ceil(@)", "-0.5"), "ok:0")
 }
 
 ///|
 test "differential/35: ceil(@)" {
-  assert_eq(
-    differential_outcome(
-      "ceil(@)",
-      "2",
-    ),
-    "ok:2",
-  )
+  assert_eq(differential_outcome("ceil(@)", "2"), "ok:2")
 }
 
 ///|
 test "differential/36: floor(@)" {
-  assert_eq(
-    differential_outcome(
-      "floor(@)",
-      "-1.5",
-    ),
-    "ok:-2",
-  )
+  assert_eq(differential_outcome("floor(@)", "-1.5"), "ok:-2")
 }
 
 ///|
 test "differential/37: floor(@)" {
-  assert_eq(
-    differential_outcome(
-      "floor(@)",
-      "1.0",
-    ),
-    "ok:1",
-  )
+  assert_eq(differential_outcome("floor(@)", "1.0"), "ok:1")
 }
 
 ///|
 test "differential/38: ceil(@)" {
   assert_eq(
-    differential_outcome(
-      "ceil(@)",
-      "1e400",
-    ),
+    differential_outcome("ceil(@)", "1e400"),
     "err:OverflowError:cannot convert float infinity to integer",
   )
 }
@@ -462,340 +256,166 @@ test "differential/38: ceil(@)" {
 ///|
 test "differential/39: floor(@)" {
   assert_eq(
-    differential_outcome(
-      "floor(@)",
-      "NaN",
-    ),
+    differential_outcome("floor(@)", "NaN"),
     "err:ValueError:cannot convert float NaN to integer",
   )
 }
 
 ///|
 test "differential/40: max(@)" {
-  assert_eq(
-    differential_outcome(
-      "max(@)",
-      "[1, 3.5, 2]",
-    ),
-    "ok:3.5",
-  )
+  assert_eq(differential_outcome("max(@)", "[1, 3.5, 2]"), "ok:3.5")
 }
 
 ///|
 test "differential/41: min(@)" {
-  assert_eq(
-    differential_outcome(
-      "min(@)",
-      "[1.0, 1]",
-    ),
-    "ok:1.0",
-  )
+  assert_eq(differential_outcome("min(@)", "[1.0, 1]"), "ok:1.0")
 }
 
 ///|
 test "differential/42: max(@)" {
-  assert_eq(
-    differential_outcome(
-      "max(@)",
-      "[]",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("max(@)", "[]"), "ok:null")
 }
 
 ///|
 test "differential/43: sort(@)" {
-  assert_eq(
-    differential_outcome(
-      "sort(@)",
-      "[3, 1.5, 2, 1]",
-    ),
-    "ok:[1,1.5,2,3]",
-  )
+  assert_eq(differential_outcome("sort(@)", "[3, 1.5, 2, 1]"), "ok:[1,1.5,2,3]")
 }
 
 ///|
 test "differential/44: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1\"",
-    ),
-    "ok:1",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1\""), "ok:1")
 }
 
 ///|
 test "differential/45: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\" 42 \"",
-    ),
-    "ok:42",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\" 42 \""), "ok:42")
 }
 
 ///|
 test "differential/46: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1_000\"",
-    ),
-    "ok:1000",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1_000\""), "ok:1000")
 }
 
 ///|
 test "differential/47: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1__0\"",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1__0\""), "ok:null")
 }
 
 ///|
 test "differential/48: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"_1\"",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"_1\""), "ok:null")
 }
 
 ///|
 test "differential/49: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"+5\"",
-    ),
-    "ok:5",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"+5\""), "ok:5")
 }
 
 ///|
 test "differential/50: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"-0\"",
-    ),
-    "ok:0",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"-0\""), "ok:0")
 }
 
 ///|
 test "differential/51: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"007\"",
-    ),
-    "ok:7",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"007\""), "ok:7")
 }
 
 ///|
 test "differential/52: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1.5\"",
-    ),
-    "ok:1.5",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1.5\""), "ok:1.5")
 }
 
 ///|
 test "differential/53: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1.\"",
-    ),
-    "ok:1.0",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1.\""), "ok:1.0")
 }
 
 ///|
 test "differential/54: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\".5\"",
-    ),
-    "ok:0.5",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\".5\""), "ok:0.5")
 }
 
 ///|
 test "differential/55: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1e3\"",
-    ),
-    "ok:1000.0",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1e3\""), "ok:1000.0")
 }
 
 ///|
 test "differential/56: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1E-3\"",
-    ),
-    "ok:0.001",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1E-3\""), "ok:0.001")
 }
 
 ///|
 test "differential/57: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1e400\"",
-    ),
-    "ok:Infinity",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1e400\""), "ok:Infinity")
 }
 
 ///|
 test "differential/58: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"inf\"",
-    ),
-    "ok:Infinity",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"inf\""), "ok:Infinity")
 }
 
 ///|
 test "differential/59: to_number(@)" {
   assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"-Infinity\"",
-    ),
+    differential_outcome("to_number(@)", "\"-Infinity\""),
     "ok:-Infinity",
   )
 }
 
 ///|
 test "differential/60: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"nan\"",
-    ),
-    "ok:NaN",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"nan\""), "ok:NaN")
 }
 
 ///|
 test "differential/61: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"abc\"",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"abc\""), "ok:null")
 }
 
 ///|
 test "differential/62: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"\"",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"\""), "ok:null")
 }
 
 ///|
 test "differential/63: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"0x10\"",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"0x10\""), "ok:null")
 }
 
 ///|
 test "differential/64: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"1 2\"",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("to_number(@)", "\"1 2\""), "ok:null")
 }
 
 ///|
 test "differential/65: to_number(@)" {
   assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "\"12345678901234567890123\"",
-    ),
+    differential_outcome("to_number(@)", "\"12345678901234567890123\""),
     "ok:12345678901234567890123",
   )
 }
 
 ///|
 test "differential/66: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "1.5",
-    ),
-    "ok:1.5",
-  )
+  assert_eq(differential_outcome("to_number(@)", "1.5"), "ok:1.5")
 }
 
 ///|
 test "differential/67: to_number(@)" {
-  assert_eq(
-    differential_outcome(
-      "to_number(@)",
-      "true",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("to_number(@)", "true"), "ok:null")
 }
 
 ///|
 test "differential/68: length(@)" {
-  assert_eq(
-    differential_outcome(
-      "length(@)",
-      "\"\\ud83d\\ude00a\"",
-    ),
-    "ok:2",
-  )
+  assert_eq(differential_outcome("length(@)", "\"\\ud83d\\ude00a\""), "ok:2")
 }
 
 ///|
 test "differential/69: reverse(@)" {
   assert_eq(
-    differential_outcome(
-      "reverse(@)",
-      "\"a\\ud83d\\ude00b\"",
-    ),
+    differential_outcome("reverse(@)", "\"a\\ud83d\\ude00b\""),
     "ok:\"b\\ud83d\\ude00a\"",
   )
 }
@@ -804,8 +424,7 @@ test "differential/69: reverse(@)" {
 test "differential/70: sort(@)" {
   assert_eq(
     differential_outcome(
-      "sort(@)",
-      "[\"b\", \"a\", \"\\ud83d\\ude00\", \"\\uffff\", \"aa\", \"\"]",
+      "sort(@)", "[\"b\", \"a\", \"\\ud83d\\ude00\", \"\\uffff\", \"aa\", \"\"]",
     ),
     "ok:[\"\",\"a\",\"aa\",\"b\",\"\\uffff\",\"\\ud83d\\ude00\"]",
   )
@@ -814,10 +433,7 @@ test "differential/70: sort(@)" {
 ///|
 test "differential/71: max(@)" {
   assert_eq(
-    differential_outcome(
-      "max(@)",
-      "[\"\\uffff\", \"\\ud83d\\ude00\"]",
-    ),
+    differential_outcome("max(@)", "[\"\\uffff\", \"\\ud83d\\ude00\"]"),
     "ok:\"\\ud83d\\ude00\"",
   )
 }
@@ -825,10 +441,7 @@ test "differential/71: max(@)" {
 ///|
 test "differential/72: min(@)" {
   assert_eq(
-    differential_outcome(
-      "min(@)",
-      "[\"\\uffff\", \"\\ud83d\\ude00\"]",
-    ),
+    differential_outcome("min(@)", "[\"\\uffff\", \"\\ud83d\\ude00\"]"),
     "ok:\"\\uffff\"",
   )
 }
@@ -837,8 +450,7 @@ test "differential/72: min(@)" {
 test "differential/73: [?@ < '\\uffff']" {
   assert_eq(
     differential_outcome(
-      "[?@ < '\\uffff']",
-      "[\"\\ud83d\\ude00\", \"\\ufffe\"]",
+      "[?@ < '\\uffff']", "[\"\\ud83d\\ude00\", \"\\ufffe\"]",
     ),
     "ok:[]",
   )
@@ -848,8 +460,7 @@ test "differential/73: [?@ < '\\uffff']" {
 test "differential/74: a < b" {
   assert_eq(
     differential_outcome(
-      "a < b",
-      "{\"a\": \"\\uffff\", \"b\": \"\\ud83d\\ude00\"}",
+      "a < b", "{\"a\": \"\\uffff\", \"b\": \"\\ud83d\\ude00\"}",
     ),
     "ok:true",
   )
@@ -858,10 +469,7 @@ test "differential/74: a < b" {
 ///|
 test "differential/75: a < b" {
   assert_eq(
-    differential_outcome(
-      "a < b",
-      "{\"a\": \"b\", \"b\": \"aa\"}",
-    ),
+    differential_outcome("a < b", "{\"a\": \"b\", \"b\": \"aa\"}"),
     "ok:false",
   )
 }
@@ -870,8 +478,7 @@ test "differential/75: a < b" {
 test "differential/76: sort_by(@, &@)" {
   assert_eq(
     differential_outcome(
-      "sort_by(@, &@)",
-      "[\"\\ud83d\\ude00\", \"\\uffff\", \"a\"]",
+      "sort_by(@, &@)", "[\"\\ud83d\\ude00\", \"\\uffff\", \"a\"]",
     ),
     "ok:[\"a\",\"\\uffff\",\"\\ud83d\\ude00\"]",
   )
@@ -881,8 +488,7 @@ test "differential/76: sort_by(@, &@)" {
 test "differential/77: contains(@, '\\ud83d\\ude00')" {
   assert_eq(
     differential_outcome(
-      "contains(@, '\\ud83d\\ude00')",
-      "\"x\\ud83d\\ude00y\"",
+      "contains(@, '\\ud83d\\ude00')", "\"x\\ud83d\\ude00y\"",
     ),
     "ok:false",
   )
@@ -891,131 +497,68 @@ test "differential/77: contains(@, '\\ud83d\\ude00')" {
 ///|
 test "differential/78: starts_with(@, 'é')" {
   assert_eq(
-    differential_outcome(
-      "starts_with(@, 'é')",
-      "\"été\"",
-    ),
+    differential_outcome("starts_with(@, 'é')", "\"été\""),
     "ok:true",
   )
 }
 
 ///|
 test "differential/79: ends_with(@, 'té')" {
-  assert_eq(
-    differential_outcome(
-      "ends_with(@, 'té')",
-      "\"été\"",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("ends_with(@, 'té')", "\"été\""), "ok:true")
 }
 
 ///|
 test "differential/80: join('✓', @)" {
   assert_eq(
-    differential_outcome(
-      "join('✓', @)",
-      "[\"a\", \"\\ud83d\\ude00\"]",
-    ),
+    differential_outcome("join('✓', @)", "[\"a\", \"\\ud83d\\ude00\"]"),
     "ok:\"a\\u2713\\ud83d\\ude00\"",
   )
 }
 
 ///|
 test "differential/81: \"✓\"" {
-  assert_eq(
-    differential_outcome(
-      "\"✓\"",
-      "{\"✓\": 1}",
-    ),
-    "ok:1",
-  )
+  assert_eq(differential_outcome("\"✓\"", "{\"✓\": 1}"), "ok:1")
 }
 
 ///|
 test "differential/82: '😀'" {
-  assert_eq(
-    differential_outcome(
-      "'😀'",
-      "{}",
-    ),
-    "ok:\"\\ud83d\\ude00\"",
-  )
+  assert_eq(differential_outcome("'😀'", "{}"), "ok:\"\\ud83d\\ude00\"")
 }
 
 ///|
 test "differential/83: [`1`] == [`true`]" {
-  assert_eq(
-    differential_outcome(
-      "[`1`] == [`true`]",
-      "{}",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("[`1`] == [`true`]", "{}"), "ok:true")
 }
 
 ///|
 test "differential/84: `[1]` == `[true]`" {
-  assert_eq(
-    differential_outcome(
-      "`[1]` == `[true]`",
-      "{}",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("`[1]` == `[true]`", "{}"), "ok:true")
 }
 
 ///|
 test "differential/85: `1` == `true`" {
-  assert_eq(
-    differential_outcome(
-      "`1` == `true`",
-      "{}",
-    ),
-    "ok:false",
-  )
+  assert_eq(differential_outcome("`1` == `true`", "{}"), "ok:false")
 }
 
 ///|
 test "differential/86: `0` == `false`" {
-  assert_eq(
-    differential_outcome(
-      "`0` == `false`",
-      "{}",
-    ),
-    "ok:false",
-  )
+  assert_eq(differential_outcome("`0` == `false`", "{}"), "ok:false")
 }
 
 ///|
 test "differential/87: `2` == `true`" {
-  assert_eq(
-    differential_outcome(
-      "`2` == `true`",
-      "{}",
-    ),
-    "ok:false",
-  )
+  assert_eq(differential_outcome("`2` == `true`", "{}"), "ok:false")
 }
 
 ///|
 test "differential/88: `1.0` == `1`" {
-  assert_eq(
-    differential_outcome(
-      "`1.0` == `1`",
-      "{}",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("`1.0` == `1`", "{}"), "ok:true")
 }
 
 ///|
 test "differential/89: `{\"a\": 1}` == `{\"a\": true}`" {
   assert_eq(
-    differential_outcome(
-      "`{\"a\": 1}` == `{\"a\": true}`",
-      "{}",
-    ),
+    differential_outcome("`{\"a\": 1}` == `{\"a\": true}`", "{}"),
     "ok:true",
   )
 }
@@ -1024,8 +567,7 @@ test "differential/89: `{\"a\": 1}` == `{\"a\": true}`" {
 test "differential/90: `{\"a\": 1, \"b\": 2}` == `{\"b\": 2, \"a\": 1}`" {
   assert_eq(
     differential_outcome(
-      "`{\"a\": 1, \"b\": 2}` == `{\"b\": 2, \"a\": 1}`",
-      "{}",
+      "`{\"a\": 1, \"b\": 2}` == `{\"b\": 2, \"a\": 1}`", "{}",
     ),
     "ok:true",
   )
@@ -1033,153 +575,77 @@ test "differential/90: `{\"a\": 1, \"b\": 2}` == `{\"b\": 2, \"a\": 1}`" {
 
 ///|
 test "differential/91: contains(`[0]`, `false`)" {
-  assert_eq(
-    differential_outcome(
-      "contains(`[0]`, `false`)",
-      "{}",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("contains(`[0]`, `false`)", "{}"), "ok:true")
 }
 
 ///|
 test "differential/92: contains(`[1, 2]`, `true`)" {
-  assert_eq(
-    differential_outcome(
-      "contains(`[1, 2]`, `true`)",
-      "{}",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("contains(`[1, 2]`, `true`)", "{}"), "ok:true")
 }
 
 ///|
 test "differential/93: contains(`[[1]]`, `[true]`)" {
   assert_eq(
-    differential_outcome(
-      "contains(`[[1]]`, `[true]`)",
-      "{}",
-    ),
+    differential_outcome("contains(`[[1]]`, `[true]`)", "{}"),
     "ok:true",
   )
 }
 
 ///|
 test "differential/94: !@" {
-  assert_eq(
-    differential_outcome(
-      "!@",
-      "0",
-    ),
-    "ok:false",
-  )
+  assert_eq(differential_outcome("!@", "0"), "ok:false")
 }
 
 ///|
 test "differential/95: !@" {
-  assert_eq(
-    differential_outcome(
-      "!@",
-      "0.0",
-    ),
-    "ok:false",
-  )
+  assert_eq(differential_outcome("!@", "0.0"), "ok:false")
 }
 
 ///|
 test "differential/96: !@" {
-  assert_eq(
-    differential_outcome(
-      "!@",
-      "1",
-    ),
-    "ok:false",
-  )
+  assert_eq(differential_outcome("!@", "1"), "ok:false")
 }
 
 ///|
 test "differential/97: !@" {
-  assert_eq(
-    differential_outcome(
-      "!@",
-      "\"\"",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("!@", "\"\""), "ok:true")
 }
 
 ///|
 test "differential/98: !@" {
-  assert_eq(
-    differential_outcome(
-      "!@",
-      "[]",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("!@", "[]"), "ok:true")
 }
 
 ///|
 test "differential/99: !@" {
-  assert_eq(
-    differential_outcome(
-      "!@",
-      "{}",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("!@", "{}"), "ok:true")
 }
 
 ///|
 test "differential/100: !@" {
-  assert_eq(
-    differential_outcome(
-      "!@",
-      "null",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("!@", "null"), "ok:true")
 }
 
 ///|
 test "differential/101: !@" {
-  assert_eq(
-    differential_outcome(
-      "!@",
-      "\"x\"",
-    ),
-    "ok:false",
-  )
+  assert_eq(differential_outcome("!@", "\"x\""), "ok:false")
 }
 
 ///|
 test "differential/102: @ || 'default'" {
-  assert_eq(
-    differential_outcome(
-      "@ || 'default'",
-      "0",
-    ),
-    "ok:0",
-  )
+  assert_eq(differential_outcome("@ || 'default'", "0"), "ok:0")
 }
 
 ///|
 test "differential/103: @ && 'yes'" {
-  assert_eq(
-    differential_outcome(
-      "@ && 'yes'",
-      "[]",
-    ),
-    "ok:[]",
-  )
+  assert_eq(differential_outcome("@ && 'yes'", "[]"), "ok:[]")
 }
 
 ///|
 test "differential/104: [?@]" {
   assert_eq(
     differential_outcome(
-      "[?@]",
-      "[0, false, null, \"\", [], {}, \"a\", [0], {\"a\": null}, 0.0]",
+      "[?@]", "[0, false, null, \"\", [], {}, \"a\", [0], {\"a\": null}, 0.0]",
     ),
     "ok:[0,\"a\",[0],{\"a\":null},0.0]",
   )
@@ -1187,22 +653,13 @@ test "differential/104: [?@]" {
 
 ///|
 test "differential/105: `1` < `2`" {
-  assert_eq(
-    differential_outcome(
-      "`1` < `2`",
-      "{}",
-    ),
-    "ok:true",
-  )
+  assert_eq(differential_outcome("`1` < `2`", "{}"), "ok:true")
 }
 
 ///|
 test "differential/106: `1` < 'a'" {
   assert_eq(
-    differential_outcome(
-      "`1` < 'a'",
-      "{}",
-    ),
+    differential_outcome("`1` < 'a'", "{}"),
     "err:TypeError:'<' not supported between instances of 'int' and 'str'",
   )
 }
@@ -1210,10 +667,7 @@ test "differential/106: `1` < 'a'" {
 ///|
 test "differential/107: `1.5` >= 'a'" {
   assert_eq(
-    differential_outcome(
-      "`1.5` >= 'a'",
-      "{}",
-    ),
+    differential_outcome("`1.5` >= 'a'", "{}"),
     "err:TypeError:'>=' not supported between instances of 'float' and 'str'",
   )
 }
@@ -1221,54 +675,30 @@ test "differential/107: `1.5` >= 'a'" {
 ///|
 test "differential/108: 'a' > `1`" {
   assert_eq(
-    differential_outcome(
-      "'a' > `1`",
-      "{}",
-    ),
+    differential_outcome("'a' > `1`", "{}"),
     "err:TypeError:'>' not supported between instances of 'str' and 'int'",
   )
 }
 
 ///|
 test "differential/109: `true` < `false`" {
-  assert_eq(
-    differential_outcome(
-      "`true` < `false`",
-      "{}",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("`true` < `false`", "{}"), "ok:null")
 }
 
 ///|
 test "differential/110: `null` < `1`" {
-  assert_eq(
-    differential_outcome(
-      "`null` < `1`",
-      "{}",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("`null` < `1`", "{}"), "ok:null")
 }
 
 ///|
 test "differential/111: `[1]` < `[2]`" {
-  assert_eq(
-    differential_outcome(
-      "`[1]` < `[2]`",
-      "{}",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("`[1]` < `[2]`", "{}"), "ok:null")
 }
 
 ///|
 test "differential/112: a <= b" {
   assert_eq(
-    differential_outcome(
-      "a <= b",
-      "{\"a\": NaN, \"b\": 1}",
-    ),
+    differential_outcome("a <= b", "{\"a\": NaN, \"b\": 1}"),
     "ok:false",
   )
 }
@@ -1277,8 +707,7 @@ test "differential/112: a <= b" {
 test "differential/113: sort_by(@, &age)[*].name" {
   assert_eq(
     differential_outcome(
-      "sort_by(@, &age)[*].name",
-      "[{\"name\": \"a\", \"age\": 30}, {\"name\": \"b\", \"age\": 20},\n             {\"name\": \"c\", \"age\": 30}, {\"name\": \"d\", \"age\": 10}]",
+      "sort_by(@, &age)[*].name", "[{\"name\": \"a\", \"age\": 30}, {\"name\": \"b\", \"age\": 20},\n             {\"name\": \"c\", \"age\": 30}, {\"name\": \"d\", \"age\": 10}]",
     ),
     "ok:[\"d\",\"b\",\"a\",\"c\"]",
   )
@@ -1288,8 +717,7 @@ test "differential/113: sort_by(@, &age)[*].name" {
 test "differential/114: sort_by(@, &name)[*].name" {
   assert_eq(
     differential_outcome(
-      "sort_by(@, &name)[*].name",
-      "[{\"name\": \"a\", \"age\": 30}, {\"name\": \"b\", \"age\": 20},\n             {\"name\": \"c\", \"age\": 30}, {\"name\": \"d\", \"age\": 10}]",
+      "sort_by(@, &name)[*].name", "[{\"name\": \"a\", \"age\": 30}, {\"name\": \"b\", \"age\": 20},\n             {\"name\": \"c\", \"age\": 30}, {\"name\": \"d\", \"age\": 10}]",
     ),
     "ok:[\"a\",\"b\",\"c\",\"d\"]",
   )
@@ -1299,8 +727,7 @@ test "differential/114: sort_by(@, &name)[*].name" {
 test "differential/115: max_by(@, &age).name" {
   assert_eq(
     differential_outcome(
-      "max_by(@, &age).name",
-      "[{\"name\": \"a\", \"age\": 30}, {\"name\": \"b\", \"age\": 20},\n             {\"name\": \"c\", \"age\": 30}, {\"name\": \"d\", \"age\": 10}]",
+      "max_by(@, &age).name", "[{\"name\": \"a\", \"age\": 30}, {\"name\": \"b\", \"age\": 20},\n             {\"name\": \"c\", \"age\": 30}, {\"name\": \"d\", \"age\": 10}]",
     ),
     "ok:\"a\"",
   )
@@ -1310,8 +737,7 @@ test "differential/115: max_by(@, &age).name" {
 test "differential/116: min_by(@, &age).name" {
   assert_eq(
     differential_outcome(
-      "min_by(@, &age).name",
-      "[{\"name\": \"a\", \"age\": 30}, {\"name\": \"b\", \"age\": 20},\n             {\"name\": \"c\", \"age\": 30}, {\"name\": \"d\", \"age\": 10}]",
+      "min_by(@, &age).name", "[{\"name\": \"a\", \"age\": 30}, {\"name\": \"b\", \"age\": 20},\n             {\"name\": \"c\", \"age\": 30}, {\"name\": \"d\", \"age\": 10}]",
     ),
     "ok:\"d\"",
   )
@@ -1320,10 +746,7 @@ test "differential/116: min_by(@, &age).name" {
 ///|
 test "differential/117: sort_by(@, &a)" {
   assert_eq(
-    differential_outcome(
-      "sort_by(@, &a)",
-      "[{\"a\": true}]",
-    ),
+    differential_outcome("sort_by(@, &a)", "[{\"a\": true}]"),
     "err:JMESPathTypeError:In function sort_by(), invalid type for value: {'a': True}, expected one of: ['string', 'number'], received: \"boolean\"",
   )
 }
@@ -1331,10 +754,7 @@ test "differential/117: sort_by(@, &a)" {
 ///|
 test "differential/118: sort_by(@, &a)" {
   assert_eq(
-    differential_outcome(
-      "sort_by(@, &a)",
-      "[{\"a\": 1}, {\"a\": \"x\"}]",
-    ),
+    differential_outcome("sort_by(@, &a)", "[{\"a\": 1}, {\"a\": \"x\"}]"),
     "err:JMESPathTypeError:In function sort_by(), invalid type for value: x, expected one of: ['number'], received: \"string\"",
   )
 }
@@ -1342,10 +762,7 @@ test "differential/118: sort_by(@, &a)" {
 ///|
 test "differential/119: sort_by(@, &a)" {
   assert_eq(
-    differential_outcome(
-      "sort_by(@, &a)",
-      "[{\"a\": 1}, {\"b\": 2}]",
-    ),
+    differential_outcome("sort_by(@, &a)", "[{\"a\": 1}, {\"b\": 2}]"),
     "err:JMESPathTypeError:In function sort_by(), invalid type for value: None, expected one of: ['number'], received: \"null\"",
   )
 }
@@ -1353,10 +770,7 @@ test "differential/119: sort_by(@, &a)" {
 ///|
 test "differential/120: min_by(@, &a)" {
   assert_eq(
-    differential_outcome(
-      "min_by(@, &a)",
-      "[{\"a\": 1}, {\"a\": \"x\"}]",
-    ),
+    differential_outcome("min_by(@, &a)", "[{\"a\": 1}, {\"a\": \"x\"}]"),
     "err:TypeError:'<' not supported between instances of 'str' and 'int'",
   )
 }
@@ -1364,10 +778,7 @@ test "differential/120: min_by(@, &a)" {
 ///|
 test "differential/121: max_by(@, &a)" {
   assert_eq(
-    differential_outcome(
-      "max_by(@, &a)",
-      "[{\"a\": \"x\"}, {\"a\": 1}]",
-    ),
+    differential_outcome("max_by(@, &a)", "[{\"a\": \"x\"}, {\"a\": 1}]"),
     "err:TypeError:'>' not supported between instances of 'int' and 'str'",
   )
 }
@@ -1375,10 +786,7 @@ test "differential/121: max_by(@, &a)" {
 ///|
 test "differential/122: max_by(@, &a)" {
   assert_eq(
-    differential_outcome(
-      "max_by(@, &a)",
-      "[{\"a\": 1}, {\"a\": null}]",
-    ),
+    differential_outcome("max_by(@, &a)", "[{\"a\": 1}, {\"a\": null}]"),
     "err:JMESPathTypeError:In function max_by(), invalid type for value: None, expected one of: ['number', 'string'], received: \"null\"",
   )
 }
@@ -1386,43 +794,25 @@ test "differential/122: max_by(@, &a)" {
 ///|
 test "differential/123: min_by(@, &a)" {
   assert_eq(
-    differential_outcome(
-      "min_by(@, &a)",
-      "[{\"a\": [1]}]",
-    ),
+    differential_outcome("min_by(@, &a)", "[{\"a\": [1]}]"),
     "err:JMESPathTypeError:In function min_by(), invalid type for value: [1], expected one of: ['number', 'string'], received: \"array\"",
   )
 }
 
 ///|
 test "differential/124: sort_by(`[]`, &a)" {
-  assert_eq(
-    differential_outcome(
-      "sort_by(`[]`, &a)",
-      "{}",
-    ),
-    "ok:[]",
-  )
+  assert_eq(differential_outcome("sort_by(`[]`, &a)", "{}"), "ok:[]")
 }
 
 ///|
 test "differential/125: min_by(`[]`, &a)" {
-  assert_eq(
-    differential_outcome(
-      "min_by(`[]`, &a)",
-      "{}",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("min_by(`[]`, &a)", "{}"), "ok:null")
 }
 
 ///|
 test "differential/126: length(@)" {
   assert_eq(
-    differential_outcome(
-      "length(@)",
-      "2",
-    ),
+    differential_outcome("length(@)", "2"),
     "err:JMESPathTypeError:In function length(), invalid type for value: 2, expected one of: ['string', 'array', 'object'], received: \"number\"",
   )
 }
@@ -1430,10 +820,7 @@ test "differential/126: length(@)" {
 ///|
 test "differential/127: length(@)" {
   assert_eq(
-    differential_outcome(
-      "length(@)",
-      "1.5",
-    ),
+    differential_outcome("length(@)", "1.5"),
     "err:JMESPathTypeError:In function length(), invalid type for value: 1.5, expected one of: ['string', 'array', 'object'], received: \"number\"",
   )
 }
@@ -1441,10 +828,7 @@ test "differential/127: length(@)" {
 ///|
 test "differential/128: length(@)" {
   assert_eq(
-    differential_outcome(
-      "length(@)",
-      "1e400",
-    ),
+    differential_outcome("length(@)", "1e400"),
     "err:JMESPathTypeError:In function length(), invalid type for value: inf, expected one of: ['string', 'array', 'object'], received: \"number\"",
   )
 }
@@ -1452,10 +836,7 @@ test "differential/128: length(@)" {
 ///|
 test "differential/129: length(@)" {
   assert_eq(
-    differential_outcome(
-      "length(@)",
-      "true",
-    ),
+    differential_outcome("length(@)", "true"),
     "err:JMESPathTypeError:In function length(), invalid type for value: True, expected one of: ['string', 'array', 'object'], received: \"boolean\"",
   )
 }
@@ -1463,10 +844,7 @@ test "differential/129: length(@)" {
 ///|
 test "differential/130: length(@)" {
   assert_eq(
-    differential_outcome(
-      "length(@)",
-      "null",
-    ),
+    differential_outcome("length(@)", "null"),
     "err:JMESPathTypeError:In function length(), invalid type for value: None, expected one of: ['string', 'array', 'object'], received: \"null\"",
   )
 }
@@ -1474,10 +852,7 @@ test "differential/130: length(@)" {
 ///|
 test "differential/131: abs(@)" {
   assert_eq(
-    differential_outcome(
-      "abs(@)",
-      "\"x\"",
-    ),
+    differential_outcome("abs(@)", "\"x\""),
     "err:JMESPathTypeError:In function abs(), invalid type for value: x, expected one of: ['number'], received: \"string\"",
   )
 }
@@ -1486,8 +861,7 @@ test "differential/131: abs(@)" {
 test "differential/132: abs(@)" {
   assert_eq(
     differential_outcome(
-      "abs(@)",
-      "{\"a'b\": [1, \"x\\\"y\", null, true, 2.5]}",
+      "abs(@)", "{\"a'b\": [1, \"x\\\"y\", null, true, 2.5]}",
     ),
     "err:JMESPathTypeError:In function abs(), invalid type for value: {\"a'b\": [1, 'x\"y', None, True, 2.5]}, expected one of: ['number'], received: \"object\"",
   )
@@ -1496,10 +870,7 @@ test "differential/132: abs(@)" {
 ///|
 test "differential/133: abs(@)" {
   assert_eq(
-    differential_outcome(
-      "abs(@)",
-      "\"it's\"",
-    ),
+    differential_outcome("abs(@)", "\"it's\""),
     "err:JMESPathTypeError:In function abs(), invalid type for value: it's, expected one of: ['number'], received: \"string\"",
   )
 }
@@ -1508,8 +879,7 @@ test "differential/133: abs(@)" {
 test "differential/134: abs(@)" {
   assert_eq(
     differential_outcome(
-      "abs(@)",
-      "[\"it's\", \"say \\\"hi\\\"\", \"both ' and \\\"\", \"tab\\t\", \"\\u00e9\", \"\\u0001\", \"\\\\\"]",
+      "abs(@)", "[\"it's\", \"say \\\"hi\\\"\", \"both ' and \\\"\", \"tab\\t\", \"\\u00e9\", \"\\u0001\", \"\\\\\"]",
     ),
     "err:JMESPathTypeError:In function abs(), invalid type for value: [\"it's\", 'say \"hi\"', 'both \\' and \"', 'tab\\t', 'é', '\\x01', '\\\\'], expected one of: ['number'], received: \"array\"",
   )
@@ -1518,10 +888,7 @@ test "differential/134: abs(@)" {
 ///|
 test "differential/135: avg(@)" {
   assert_eq(
-    differential_outcome(
-      "avg(@)",
-      "[\"a\"]",
-    ),
+    differential_outcome("avg(@)", "[\"a\"]"),
     "err:JMESPathTypeError:In function avg(), invalid type for value: a, expected one of: ['array-number'], received: \"str\"",
   )
 }
@@ -1529,10 +896,7 @@ test "differential/135: avg(@)" {
 ///|
 test "differential/136: avg(@)" {
   assert_eq(
-    differential_outcome(
-      "avg(@)",
-      "[1, true]",
-    ),
+    differential_outcome("avg(@)", "[1, true]"),
     "err:JMESPathTypeError:In function avg(), invalid type for value: True, expected one of: ['array-number'], received: \"bool\"",
   )
 }
@@ -1540,10 +904,7 @@ test "differential/136: avg(@)" {
 ///|
 test "differential/137: sum(@)" {
   assert_eq(
-    differential_outcome(
-      "sum(@)",
-      "[null]",
-    ),
+    differential_outcome("sum(@)", "[null]"),
     "err:JMESPathTypeError:In function sum(), invalid type for value: None, expected one of: ['array-number'], received: \"NoneType\"",
   )
 }
@@ -1551,10 +912,7 @@ test "differential/137: sum(@)" {
 ///|
 test "differential/138: max(@)" {
   assert_eq(
-    differential_outcome(
-      "max(@)",
-      "[1, \"a\"]",
-    ),
+    differential_outcome("max(@)", "[1, \"a\"]"),
     "err:JMESPathTypeError:In function max(), invalid type for value: a, expected one of: ['array-number', 'array-string'], received: \"str\"",
   )
 }
@@ -1562,10 +920,7 @@ test "differential/138: max(@)" {
 ///|
 test "differential/139: max(@)" {
   assert_eq(
-    differential_outcome(
-      "max(@)",
-      "[\"a\", 1]",
-    ),
+    differential_outcome("max(@)", "[\"a\", 1]"),
     "err:JMESPathTypeError:In function max(), invalid type for value: 1, expected one of: ['array-number', 'array-string'], received: \"int\"",
   )
 }
@@ -1573,10 +928,7 @@ test "differential/139: max(@)" {
 ///|
 test "differential/140: max(@)" {
   assert_eq(
-    differential_outcome(
-      "max(@)",
-      "[true]",
-    ),
+    differential_outcome("max(@)", "[true]"),
     "err:JMESPathTypeError:In function max(), invalid type for value: True, expected one of: ['array-number', 'array-string'], received: \"bool\"",
   )
 }
@@ -1584,10 +936,7 @@ test "differential/140: max(@)" {
 ///|
 test "differential/141: max(@)" {
   assert_eq(
-    differential_outcome(
-      "max(@)",
-      "[[1]]",
-    ),
+    differential_outcome("max(@)", "[[1]]"),
     "err:JMESPathTypeError:In function max(), invalid type for value: [1], expected one of: ['array-number', 'array-string'], received: \"list\"",
   )
 }
@@ -1595,10 +944,7 @@ test "differential/141: max(@)" {
 ///|
 test "differential/142: sort(@)" {
   assert_eq(
-    differential_outcome(
-      "sort(@)",
-      "[{}, 1]",
-    ),
+    differential_outcome("sort(@)", "[{}, 1]"),
     "err:JMESPathTypeError:In function sort(), invalid type for value: {}, expected one of: ['array-string', 'array-number'], received: \"dict\"",
   )
 }
@@ -1606,10 +952,7 @@ test "differential/142: sort(@)" {
 ///|
 test "differential/143: join(', ', @)" {
   assert_eq(
-    differential_outcome(
-      "join(', ', @)",
-      "[1]",
-    ),
+    differential_outcome("join(', ', @)", "[1]"),
     "err:JMESPathTypeError:In function join(), invalid type for value: 1, expected one of: ['array-string'], received: \"int\"",
   )
 }
@@ -1617,10 +960,7 @@ test "differential/143: join(', ', @)" {
 ///|
 test "differential/144: join(`1`, @)" {
   assert_eq(
-    differential_outcome(
-      "join(`1`, @)",
-      "[\"a\"]",
-    ),
+    differential_outcome("join(`1`, @)", "[\"a\"]"),
     "err:JMESPathTypeError:In function join(), invalid type for value: 1, expected one of: ['string'], received: \"number\"",
   )
 }
@@ -1628,10 +968,7 @@ test "differential/144: join(`1`, @)" {
 ///|
 test "differential/145: map(&a, @)" {
   assert_eq(
-    differential_outcome(
-      "map(&a, @)",
-      "{\"a\": 1}",
-    ),
+    differential_outcome("map(&a, @)", "{\"a\": 1}"),
     "err:JMESPathTypeError:In function map(), invalid type for value: {'a': 1}, expected one of: ['array'], received: \"object\"",
   )
 }
@@ -1639,10 +976,7 @@ test "differential/145: map(&a, @)" {
 ///|
 test "differential/146: map(@, @)" {
   assert_eq(
-    differential_outcome(
-      "map(@, @)",
-      "[1]",
-    ),
+    differential_outcome("map(@, @)", "[1]"),
     "err:JMESPathTypeError:In function map(), invalid type for value: [1], expected one of: ['expref'], received: \"array\"",
   )
 }
@@ -1650,10 +984,7 @@ test "differential/146: map(@, @)" {
 ///|
 test "differential/147: sort_by(@, @)" {
   assert_eq(
-    differential_outcome(
-      "sort_by(@, @)",
-      "[1]",
-    ),
+    differential_outcome("sort_by(@, @)", "[1]"),
     "err:JMESPathTypeError:In function sort_by(), invalid type for value: [1], expected one of: ['expref'], received: \"array\"",
   )
 }
@@ -1661,10 +992,7 @@ test "differential/147: sort_by(@, @)" {
 ///|
 test "differential/148: length(&a)" {
   assert_eq(
-    differential_outcome(
-      "length(&a)",
-      "{}",
-    ),
+    differential_outcome("length(&a)", "{}"),
     "err:JMESPathTypeError:In function length(), invalid type for value: <jmespath.visitor._Expression object>, expected one of: ['string', 'array', 'object'], received: \"expref\"",
   )
 }
@@ -1672,10 +1000,7 @@ test "differential/148: length(&a)" {
 ///|
 test "differential/149: keys(@)" {
   assert_eq(
-    differential_outcome(
-      "keys(@)",
-      "[]",
-    ),
+    differential_outcome("keys(@)", "[]"),
     "err:JMESPathTypeError:In function keys(), invalid type for value: [], expected one of: ['object'], received: \"array\"",
   )
 }
@@ -1683,10 +1008,7 @@ test "differential/149: keys(@)" {
 ///|
 test "differential/150: not_null()" {
   assert_eq(
-    differential_outcome(
-      "not_null()",
-      "{}",
-    ),
+    differential_outcome("not_null()", "{}"),
     "err:VariadictArityError:Expected at least 1 argument for function not_null(), received 0",
   )
 }
@@ -1694,32 +1016,20 @@ test "differential/150: not_null()" {
 ///|
 test "differential/151: merge()" {
   assert_eq(
-    differential_outcome(
-      "merge()",
-      "{}",
-    ),
+    differential_outcome("merge()", "{}"),
     "err:VariadictArityError:Expected at least 1 argument for function merge(), received 0",
   )
 }
 
 ///|
 test "differential/152: type(&a)" {
-  assert_eq(
-    differential_outcome(
-      "type(&a)",
-      "{}",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("type(&a)", "{}"), "ok:null")
 }
 
 ///|
 test "differential/153: contains('abc', `1`)" {
   assert_eq(
-    differential_outcome(
-      "contains('abc', `1`)",
-      "{}",
-    ),
+    differential_outcome("contains('abc', `1`)", "{}"),
     "err:TypeError:'in <string>' requires string as left operand, not int",
   )
 }
@@ -1727,32 +1037,20 @@ test "differential/153: contains('abc', `1`)" {
 ///|
 test "differential/154: contains('abc', `null`)" {
   assert_eq(
-    differential_outcome(
-      "contains('abc', `null`)",
-      "{}",
-    ),
+    differential_outcome("contains('abc', `null`)", "{}"),
     "err:TypeError:'in <string>' requires string as left operand, not NoneType",
   )
 }
 
 ///|
 test "differential/155: contains(`[\"a\"]`, &a)" {
-  assert_eq(
-    differential_outcome(
-      "contains(`[\"a\"]`, &a)",
-      "{}",
-    ),
-    "ok:false",
-  )
+  assert_eq(differential_outcome("contains(`[\"a\"]`, &a)", "{}"), "ok:false")
 }
 
 ///|
 test "differential/156: unknown(@)" {
   assert_eq(
-    differential_outcome(
-      "unknown(@)",
-      "{}",
-    ),
+    differential_outcome("unknown(@)", "{}"),
     "err:UnknownFunctionError:Unknown function: unknown()",
   )
 }
@@ -1760,10 +1058,7 @@ test "differential/156: unknown(@)" {
 ///|
 test "differential/157: unknown(@, 'x')" {
   assert_eq(
-    differential_outcome(
-      "unknown(@, 'x')",
-      "{}",
-    ),
+    differential_outcome("unknown(@, 'x')", "{}"),
     "err:UnknownFunctionError:Unknown function: unknown()",
   )
 }
@@ -1771,10 +1066,7 @@ test "differential/157: unknown(@, 'x')" {
 ///|
 test "differential/158: length()" {
   assert_eq(
-    differential_outcome(
-      "length()",
-      "{}",
-    ),
+    differential_outcome("length()", "{}"),
     "err:ArityError:Expected 1 argument for function length(), received 0",
   )
 }
@@ -1782,10 +1074,7 @@ test "differential/158: length()" {
 ///|
 test "differential/159: length(@, @)" {
   assert_eq(
-    differential_outcome(
-      "length(@, @)",
-      "{}",
-    ),
+    differential_outcome("length(@, @)", "{}"),
     "err:ArityError:Expected 1 argument for function length(), received 2",
   )
 }
@@ -1793,10 +1082,7 @@ test "differential/159: length(@, @)" {
 ///|
 test "differential/160: sort_by(@)" {
   assert_eq(
-    differential_outcome(
-      "sort_by(@)",
-      "{}",
-    ),
+    differential_outcome("sort_by(@)", "{}"),
     "err:ArityError:Expected 2 arguments for function sort_by(), received 1",
   )
 }
@@ -1805,8 +1091,7 @@ test "differential/160: sort_by(@)" {
 test "differential/161: merge(@, `{\"b\": 2}`, `{\"a\": 3}`)" {
   assert_eq(
     differential_outcome(
-      "merge(@, `{\"b\": 2}`, `{\"a\": 3}`)",
-      "{\"a\": 1, \"c\": 0}",
+      "merge(@, `{\"b\": 2}`, `{\"a\": 3}`)", "{\"a\": 1, \"c\": 0}",
     ),
     "ok:{\"a\":3,\"c\":0,\"b\":2}",
   )
@@ -1815,10 +1100,7 @@ test "differential/161: merge(@, `{\"b\": 2}`, `{\"a\": 3}`)" {
 ///|
 test "differential/162: merge(@, `1`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `1`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `1`)", "{}"),
     "err:TypeError:'int' object is not iterable",
   )
 }
@@ -1826,10 +1108,7 @@ test "differential/162: merge(@, `1`)" {
 ///|
 test "differential/163: merge(@, `null`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `null`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `null`)", "{}"),
     "err:TypeError:'NoneType' object is not iterable",
   )
 }
@@ -1837,10 +1116,7 @@ test "differential/163: merge(@, `null`)" {
 ///|
 test "differential/164: merge(@, `true`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `true`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `true`)", "{}"),
     "err:TypeError:'bool' object is not iterable",
   )
 }
@@ -1848,43 +1124,25 @@ test "differential/164: merge(@, `true`)" {
 ///|
 test "differential/165: merge(@, 'ab')" {
   assert_eq(
-    differential_outcome(
-      "merge(@, 'ab')",
-      "{}",
-    ),
+    differential_outcome("merge(@, 'ab')", "{}"),
     "err:ValueError:dictionary update sequence element #0 has length 1; 2 is required",
   )
 }
 
 ///|
 test "differential/166: merge(@, '')" {
-  assert_eq(
-    differential_outcome(
-      "merge(@, '')",
-      "{}",
-    ),
-    "ok:{}",
-  )
+  assert_eq(differential_outcome("merge(@, '')", "{}"), "ok:{}")
 }
 
 ///|
 test "differential/167: merge(@, `[]`)" {
-  assert_eq(
-    differential_outcome(
-      "merge(@, `[]`)",
-      "{}",
-    ),
-    "ok:{}",
-  )
+  assert_eq(differential_outcome("merge(@, `[]`)", "{}"), "ok:{}")
 }
 
 ///|
 test "differential/168: merge(@, `[[\"k\", 1], \"xy\"]`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `[[\"k\", 1], \"xy\"]`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `[[\"k\", 1], \"xy\"]`)", "{}"),
     "ok:{\"k\":1,\"x\":\"y\"}",
   )
 }
@@ -1892,10 +1150,7 @@ test "differential/168: merge(@, `[[\"k\", 1], \"xy\"]`)" {
 ///|
 test "differential/169: merge(@, `[[1, 2, 3]]`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `[[1, 2, 3]]`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `[[1, 2, 3]]`)", "{}"),
     "err:ValueError:dictionary update sequence element #0 has length 3; 2 is required",
   )
 }
@@ -1903,10 +1158,7 @@ test "differential/169: merge(@, `[[1, 2, 3]]`)" {
 ///|
 test "differential/170: merge(@, `[1]`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `[1]`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `[1]`)", "{}"),
     "err:TypeError:cannot convert dictionary update sequence element #0 to a sequence",
   )
 }
@@ -1914,10 +1166,7 @@ test "differential/170: merge(@, `[1]`)" {
 ///|
 test "differential/171: merge(@, `[[[1], 2]]`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `[[[1], 2]]`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `[[[1], 2]]`)", "{}"),
     "err:TypeError:unhashable type: 'list'",
   )
 }
@@ -1925,10 +1174,7 @@ test "differential/171: merge(@, `[[[1], 2]]`)" {
 ///|
 test "differential/172: merge(@, `[[{}, 2]]`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `[[{}, 2]]`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `[[{}, 2]]`)", "{}"),
     "err:TypeError:unhashable type: 'dict'",
   )
 }
@@ -1936,32 +1182,20 @@ test "differential/172: merge(@, `[[{}, 2]]`)" {
 ///|
 test "differential/173: merge(@, `[{\"a\": 1, \"b\": 2}]`)" {
   assert_eq(
-    differential_outcome(
-      "merge(@, `[{\"a\": 1, \"b\": 2}]`)",
-      "{}",
-    ),
+    differential_outcome("merge(@, `[{\"a\": 1, \"b\": 2}]`)", "{}"),
     "ok:{\"a\":\"b\"}",
   )
 }
 
 ///|
 test "differential/174: [::-1]" {
-  assert_eq(
-    differential_outcome(
-      "[::-1]",
-      "[0, 1, 2, 3, 4]",
-    ),
-    "ok:[4,3,2,1,0]",
-  )
+  assert_eq(differential_outcome("[::-1]", "[0, 1, 2, 3, 4]"), "ok:[4,3,2,1,0]")
 }
 
 ///|
 test "differential/175: [10:-20:-1]" {
   assert_eq(
-    differential_outcome(
-      "[10:-20:-1]",
-      "[0, 1, 2, 3, 4]",
-    ),
+    differential_outcome("[10:-20:-1]", "[0, 1, 2, 3, 4]"),
     "ok:[4,3,2,1,0]",
   )
 }
@@ -1969,240 +1203,125 @@ test "differential/175: [10:-20:-1]" {
 ///|
 test "differential/176: [-100:100]" {
   assert_eq(
-    differential_outcome(
-      "[-100:100]",
-      "[0, 1, 2, 3, 4]",
-    ),
+    differential_outcome("[-100:100]", "[0, 1, 2, 3, 4]"),
     "ok:[0,1,2,3,4]",
   )
 }
 
 ///|
 test "differential/177: [-2:]" {
-  assert_eq(
-    differential_outcome(
-      "[-2:]",
-      "[0, 1, 2, 3, 4]",
-    ),
-    "ok:[3,4]",
-  )
+  assert_eq(differential_outcome("[-2:]", "[0, 1, 2, 3, 4]"), "ok:[3,4]")
 }
 
 ///|
 test "differential/178: [:-2:2]" {
-  assert_eq(
-    differential_outcome(
-      "[:-2:2]",
-      "[0, 1, 2, 3, 4]",
-    ),
-    "ok:[0,2]",
-  )
+  assert_eq(differential_outcome("[:-2:2]", "[0, 1, 2, 3, 4]"), "ok:[0,2]")
 }
 
 ///|
 test "differential/179: [1:3:0]" {
   assert_eq(
-    differential_outcome(
-      "[1:3:0]",
-      "[0, 1, 2, 3, 4]",
-    ),
+    differential_outcome("[1:3:0]", "[0, 1, 2, 3, 4]"),
     "err:ValueError:slice step cannot be zero",
   )
 }
 
 ///|
 test "differential/180: [1:3:0]" {
-  assert_eq(
-    differential_outcome(
-      "[1:3:0]",
-      "{}",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[1:3:0]", "{}"), "ok:null")
 }
 
 ///|
 test "differential/181: [-1]" {
-  assert_eq(
-    differential_outcome(
-      "[-1]",
-      "[0, 1, 2]",
-    ),
-    "ok:2",
-  )
+  assert_eq(differential_outcome("[-1]", "[0, 1, 2]"), "ok:2")
 }
 
 ///|
 test "differential/182: [-4]" {
-  assert_eq(
-    differential_outcome(
-      "[-4]",
-      "[0, 1, 2]",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[-4]", "[0, 1, 2]"), "ok:null")
 }
 
 ///|
 test "differential/183: [3]" {
-  assert_eq(
-    differential_outcome(
-      "[3]",
-      "[0, 1, 2]",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[3]", "[0, 1, 2]"), "ok:null")
 }
 
 ///|
 test "differential/184: [0]" {
-  assert_eq(
-    differential_outcome(
-      "[0]",
-      "\"abc\"",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[0]", "\"abc\""), "ok:null")
 }
 
 ///|
 test "differential/185: [0:1]" {
-  assert_eq(
-    differential_outcome(
-      "[0:1]",
-      "\"abc\"",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[0:1]", "\"abc\""), "ok:null")
 }
 
 ///|
 test "differential/186: [99999999999]" {
-  assert_eq(
-    differential_outcome(
-      "[99999999999]",
-      "[1]",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[99999999999]", "[1]"), "ok:null")
 }
 
 ///|
 test "differential/187: [-99999999999]" {
-  assert_eq(
-    differential_outcome(
-      "[-99999999999]",
-      "[1]",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[-99999999999]", "[1]"), "ok:null")
 }
 
 ///|
 test "differential/188: [0][1:][0]" {
-  assert_eq(
-    differential_outcome(
-      "[0][1:][0]",
-      "[[1, 2, 3]]",
-    ),
-    "ok:2",
-  )
+  assert_eq(differential_outcome("[0][1:][0]", "[[1, 2, 3]]"), "ok:2")
 }
 
 ///|
 test "differential/189: [*][0]" {
-  assert_eq(
-    differential_outcome(
-      "[*][0]",
-      "[[1, 2], [3, 4]]",
-    ),
-    "ok:[1,3]",
-  )
+  assert_eq(differential_outcome("[*][0]", "[[1, 2], [3, 4]]"), "ok:[1,3]")
 }
 
 ///|
 test "differential/190: *" {
   assert_eq(
-    differential_outcome(
-      "*",
-      "{\"a\": 1, \"b\": null, \"c\": 2}",
-    ),
+    differential_outcome("*", "{\"a\": 1, \"b\": null, \"c\": 2}"),
     "ok:[1,2]",
   )
 }
 
 ///|
 test "differential/191: [*]" {
-  assert_eq(
-    differential_outcome(
-      "[*]",
-      "[1, null, 2]",
-    ),
-    "ok:[1,2]",
-  )
+  assert_eq(differential_outcome("[*]", "[1, null, 2]"), "ok:[1,2]")
 }
 
 ///|
 test "differential/192: []" {
-  assert_eq(
-    differential_outcome(
-      "[]",
-      "[1, [2, [3]], null]",
-    ),
-    "ok:[1,2,[3]]",
-  )
+  assert_eq(differential_outcome("[]", "[1, [2, [3]], null]"), "ok:[1,2,[3]]")
 }
 
 ///|
 test "differential/193: {a: a, b: b}" {
-  assert_eq(
-    differential_outcome(
-      "{a: a, b: b}",
-      "null",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("{a: a, b: b}", "null"), "ok:null")
 }
 
 ///|
 test "differential/194: [a, b]" {
-  assert_eq(
-    differential_outcome(
-      "[a, b]",
-      "null",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[a, b]", "null"), "ok:null")
 }
 
 ///|
 test "differential/195: {a: a, b: b}" {
   assert_eq(
-    differential_outcome(
-      "{a: a, b: b}",
-      "1",
-    ),
+    differential_outcome("{a: a, b: b}", "1"),
     "ok:{\"a\":null,\"b\":null}",
   )
 }
 
 ///|
 test "differential/196: a.{x: @}" {
-  assert_eq(
-    differential_outcome(
-      "a.{x: @}",
-      "{\"a\": 0}",
-    ),
-    "ok:{\"x\":0}",
-  )
+  assert_eq(differential_outcome("a.{x: @}", "{\"a\": 0}"), "ok:{\"x\":0}")
 }
 
 ///|
 test "differential/197: foo[?bar > `1`].baz" {
   assert_eq(
     differential_outcome(
-      "foo[?bar > `1`].baz",
-      "{\"foo\": [{\"bar\": 1, \"baz\": \"x\"}, {\"bar\": 2, \"baz\": \"y\"}, {\"bar\": \"3\", \"baz\": \"z\"}]}",
+      "foo[?bar > `1`].baz", "{\"foo\": [{\"bar\": 1, \"baz\": \"x\"}, {\"bar\": 2, \"baz\": \"y\"}, {\"bar\": \"3\", \"baz\": \"z\"}]}",
     ),
     "err:TypeError:'>' not supported between instances of 'str' and 'int'",
   )
@@ -2211,10 +1330,7 @@ test "differential/197: foo[?bar > `1`].baz" {
 ///|
 test "differential/198: {a: b c: d}" {
   assert_eq(
-    differential_outcome(
-      "{a: b c: d}",
-      "{\"b\": 1, \"d\": 2}",
-    ),
+    differential_outcome("{a: b c: d}", "{\"b\": 1, \"d\": 2}"),
     "ok:{\"a\":1,\"c\":2}",
   )
 }
@@ -2222,10 +1338,7 @@ test "differential/198: {a: b c: d}" {
 ///|
 test "differential/199: f(a b)" {
   assert_eq(
-    differential_outcome(
-      "f(a b)",
-      "{}",
-    ),
+    differential_outcome("f(a b)", "{}"),
     "err:UnknownFunctionError:Unknown function: f()",
   )
 }
@@ -2233,175 +1346,94 @@ test "differential/199: f(a b)" {
 ///|
 test "differential/200: not_null(a b, c)" {
   assert_eq(
-    differential_outcome(
-      "not_null(a b, c)",
-      "{\"b\": 1, \"c\": 2}",
-    ),
+    differential_outcome("not_null(a b, c)", "{\"b\": 1, \"c\": 2}"),
     "ok:1",
   )
 }
 
 ///|
 test "differential/201: `NaN`" {
-  assert_eq(
-    differential_outcome(
-      "`NaN`",
-      "{}",
-    ),
-    "ok:NaN",
-  )
+  assert_eq(differential_outcome("`NaN`", "{}"), "ok:NaN")
 }
 
 ///|
 test "differential/202: `-Infinity`" {
-  assert_eq(
-    differential_outcome(
-      "`-Infinity`",
-      "{}",
-    ),
-    "ok:-Infinity",
-  )
+  assert_eq(differential_outcome("`-Infinity`", "{}"), "ok:-Infinity")
 }
 
 ///|
 test "differential/203: `1e400`" {
-  assert_eq(
-    differential_outcome(
-      "`1e400`",
-      "{}",
-    ),
-    "ok:Infinity",
-  )
+  assert_eq(differential_outcome("`1e400`", "{}"), "ok:Infinity")
 }
 
 ///|
 test "differential/204: `  foo`" {
-  assert_eq(
-    differential_outcome(
-      "`  foo`",
-      "{}",
-    ),
-    "ok:\"foo\"",
-  )
+  assert_eq(differential_outcome("`  foo`", "{}"), "ok:\"foo\"")
 }
 
 ///|
 test "differential/205: `[1,]`" {
-  assert_eq(
-    differential_outcome(
-      "`[1,]`",
-      "{}",
-    ),
-    "ok:\"[1,]\"",
-  )
+  assert_eq(differential_outcome("`[1,]`", "{}"), "ok:\"[1,]\"")
 }
 
 ///|
 test "differential/206: `{\"a\": 1, \"a\": 2}`" {
   assert_eq(
-    differential_outcome(
-      "`{\"a\": 1, \"a\": 2}`",
-      "{}",
-    ),
+    differential_outcome("`{\"a\": 1, \"a\": 2}`", "{}"),
     "ok:{\"a\":2}",
   )
 }
 
 ///|
 test "differential/207: `\"\\u00e9\"`" {
-  assert_eq(
-    differential_outcome(
-      "`\"\\u00e9\"`",
-      "{}",
-    ),
-    "ok:\"\\u00e9\"",
-  )
+  assert_eq(differential_outcome("`\"\\u00e9\"`", "{}"), "ok:\"\\u00e9\"")
 }
 
 ///|
 test "differential/208: `\"\\ud83d\\ude00\"`" {
   assert_eq(
-    differential_outcome(
-      "`\"\\ud83d\\ude00\"`",
-      "{}",
-    ),
+    differential_outcome("`\"\\ud83d\\ude00\"`", "{}"),
     "ok:\"\\ud83d\\ude00\"",
   )
 }
 
 ///|
 test "differential/209: `01`" {
-  assert_eq(
-    differential_outcome(
-      "`01`",
-      "{}",
-    ),
-    "ok:\"01\"",
-  )
+  assert_eq(differential_outcome("`01`", "{}"), "ok:\"01\"")
 }
 
 ///|
 test "differential/210: `foo\"bar`" {
   assert_eq(
-    differential_outcome(
-      "`foo\"bar`",
-      "{}",
-    ),
+    differential_outcome("`foo\"bar`", "{}"),
     "err:LexerError:Bad jmespath expression: Bad token foo\"bar:\n`foo\"bar`\n^",
   )
 }
 
 ///|
 test "differential/211: `﻿foo`" {
-  assert_eq(
-    differential_outcome(
-      "`﻿foo`",
-      "{}",
-    ),
-    "ok:\"\\ufefffoo\"",
-  )
+  assert_eq(differential_outcome("`﻿foo`", "{}"), "ok:\"\\ufefffoo\"")
 }
 
 ///|
 test "differential/212: 'a\\'b'" {
-  assert_eq(
-    differential_outcome(
-      "'a\\'b'",
-      "{}",
-    ),
-    "ok:\"a'b\"",
-  )
+  assert_eq(differential_outcome("'a\\'b'", "{}"), "ok:\"a'b\"")
 }
 
 ///|
 test "differential/213: 'a\\\\b'" {
-  assert_eq(
-    differential_outcome(
-      "'a\\\\b'",
-      "{}",
-    ),
-    "ok:\"a\\\\\\\\b\"",
-  )
+  assert_eq(differential_outcome("'a\\\\b'", "{}"), "ok:\"a\\\\\\\\b\"")
 }
 
 ///|
 test "differential/214: \"\\u00e9\"" {
-  assert_eq(
-    differential_outcome(
-      "\"\\u00e9\"",
-      "{\"é\": 1}",
-    ),
-    "ok:1",
-  )
+  assert_eq(differential_outcome("\"\\u00e9\"", "{\"é\": 1}"), "ok:1")
 }
 
 ///|
 test "differential/215: \"\\x\"" {
   assert_eq(
-    differential_outcome(
-      "\"\\x\"",
-      "{}",
-    ),
+    differential_outcome("\"\\x\"", "{}"),
     "err:LexerError:Bad jmespath expression: Invalid \\escape:\n\"\\x\"\n^",
   )
 }
@@ -2409,10 +1441,7 @@ test "differential/215: \"\\x\"" {
 ///|
 test "differential/216: \"a\tb\"" {
   assert_eq(
-    differential_outcome(
-      "\"a\tb\"",
-      "{}",
-    ),
+    differential_outcome("\"a\tb\"", "{}"),
     "err:LexerError:Bad jmespath expression: Invalid control character at:\n\"a\tb\"\n^",
   )
 }
@@ -2420,10 +1449,7 @@ test "differential/216: \"a\tb\"" {
 ///|
 test "differential/217: \"\\uZZZZ\"" {
   assert_eq(
-    differential_outcome(
-      "\"\\uZZZZ\"",
-      "{}",
-    ),
+    differential_outcome("\"\\uZZZZ\"", "{}"),
     "err:LexerError:Bad jmespath expression: Invalid \\uXXXX escape:\n\"\\uZZZZ\"\n^",
   )
 }
@@ -2431,10 +1457,7 @@ test "differential/217: \"\\uZZZZ\"" {
 ///|
 test "differential/218: \"\\u12\"" {
   assert_eq(
-    differential_outcome(
-      "\"\\u12\"",
-      "{}",
-    ),
+    differential_outcome("\"\\u12\"", "{}"),
     "err:LexerError:Bad jmespath expression: Invalid \\uXXXX escape:\n\"\\u12\"\n^",
   )
 }
@@ -2442,10 +1465,7 @@ test "differential/218: \"\\u12\"" {
 ///|
 test "differential/219: \"abc" {
   assert_eq(
-    differential_outcome(
-      "\"abc",
-      "{}",
-    ),
+    differential_outcome("\"abc", "{}"),
     "err:LexerError:Bad jmespath expression: Unclosed \" delimiter:\n\"abc\n^",
   )
 }
@@ -2453,10 +1473,7 @@ test "differential/219: \"abc" {
 ///|
 test "differential/220: 'abc" {
   assert_eq(
-    differential_outcome(
-      "'abc",
-      "{}",
-    ),
+    differential_outcome("'abc", "{}"),
     "err:LexerError:Bad jmespath expression: Unclosed ' delimiter:\n'abc\n^",
   )
 }
@@ -2464,10 +1481,7 @@ test "differential/220: 'abc" {
 ///|
 test "differential/221: `abc" {
   assert_eq(
-    differential_outcome(
-      "`abc",
-      "{}",
-    ),
+    differential_outcome("`abc", "{}"),
     "err:LexerError:Bad jmespath expression: Unclosed ` delimiter:\n`abc\n^",
   )
 }
@@ -2475,10 +1489,7 @@ test "differential/221: `abc" {
 ///|
 test "differential/222: " {
   assert_eq(
-    differential_outcome(
-      "",
-      "{}",
-    ),
+    differential_outcome("", "{}"),
     "err:EmptyExpressionError:Invalid JMESPath expression: cannot be empty.",
   )
 }
@@ -2486,10 +1497,7 @@ test "differential/222: " {
 ///|
 test "differential/223: foo]baz" {
   assert_eq(
-    differential_outcome(
-      "foo]baz",
-      "{}",
-    ),
+    differential_outcome("foo]baz", "{}"),
     "err:ParseError:Unexpected token: ]: Parse error at column 3, token \"]\" (RBRACKET), for expression:\n\"foo]baz\"\n    ^",
   )
 }
@@ -2497,10 +1505,7 @@ test "differential/223: foo]baz" {
 ///|
 test "differential/224: foo." {
   assert_eq(
-    differential_outcome(
-      "foo.",
-      "{}",
-    ),
+    differential_outcome("foo.", "{}"),
     "err:ParseError:Expecting: ['quoted_identifier', 'unquoted_identifier', 'lbracket', 'lbrace'], got: eof: Parse error at column 4, token \"\" (EOF), for expression:\n\"foo.\"\n     ^",
   )
 }
@@ -2508,10 +1513,7 @@ test "differential/224: foo." {
 ///|
 test "differential/225: foo.1" {
   assert_eq(
-    differential_outcome(
-      "foo.1",
-      "{}",
-    ),
+    differential_outcome("foo.1", "{}"),
     "err:ParseError:Expecting: ['quoted_identifier', 'unquoted_identifier', 'lbracket', 'lbrace'], got: number: Parse error at column 4, token \"1\" (NUMBER), for expression:\n\"foo.1\"\n     ^",
   )
 }
@@ -2519,10 +1521,7 @@ test "differential/225: foo.1" {
 ///|
 test "differential/226: foo.`1`" {
   assert_eq(
-    differential_outcome(
-      "foo.`1`",
-      "{}",
-    ),
+    differential_outcome("foo.`1`", "{}"),
     "err:ParseError:Expecting: ['quoted_identifier', 'unquoted_identifier', 'lbracket', 'lbrace'], got: literal: Parse error at column 4, token \"1\" (LITERAL), for expression:\n\"foo.`1`\"\n     ^",
   )
 }
@@ -2530,10 +1529,7 @@ test "differential/226: foo.`1`" {
 ///|
 test "differential/227: foo.{1: a}" {
   assert_eq(
-    differential_outcome(
-      "foo.{1: a}",
-      "{}",
-    ),
+    differential_outcome("foo.{1: a}", "{}"),
     "err:ParseError:Expecting: ['quoted_identifier', 'unquoted_identifier'], got: number: Parse error at column 5, token \"1\" (NUMBER), for expression:\n\"foo.{1: a}\"\n      ^",
   )
 }
@@ -2541,10 +1537,7 @@ test "differential/227: foo.{1: a}" {
 ///|
 test "differential/228: foo.[1" {
   assert_eq(
-    differential_outcome(
-      "foo.[1",
-      "{}",
-    ),
+    differential_outcome("foo.[1", "{}"),
     "err:ParseError:invalid token: Parse error at column 5, token \"1\" (NUMBER), for expression:\n\"foo.[1\"\n      ^",
   )
 }
@@ -2552,10 +1545,7 @@ test "differential/228: foo.[1" {
 ///|
 test "differential/229: foo[1" {
   assert_eq(
-    differential_outcome(
-      "foo[1",
-      "{}",
-    ),
+    differential_outcome("foo[1", "{}"),
     "err:IncompleteExpressionError:Invalid jmespath expression: Incomplete expression:\n\"foo[1\"\n      ^",
   )
 }
@@ -2563,10 +1553,7 @@ test "differential/229: foo[1" {
 ///|
 test "differential/230: foo[a" {
   assert_eq(
-    differential_outcome(
-      "foo[a",
-      "{}",
-    ),
+    differential_outcome("foo[a", "{}"),
     "err:ParseError:Expecting: star, got: unquoted_identifier: Parse error at column 4, token \"a\" (UNQUOTED_IDENTIFIER), for expression:\n\"foo[a\"\n     ^",
   )
 }
@@ -2574,10 +1561,7 @@ test "differential/230: foo[a" {
 ///|
 test "differential/231: foo[:::]" {
   assert_eq(
-    differential_outcome(
-      "foo[:::]",
-      "{}",
-    ),
+    differential_outcome("foo[:::]", "{}"),
     "err:ParseError:syntax error: Parse error at column 6, token \":\" (COLON), for expression:\n\"foo[:::]\"\n       ^",
   )
 }
@@ -2585,10 +1569,7 @@ test "differential/231: foo[:::]" {
 ///|
 test "differential/232: foo[1:a]" {
   assert_eq(
-    differential_outcome(
-      "foo[1:a]",
-      "{}",
-    ),
+    differential_outcome("foo[1:a]", "{}"),
     "err:ParseError:syntax error: Parse error at column 6, token \"a\" (UNQUOTED_IDENTIFIER), for expression:\n\"foo[1:a]\"\n       ^",
   )
 }
@@ -2596,10 +1577,7 @@ test "differential/232: foo[1:a]" {
 ///|
 test "differential/233: foo[*" {
   assert_eq(
-    differential_outcome(
-      "foo[*",
-      "{}",
-    ),
+    differential_outcome("foo[*", "{}"),
     "err:IncompleteExpressionError:Invalid jmespath expression: Incomplete expression:\n\"foo[*\"\n      ^",
   )
 }
@@ -2607,10 +1585,7 @@ test "differential/233: foo[*" {
 ///|
 test "differential/234: foo[*]]" {
   assert_eq(
-    differential_outcome(
-      "foo[*]]",
-      "{}",
-    ),
+    differential_outcome("foo[*]]", "{}"),
     "err:ParseError:Unexpected token: ]: Parse error at column 6, token \"]\" (RBRACKET), for expression:\n\"foo[*]]\"\n       ^",
   )
 }
@@ -2618,10 +1593,7 @@ test "differential/234: foo[*]]" {
 ///|
 test "differential/235: foo{" {
   assert_eq(
-    differential_outcome(
-      "foo{",
-      "{}",
-    ),
+    differential_outcome("foo{", "{}"),
     "err:ParseError:invalid token: Parse error at column 3, token \"{\" (LBRACE), for expression:\n\"foo{\"\n    ^",
   )
 }
@@ -2629,10 +1601,7 @@ test "differential/235: foo{" {
 ///|
 test "differential/236: *a" {
   assert_eq(
-    differential_outcome(
-      "*a",
-      "{}",
-    ),
+    differential_outcome("*a", "{}"),
     "err:ParseError:Unexpected token: a: Parse error at column 1, token \"a\" (UNQUOTED_IDENTIFIER), for expression:\n\"*a\"\n  ^",
   )
 }
@@ -2640,10 +1609,7 @@ test "differential/236: *a" {
 ///|
 test "differential/237: !" {
   assert_eq(
-    differential_outcome(
-      "!",
-      "{}",
-    ),
+    differential_outcome("!", "{}"),
     "err:IncompleteExpressionError:Invalid jmespath expression: Incomplete expression:\n\"!\"\n  ^",
   )
 }
@@ -2651,10 +1617,7 @@ test "differential/237: !" {
 ///|
 test "differential/238: a !b" {
   assert_eq(
-    differential_outcome(
-      "a !b",
-      "{}",
-    ),
+    differential_outcome("a !b", "{}"),
     "err:ParseError:invalid token: Parse error at column 2, token \"!\" (NOT), for expression:\n\"a !b\"\n   ^",
   )
 }
@@ -2662,10 +1625,7 @@ test "differential/238: a !b" {
 ///|
 test "differential/239: @(a)" {
   assert_eq(
-    differential_outcome(
-      "@(a)",
-      "{}",
-    ),
+    differential_outcome("@(a)", "{}"),
     "err:ParseError:Invalid function name '@': Parse error at column 0, token \"@\" (CURRENT), for expression:\n\"@(a)\"\n ^",
   )
 }
@@ -2673,10 +1633,7 @@ test "differential/239: @(a)" {
 ///|
 test "differential/240: \"f\"(a)" {
   assert_eq(
-    differential_outcome(
-      "\"f\"(a)",
-      "{}",
-    ),
+    differential_outcome("\"f\"(a)", "{}"),
     "err:ParseError:Quoted identifier not allowed for function names.: Parse error at column 0, token \"(\" (LPAREN), for expression:\n\"\"f\"(a)\"\n ^",
   )
 }
@@ -2684,10 +1641,7 @@ test "differential/240: \"f\"(a)" {
 ///|
 test "differential/241: (a" {
   assert_eq(
-    differential_outcome(
-      "(a",
-      "{}",
-    ),
+    differential_outcome("(a", "{}"),
     "err:IncompleteExpressionError:Invalid jmespath expression: Incomplete expression:\n\"(a\"\n   ^",
   )
 }
@@ -2695,10 +1649,7 @@ test "differential/241: (a" {
 ///|
 test "differential/242: a || " {
   assert_eq(
-    differential_outcome(
-      "a || ",
-      "{}",
-    ),
+    differential_outcome("a || ", "{}"),
     "err:IncompleteExpressionError:Invalid jmespath expression: Incomplete expression:\n\"a || \"\n      ^",
   )
 }
@@ -2706,10 +1657,7 @@ test "differential/242: a || " {
 ///|
 test "differential/243: a = b" {
   assert_eq(
-    differential_outcome(
-      "a = b",
-      "{}",
-    ),
+    differential_outcome("a = b", "{}"),
     "err:LexerError:Bad jmespath expression: Unknown token '=':\na = b\n  ^",
   )
 }
@@ -2717,10 +1665,7 @@ test "differential/243: a = b" {
 ///|
 test "differential/244: a ^ b" {
   assert_eq(
-    differential_outcome(
-      "a ^ b",
-      "{}",
-    ),
+    differential_outcome("a ^ b", "{}"),
     "err:LexerError:Bad jmespath expression: Unknown token ^:\na ^ b\n  ^",
   )
 }
@@ -2728,10 +1673,7 @@ test "differential/244: a ^ b" {
 ///|
 test "differential/245: -" {
   assert_eq(
-    differential_outcome(
-      "-",
-      "{}",
-    ),
+    differential_outcome("-", "{}"),
     "err:LexerError:Bad jmespath expression: Unknown token '-':\n-\n^",
   )
 }
@@ -2739,10 +1681,7 @@ test "differential/245: -" {
 ///|
 test "differential/246: --1" {
   assert_eq(
-    differential_outcome(
-      "--1",
-      "{}",
-    ),
+    differential_outcome("--1", "{}"),
     "err:LexerError:Bad jmespath expression: Unknown token '-':\n--1\n^",
   )
 }
@@ -2750,32 +1689,20 @@ test "differential/246: --1" {
 ///|
 test "differential/247: a `{\"a\": [1, 2.5]}`" {
   assert_eq(
-    differential_outcome(
-      "a `{\"a\": [1, 2.5]}`",
-      "{}",
-    ),
+    differential_outcome("a `{\"a\": [1, 2.5]}`", "{}"),
     "err:ParseError:Unexpected token: {'a': [1, 2.5]}: Parse error at column 2, token \"{'a': [1, 2.5]}\" (LITERAL), for expression:\n\"a `{\"a\": [1, 2.5]}`\"\n   ^",
   )
 }
 
 ///|
 test "differential/248: [1] [2]" {
-  assert_eq(
-    differential_outcome(
-      "[1] [2]",
-      "{}",
-    ),
-    "ok:null",
-  )
+  assert_eq(differential_outcome("[1] [2]", "{}"), "ok:null")
 }
 
 ///|
 test "differential/249: é" {
   assert_eq(
-    differential_outcome(
-      "é",
-      "{}",
-    ),
+    differential_outcome("é", "{}"),
     "err:LexerError:Bad jmespath expression: Unknown token é:\né\n^",
   )
 }
@@ -2783,10 +1710,7 @@ test "differential/249: é" {
 ///|
 test "differential/250: '😀' ]" {
   assert_eq(
-    differential_outcome(
-      "'😀' ]",
-      "{}",
-    ),
+    differential_outcome("'😀' ]", "{}"),
     "err:ParseError:Unexpected token: ]: Parse error at column 4, token \"]\" (RBRACKET), for expression:\n\"'😀' ]\"\n     ^",
   )
 }
@@ -2794,10 +1718,7 @@ test "differential/250: '😀' ]" {
 ///|
 test "differential/251: '😀' |" {
   assert_eq(
-    differential_outcome(
-      "'😀' |",
-      "{}",
-    ),
+    differential_outcome("'😀' |", "{}"),
     "err:IncompleteExpressionError:Invalid jmespath expression: Incomplete expression:\n\"'😀' |\"\n      ^",
   )
 }
@@ -2805,10 +1726,7 @@ test "differential/251: '😀' |" {
 ///|
 test "differential/252: a[?b" {
   assert_eq(
-    differential_outcome(
-      "a[?b",
-      "{}",
-    ),
+    differential_outcome("a[?b", "{}"),
     "err:IncompleteExpressionError:Invalid jmespath expression: Incomplete expression:\n\"a[?b\"\n     ^",
   )
 }
@@ -2816,10 +1734,7 @@ test "differential/252: a[?b" {
 ///|
 test "differential/253: &" {
   assert_eq(
-    differential_outcome(
-      "&",
-      "{}",
-    ),
+    differential_outcome("&", "{}"),
     "err:IncompleteExpressionError:Invalid jmespath expression: Incomplete expression:\n\"&\"\n  ^",
   )
 }
@@ -2827,10 +1742,7 @@ test "differential/253: &" {
 ///|
 test "differential/254: a.&b" {
   assert_eq(
-    differential_outcome(
-      "a.&b",
-      "{}",
-    ),
+    differential_outcome("a.&b", "{}"),
     "err:ParseError:Expecting: ['quoted_identifier', 'unquoted_identifier', 'lbracket', 'lbrace'], got: expref: Parse error at column 2, token \"&\" (EXPREF), for expression:\n\"a.&b\"\n   ^",
   )
 }
@@ -2838,10 +1750,7 @@ test "differential/254: a.&b" {
 ///|
 test "differential/255: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "",
-    ),
+    differential_outcome("@", ""),
     "err:JSONDecodeError:Expecting value: line 1 column 1 (char 0)",
   )
 }
@@ -2849,10 +1758,7 @@ test "differential/255: @" {
 ///|
 test "differential/256: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "   ",
-    ),
+    differential_outcome("@", "   "),
     "err:JSONDecodeError:Expecting value: line 1 column 4 (char 3)",
   )
 }
@@ -2860,10 +1766,7 @@ test "differential/256: @" {
 ///|
 test "differential/257: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "[1,]",
-    ),
+    differential_outcome("@", "[1,]"),
     "err:JSONDecodeError:Illegal trailing comma before end of array: line 1 column 3 (char 2)",
   )
 }
@@ -2871,10 +1774,7 @@ test "differential/257: @" {
 ///|
 test "differential/258: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "{\"a\": 1,}",
-    ),
+    differential_outcome("@", "{\"a\": 1,}"),
     "err:JSONDecodeError:Illegal trailing comma before end of object: line 1 column 8 (char 7)",
   )
 }
@@ -2882,10 +1782,7 @@ test "differential/258: @" {
 ///|
 test "differential/259: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "{\"a\" 1}",
-    ),
+    differential_outcome("@", "{\"a\" 1}"),
     "err:JSONDecodeError:Expecting ':' delimiter: line 1 column 6 (char 5)",
   )
 }
@@ -2893,10 +1790,7 @@ test "differential/259: @" {
 ///|
 test "differential/260: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "{a: 1}",
-    ),
+    differential_outcome("@", "{a: 1}"),
     "err:JSONDecodeError:Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
   )
 }
@@ -2904,10 +1798,7 @@ test "differential/260: @" {
 ///|
 test "differential/261: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "[1 2]",
-    ),
+    differential_outcome("@", "[1 2]"),
     "err:JSONDecodeError:Expecting ',' delimiter: line 1 column 4 (char 3)",
   )
 }
@@ -2915,10 +1806,7 @@ test "differential/261: @" {
 ///|
 test "differential/262: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "[1] x",
-    ),
+    differential_outcome("@", "[1] x"),
     "err:JSONDecodeError:Extra data: line 1 column 5 (char 4)",
   )
 }
@@ -2926,10 +1814,7 @@ test "differential/262: @" {
 ///|
 test "differential/263: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "\"abc",
-    ),
+    differential_outcome("@", "\"abc"),
     "err:JSONDecodeError:Unterminated string starting at: line 1 column 1 (char 0)",
   )
 }
@@ -2937,10 +1822,7 @@ test "differential/263: @" {
 ///|
 test "differential/264: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "\"a\\x\"",
-    ),
+    differential_outcome("@", "\"a\\x\""),
     "err:JSONDecodeError:Invalid \\escape: line 1 column 3 (char 2)",
   )
 }
@@ -2948,10 +1830,7 @@ test "differential/264: @" {
 ///|
 test "differential/265: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "\"\\u12\"",
-    ),
+    differential_outcome("@", "\"\\u12\""),
     "err:JSONDecodeError:Invalid \\uXXXX escape: line 1 column 3 (char 2)",
   )
 }
@@ -2959,10 +1838,7 @@ test "differential/265: @" {
 ///|
 test "differential/266: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "\"\\uZZZZ\"",
-    ),
+    differential_outcome("@", "\"\\uZZZZ\""),
     "err:JSONDecodeError:Invalid \\uXXXX escape: line 1 column 3 (char 2)",
   )
 }
@@ -2970,10 +1846,7 @@ test "differential/266: @" {
 ///|
 test "differential/267: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "\"a\tb\"",
-    ),
+    differential_outcome("@", "\"a\tb\""),
     "err:JSONDecodeError:Invalid control character at: line 1 column 3 (char 2)",
   )
 }
@@ -2981,10 +1854,7 @@ test "differential/267: @" {
 ///|
 test "differential/268: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "\n\n  [1,\n  ]",
-    ),
+    differential_outcome("@", "\n\n  [1,\n  ]"),
     "err:JSONDecodeError:Illegal trailing comma before end of array: line 3 column 5 (char 6)",
   )
 }
@@ -2992,10 +1862,7 @@ test "differential/268: @" {
 ///|
 test "differential/269: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "﻿[]",
-    ),
+    differential_outcome("@", "﻿[]"),
     "err:JSONDecodeError:Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)",
   )
 }
@@ -3003,10 +1870,7 @@ test "differential/269: @" {
 ///|
 test "differential/270: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "-",
-    ),
+    differential_outcome("@", "-"),
     "err:JSONDecodeError:Expecting value: line 1 column 1 (char 0)",
   )
 }
@@ -3014,10 +1878,7 @@ test "differential/270: @" {
 ///|
 test "differential/271: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "01",
-    ),
+    differential_outcome("@", "01"),
     "err:JSONDecodeError:Extra data: line 1 column 2 (char 1)",
   )
 }
@@ -3025,10 +1886,7 @@ test "differential/271: @" {
 ///|
 test "differential/272: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "1.",
-    ),
+    differential_outcome("@", "1."),
     "err:JSONDecodeError:Extra data: line 1 column 2 (char 1)",
   )
 }
@@ -3036,10 +1894,7 @@ test "differential/272: @" {
 ///|
 test "differential/273: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      ".5",
-    ),
+    differential_outcome("@", ".5"),
     "err:JSONDecodeError:Expecting value: line 1 column 1 (char 0)",
   )
 }
@@ -3047,10 +1902,7 @@ test "differential/273: @" {
 ///|
 test "differential/274: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "tru",
-    ),
+    differential_outcome("@", "tru"),
     "err:JSONDecodeError:Expecting value: line 1 column 1 (char 0)",
   )
 }
@@ -3058,10 +1910,7 @@ test "differential/274: @" {
 ///|
 test "differential/275: @" {
   assert_eq(
-    differential_outcome(
-      "@",
-      "\"éé\" x",
-    ),
+    differential_outcome("@", "\"éé\" x"),
     "err:JSONDecodeError:Extra data: line 1 column 6 (char 5)",
   )
 }

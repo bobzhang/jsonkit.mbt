@@ -24,7 +24,9 @@ test "functions: type error messages" {
   // 2. Mention it's an invalid type
   assert_true(message.contains("invalid type for value: 2"))
   // 3. Mention the valid types:
-  assert_true(message.contains("expected one of: ['string', 'array', 'object']"))
+  assert_true(
+    message.contains("expected one of: ['string', 'array', 'object']"),
+  )
   // 4. Mention the actual type.
   assert_true(message.contains("received: \"number\""))
 }

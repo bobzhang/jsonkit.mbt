@@ -20,13 +20,13 @@ pub fn Options::new(custom_functions? : Functions) -> Options {
 ///|
 /// A function argument: either a JSON value or an expression reference
 /// (`&expr`, upstream's `_Expression`).
-pub enum Value {
+pub(all) enum Value {
   Data(Json)
   Expref(Expression)
 }
 
 ///|
-pub impl Show for Value with output(self, logger) {
+pub impl Show for Value with fn output(self, logger) {
   match self {
     Data(v) => logger.write_string(py_str(v))
     Expref(_) => logger.write_string("<jmespath.visitor._Expression object>")
@@ -54,7 +54,10 @@ pub struct Expression {
 ///|
 /// Evaluates the referenced expression against `value`
 /// (upstream: `expref.visit(expref.expression, value)`).
-pub fn Expression::visit(self : Expression, value : Json) -> Json raise JMESPathError {
+pub fn Expression::visit(
+  self : Expression,
+  value : Json,
+) -> Json raise JMESPathError {
   self.interpreter.visit(self.expression, value)
 }
 
@@ -75,7 +78,7 @@ pub fn TreeInterpreter::new(options? : Options) -> TreeInterpreter {
     Some(f) => f
     None => default_functions
   }
-  { options, functions }
+  { options, functions, }
 }
 
 ///|
@@ -137,7 +140,7 @@ pub fn TreeInterpreter::visit(
     Expref(_) =>
       // Upstream returns an `_Expression` object here.  JSON values cannot
       // hold expression references, so they are only supported as direct
-      // function arguments (see `visit_function_args`).
+      // function arguments (see the `FunctionExpression` case).
       raise TypeError(
         "expression references can only be used as function arguments",
       )
@@ -145,8 +148,9 @@ pub fn TreeInterpreter::visit(
       let resolved_args = []
       for child in args {
         let current = match child {
-          Expref(expression) => Value::Expref({ expression, interpreter: self })
-          _ => Value::Data(self.visit(child, value))
+          Expref(expression) =>
+            Value::Expref({ expression, interpreter: self, })
+          _ => Data(self.visit(child, value))
         }
         resolved_args.push(current)
       }
@@ -287,21 +291,31 @@ fn py_slice(
     raise ValueError("slice step cannot be zero")
   }
   let length = items.length()
-  let adjust = (bound : Int?, default : Int) => match bound {
-    None => default
-    Some(b) =>
-      if b < 0 {
-        let b = b + length
+  let adjust = (bound : Int?, default : Int) => {
+    match bound {
+      None => default
+      Some(b) =>
         if b < 0 {
-          if step < 0 { -1 } else { 0 }
+          let b = b + length
+          if b < 0 {
+            if step < 0 {
+              -1
+            } else {
+              0
+            }
+          } else {
+            b
+          }
+        } else if b >= length {
+          if step < 0 {
+            length - 1
+          } else {
+            length
+          }
         } else {
           b
         }
-      } else if b >= length {
-        if step < 0 { length - 1 } else { length }
-      } else {
-        b
-      }
+    }
   }
   let start = adjust(start, if step < 0 { length - 1 } else { 0 })
   let stop = adjust(stop, if step < 0 { -1 } else { length })
@@ -330,7 +344,7 @@ priv struct GraphvizVisitor {
 
 ///|
 fn GraphvizVisitor::new() -> GraphvizVisitor {
-  { lines: [], count: 1 }
+  { lines: [], count: 1, }
 }
 
 ///|

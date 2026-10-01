@@ -44,7 +44,7 @@ pub struct Lexer {
 
 ///|
 pub fn Lexer::new() -> Lexer {
-  { position: 0, chars: [], current: None, length: 0 }
+  { position: 0, chars: [], current: None, length: 0, }
 }
 
 ///|
@@ -142,12 +142,27 @@ pub fn Lexer::tokenize(
       let next_char = self.next()
       if next_char == Some(']') {
         self.next() |> ignore
-        tokens.push({ type_: "flatten", value: Str("[]"), start, end: start + 2 })
+        tokens.push({
+          type_: "flatten",
+          value: Str("[]"),
+          start,
+          end: start + 2,
+        })
       } else if next_char == Some('?') {
         self.next() |> ignore
-        tokens.push({ type_: "filter", value: Str("[?"), start, end: start + 2 })
+        tokens.push({
+          type_: "filter",
+          value: Str("[?"),
+          start,
+          end: start + 2,
+        })
       } else {
-        tokens.push({ type_: "lbracket", value: Str("["), start, end: start + 1 })
+        tokens.push({
+          type_: "lbracket",
+          value: Str("["),
+          start,
+          end: start + 1,
+        })
       }
     } else if current == '\'' {
       tokens.push(self.consume_raw_string_literal())
@@ -329,7 +344,7 @@ fn Lexer::consume_literal(self : Lexer) -> Token raise JMESPathError {
       }
   }
   let token_len = self.position - start
-  { type_: "literal", value: Literal(parsed_json), start, end: token_len }
+  { type_: "literal", value: Literal(parsed_json), start, end: token_len, }
 }
 
 ///|
@@ -357,7 +372,7 @@ fn Lexer::consume_quoted_identifier(self : Lexer) -> Token raise JMESPathError {
     String(s) => s
     other => py_str(other)
   }
-  { type_: "quoted_identifier", value: Str(value), start, end: token_len }
+  { type_: "quoted_identifier", value: Str(value), start, end: token_len, }
 }
 
 ///|
@@ -392,5 +407,5 @@ fn Lexer::match_or_else(
       end: start + 1,
     }
   }
-  { type_: else_type, value: Str(current.to_string()), start, end: start }
+  { type_: else_type, value: Str(current.to_string()), start, end: start, }
 }

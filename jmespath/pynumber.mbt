@@ -213,16 +213,16 @@ fn py_lstrip(s : String) -> String {
 /// Checks `digit (_? digit)*` starting at `i`; returns the end index, or
 /// `None` if there is no valid digit group at `i`.
 fn scan_py_digits(chars : Array[Char], i : Int) -> Int? {
-  if i >= chars.length() || !(chars[i] is '0'..='9') {
+  if i >= chars.length() || !(chars[i] is ('0'..='9')) {
     return None
   }
   let mut j = i + 1
   while j < chars.length() {
-    if chars[j] is '0'..='9' {
+    if chars[j] is ('0'..='9') {
       j += 1
     } else if chars[j] == '_' &&
       j + 1 < chars.length() &&
-      chars[j + 1] is '0'..='9' {
+      chars[j + 1] is ('0'..='9') {
       j += 2
     } else {
       break
@@ -279,7 +279,9 @@ fn py_float_parse(s : String) -> Json? {
   }
   let rest = String::from_array(chars[i:]).to_lower()
   if rest is ("inf" | "infinity") {
-    return Some(make_float(if negative { @double.neg_infinity } else { @double.infinity }))
+    return Some(
+      make_float(if negative { @double.neg_infinity } else { @double.infinity }),
+    )
   }
   if rest == "nan" {
     return Some(make_float(@double.not_a_number))

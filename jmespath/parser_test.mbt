@@ -1,12 +1,17 @@
 // Port of upstream tests/test_parser.py.
 
 ///|
-fn parse(expression : String) -> @jmespath.ParsedResult raise @jmespath.JMESPathError {
+fn parse(
+  expression : String,
+) -> @jmespath.ParsedResult raise @jmespath.JMESPathError {
   @jmespath.Parser::new().parse(expression)
 }
 
 ///|
-fn assert_parsed_ast(expression : String, expected : @jmespath.Node) -> Unit raise {
+fn assert_parsed_ast(
+  expression : String,
+  expected : @jmespath.Node,
+) -> Unit raise {
   assert_eq(parse(expression).parsed, expected)
 }
 
@@ -47,7 +52,10 @@ test "parser: index" {
 
 ///|
 test "parser: quoted subexpression" {
-  assert_parsed_ast("\"foo\".\"bar\"", Subexpression([Field("foo"), Field("bar")]))
+  assert_parsed_ast(
+    "\"foo\".\"bar\"",
+    Subexpression([Field("foo"), Field("bar")]),
+  )
 }
 
 ///|
@@ -61,10 +69,9 @@ test "parser: wildcard" {
 ///|
 test "parser: wildcard with children" {
   let parsed = parse("foo[*].bar")
-  json_inspect(
-    parsed.search({ "foo": [{ "bar": "one" }, { "bar": "two" }] }),
-    content=["one", "two"],
-  )
+  json_inspect(parsed.search({ "foo": [{ "bar": "one" }, { "bar": "two" }] }), content=[
+    "one", "two",
+  ])
 }
 
 ///|
@@ -370,8 +377,14 @@ test "parser: only wildcard" {
 
 ///|
 test "parser: escape sequences" {
-  json_inspect(parse("\"foo\\tbar\"").search({ "foo\tbar": "baz" }), content="baz")
-  json_inspect(parse("\"foo\\nbar\"").search({ "foo\nbar": "baz" }), content="baz")
+  json_inspect(
+    parse("\"foo\\tbar\"").search({ "foo\tbar": "baz" }),
+    content="baz",
+  )
+  json_inspect(
+    parse("\"foo\\nbar\"").search({ "foo\nbar": "baz" }),
+    content="baz",
+  )
   json_inspect(
     parse("\"foo\\bbar\"").search({ "foo\u{8}bar": "baz" }),
     content="baz",
@@ -380,7 +393,10 @@ test "parser: escape sequences" {
     parse("\"foo\\fbar\"").search({ "foo\u{c}bar": "baz" }),
     content="baz",
   )
-  json_inspect(parse("\"foo\\rbar\"").search({ "foo\rbar": "baz" }), content="baz")
+  json_inspect(
+    parse("\"foo\\rbar\"").search({ "foo\rbar": "baz" }),
+    content="baz",
+  )
 }
 
 ///|
@@ -465,13 +481,13 @@ test "parser: compile lots of expressions" {
   let p = @jmespath.Parser::new()
   let compiled = []
   let compiled2 = []
-  for i in 0..=@jmespath.parser_max_size {
+  for i in 0..<=@jmespath.parser_max_size {
     compiled.push(p.parse("foo\{i}"))
   }
   assert_true(@jmespath.Parser::cache_size() <= @jmespath.parser_max_size)
   // Rerun the test and half of these entries should be from the cache but
   // they should still be equal to compiled.
-  for i in 0..=@jmespath.parser_max_size {
+  for i in 0..<=@jmespath.parser_max_size {
     compiled2.push(p.parse("foo\{i}"))
   }
   assert_eq(compiled.length(), compiled2.length())
@@ -543,7 +559,10 @@ test "parser: ast shapes" {
   )
   assert_parsed_ast(
     "foo[1:2]",
-    Projection(IndexExpression([Field("foo"), Slice(Some(1), Some(2), None)]), Identity),
+    Projection(
+      IndexExpression([Field("foo"), Slice(Some(1), Some(2), None)]),
+      Identity,
+    ),
   )
   assert_parsed_ast(
     "foo[?a > `1`].b",
@@ -555,7 +574,10 @@ test "parser: ast shapes" {
   )
   assert_parsed_ast(
     "*.a | [0]",
-    Pipe(ValueProjection(Identity, Field("a")), IndexExpression([Identity, Index(0)])),
+    Pipe(
+      ValueProjection(Identity, Field("a")),
+      IndexExpression([Identity, Index(0)]),
+    ),
   )
   assert_parsed_ast(
     "sort_by(@, &a)",
@@ -565,10 +587,7 @@ test "parser: ast shapes" {
     "!a.b",
     Subexpression([NotExpression(Field("a")), Field("b")]),
   )
-  assert_parsed_ast(
-    "a[].b",
-    Projection(Flatten(Field("a")), Field("b")),
-  )
+  assert_parsed_ast("a[].b", Projection(Flatten(Field("a")), Field("b")))
   // Upstream quirk: a missing comma between hash entries is accepted.
   assert_parsed_ast(
     "{a: b c: d}",

@@ -52,8 +52,12 @@ test "lexer: quoted identifier" {
 
 ///|
 test "lexer: json escaped value" {
-  assert_tokens(tokenize("\"\u{2713}\""), [("quoted_identifier", Str("\u{2713}"))])
-  assert_tokens(tokenize("\"\\u2713\""), [("quoted_identifier", Str("\u{2713}"))])
+  assert_tokens(tokenize("\"\u{2713}\""), [
+    ("quoted_identifier", Str("\u{2713}")),
+  ])
+  assert_tokens(tokenize("\"\\u2713\""), [
+    ("quoted_identifier", Str("\u{2713}")),
+  ])
 }
 
 ///|
@@ -118,26 +122,26 @@ test "lexer: literal with empty string" {
 ///|
 test "lexer: position information" {
   assert_eq(tokenize("foo"), [
-    { type_: "unquoted_identifier", value: Str("foo"), start: 0, end: 3 },
-    { type_: "eof", value: Str(""), start: 3, end: 3 },
+    { type_: "unquoted_identifier", value: Str("foo"), start: 0, end: 3, },
+    { type_: "eof", value: Str(""), start: 3, end: 3, },
   ])
 }
 
 ///|
 test "lexer: position multiple tokens" {
   assert_eq(tokenize("foo.bar"), [
-    { type_: "unquoted_identifier", value: Str("foo"), start: 0, end: 3 },
-    { type_: "dot", value: Str("."), start: 3, end: 4 },
-    { type_: "unquoted_identifier", value: Str("bar"), start: 4, end: 7 },
-    { type_: "eof", value: Str(""), start: 7, end: 7 },
+    { type_: "unquoted_identifier", value: Str("foo"), start: 0, end: 3, },
+    { type_: "dot", value: Str("."), start: 3, end: 4, },
+    { type_: "unquoted_identifier", value: Str("bar"), start: 4, end: 7, },
+    { type_: "eof", value: Str(""), start: 7, end: 7, },
   ])
 }
 
 ///|
 test "lexer: adds quotes when invalid json" {
   assert_eq(tokenize("`{{}`"), [
-    { type_: "literal", value: Literal("{{}"), start: 0, end: 4 },
-    { type_: "eof", value: Str(""), start: 5, end: 5 },
+    { type_: "literal", value: Literal("{{}"), start: 0, end: 4, },
+    { type_: "eof", value: Str(""), start: 5, end: 5, },
   ])
 }
 
@@ -226,9 +230,18 @@ test "lexer: error messages" {
       _ => "no error"
     }
   }
-  inspect(err("a = b"), content="Bad jmespath expression: Unknown token '=':\nNone\n  ^")
-  inspect(err("a ="), content="Bad jmespath expression: Unknown token '=':\nNone\n  ^")
-  inspect(err("-"), content="Bad jmespath expression: Unknown token '-':\nNone\n^")
+  inspect(
+    err("a = b"),
+    content="Bad jmespath expression: Unknown token '=':\nNone\n  ^",
+  )
+  inspect(
+    err("a ="),
+    content="Bad jmespath expression: Unknown token '=':\nNone\n  ^",
+  )
+  inspect(
+    err("-"),
+    content="Bad jmespath expression: Unknown token '-':\nNone\n^",
+  )
   inspect(
     err("\"abc"),
     content="Bad jmespath expression: Unclosed \" delimiter:\nNone\n^",

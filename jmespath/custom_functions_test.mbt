@@ -7,12 +7,14 @@ fn custom_functions() -> @jmespath.Functions {
   functions.register_function(
     "length0",
     [@jmespath.ArgSpec::new(["string", "array", "object", "null"])],
-    args => match args[0] {
-      Data(Null) => Json::number(0.0)
-      Data(String(s)) => Json::number(s.char_length().to_double())
-      Data(Array(items)) => Json::number(items.length().to_double())
-      Data(Object(map)) => Json::number(map.length().to_double())
-      _ => Json::null()
+    args => {
+      match args[0] {
+        Data(Null) => Json::number(0.0)
+        Data(String(s)) => Json::number(s.char_length().to_double())
+        Data(Array(items)) => Json::number(items.length().to_double())
+        Data(Object(map)) => Json::number(map.length().to_double())
+        _ => Json::null()
+      }
     },
   )
   functions
@@ -40,7 +42,10 @@ test "custom functions: signature is enforced" {
   }
   try @jmespath.search("length0()", {}, options~) catch {
     e =>
-      inspect(e, content="Expected 1 argument for function length0(), received 0")
+      inspect(
+        e,
+        content="Expected 1 argument for function length0(), received 0",
+      )
   } noraise {
     _ => fail("expected an arity error")
   }
@@ -65,11 +70,9 @@ test "custom functions: builtins can be overridden and use exprefs" {
     },
   )
   // Override a builtin.
-  functions.register_function(
-    "abs",
-    [@jmespath.ArgSpec::new([])],
-    _ => Json::string("overridden"),
-  )
+  functions.register_function("abs", [@jmespath.ArgSpec::new([])], _ => {
+    Json::string("overridden")
+  })
   let options = @jmespath.Options::new(custom_functions=functions)
   json_inspect(
     @jmespath.search("count_if(&(@ > `1`), @)", [1, 2, 3], options~),

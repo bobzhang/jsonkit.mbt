@@ -59,7 +59,8 @@ fn py_eq(x : Json, y : Json) -> Bool {
 ///|
 /// `_is_special_number_case`: comparing 0 or 1 with a bool.
 fn is_special_number_case(x : Json, y : Json) -> Bool {
-  if is_actual_number(x) && (py_eq(x, Json::number(0.0)) || py_eq(x, Json::number(1.0))) {
+  if is_actual_number(x) &&
+    (py_eq(x, Json::number(0.0)) || py_eq(x, Json::number(1.0))) {
     y is (True | False)
   } else if is_actual_number(y) &&
     (py_eq(y, Json::number(0.0)) || py_eq(y, Json::number(1.0))) {

@@ -1,0 +1,160 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "bobzhang/jmespath"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn compile(String) -> ParsedResult raise JMESPathError
+
+pub fn dumps(Json) -> String
+
+pub fn loads(String) -> Json raise JSONDecodeError
+
+pub let parser_max_size : Int
+
+pub fn search(String, Json, options? : Options) -> Json raise JMESPathError
+
+pub let version : String
+
+// Errors
+pub(all) suberror JMESPathError {
+  ParseError(lex_position~ : Int, token_value~ : String, token_type~ : String, msg~ : String, expression~ : String?)
+  IncompleteExpressionError(lex_position~ : Int, token_value~ : String?, token_type~ : String?, expression~ : String?)
+  LexerError(lexer_position~ : Int, lexer_value~ : String, message~ : String, expression~ : String?)
+  ArityError(expected_arity~ : Int, actual_arity~ : Int, function_name~ : String)
+  VariadictArityError(expected_arity~ : Int, actual_arity~ : Int, function_name~ : String)
+  JMESPathTypeError(function_name~ : String, current_value~ : Value, actual_type~ : String, expected_types~ : Array[String])
+  EmptyExpressionError
+  UnknownFunctionError(String)
+  ValueError(String)
+  TypeError(String)
+  OverflowError(String)
+}
+pub fn JMESPathError::is_arity_error(Self) -> Bool
+pub fn JMESPathError::is_parse_error(Self) -> Bool
+pub fn JMESPathError::is_value_error(Self) -> Bool
+pub fn JMESPathError::to_string(Self) -> String
+pub impl Show for JMESPathError
+
+pub(all) suberror JSONDecodeError {
+  JSONDecodeError(msg~ : String, doc~ : String, pos~ : Int)
+}
+pub fn JSONDecodeError::to_string(Self) -> String
+pub impl Show for JSONDecodeError
+
+// Types and methods
+pub(all) struct ArgSpec {
+  types : Array[String]
+  variadic : Bool
+} derive(Eq, @debug.Debug)
+pub fn ArgSpec::new(Array[String], variadic? : Bool) -> Self
+
+pub struct Expression {
+  expression : Node
+  // private fields
+}
+pub fn Expression::visit(Self, Json) -> Json raise JMESPathError
+
+pub(all) struct FunctionSpec {
+  function : (Array[Value]) -> Json raise JMESPathError
+  signature : Array[ArgSpec]
+}
+
+pub struct Functions {
+  // private fields
+}
+pub fn Functions::call_function(Self, String, Array[Value]) -> Json raise JMESPathError
+pub fn Functions::get(Self, String) -> FunctionSpec?
+pub fn Functions::names(Self) -> Array[String]
+pub fn Functions::new() -> Self
+pub fn Functions::register_function(Self, String, Array[ArgSpec], (Array[Value]) -> Json raise JMESPathError) -> Unit
+
+pub struct Lexer {
+  // private fields
+}
+pub fn Lexer::new() -> Self
+pub fn Lexer::tokenize(Self, String) -> Array[Token] raise JMESPathError
+
+pub(all) enum Node {
+  Comparator(String, Node, Node)
+  Current
+  Expref(Node)
+  FunctionExpression(String, Array[Node])
+  Field(String)
+  FilterProjection(Node, Node, Node)
+  Flatten(Node)
+  Identity
+  Index(Int)
+  IndexExpression(Array[Node])
+  KeyValPair(String, Node)
+  Literal(Json)
+  MultiSelectDict(Array[Node])
+  MultiSelectList(Array[Node])
+  OrExpression(Node, Node)
+  AndExpression(Node, Node)
+  NotExpression(Node)
+  Pipe(Node, Node)
+  Projection(Node, Node)
+  Subexpression(Array[Node])
+  Slice(Int?, Int?, Int?)
+  ValueProjection(Node, Node)
+} derive(Eq, @debug.Debug)
+pub fn Node::children(Self) -> Array[Self]
+pub fn Node::to_json(Self) -> Json
+pub fn Node::type_name(Self) -> String
+pub fn Node::value(Self) -> Json?
+pub impl ToJson for Node
+
+pub struct Options {
+  custom_functions : Functions?
+}
+pub fn Options::new(custom_functions? : Functions) -> Self
+
+pub struct ParsedResult {
+  expression : String
+  parsed : Node
+}
+pub fn ParsedResult::render_dot_file(Self) -> String
+pub fn ParsedResult::search(Self, Json, options? : Options) -> Json raise JMESPathError
+pub impl Show for ParsedResult
+
+pub struct Parser {
+  // private fields
+}
+pub fn Parser::cache_size() -> Int
+pub fn Parser::new() -> Self
+pub fn Parser::parse(Self, String) -> ParsedResult raise JMESPathError
+pub fn Parser::purge() -> Unit
+
+pub(all) struct Token {
+  type_ : String
+  value : TokenValue
+  start : Int
+  end : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) enum TokenValue {
+  Str(String)
+  Int(Int)
+  Literal(Json)
+} derive(Eq, @debug.Debug)
+
+pub struct TreeInterpreter {
+  // private fields
+}
+pub fn TreeInterpreter::new(options? : Options) -> Self
+pub fn TreeInterpreter::options(Self) -> Options
+pub fn TreeInterpreter::visit(Self, Node, Json) -> Json raise JMESPathError
+
+pub(all) enum Value {
+  Data(Json)
+  Expref(Expression)
+}
+pub impl Show for Value
+
+// Type aliases
+pub type FunctionImpl = (Array[Value]) -> Json raise JMESPathError
+
+// Traits

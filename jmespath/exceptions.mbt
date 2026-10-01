@@ -46,7 +46,11 @@ pub(all) suberror JMESPathError {
     message~ : String,
     expression~ : String?
   )
-  ArityError(expected_arity~ : Int, actual_arity~ : Int, function_name~ : String)
+  ArityError(
+    expected_arity~ : Int,
+    actual_arity~ : Int,
+    function_name~ : String
+  )
   VariadictArityError(
     expected_arity~ : Int,
     actual_arity~ : Int,
@@ -69,10 +73,6 @@ pub(all) suberror JMESPathError {
 }
 
 ///|
-/// The default `ParseError` message (`ParseError._ERROR_MESSAGE`).
-pub let parse_error_message : String = "Invalid jmespath expression"
-
-///|
 fn optional_str(s : String?) -> String {
   match s {
     Some(s) => s
@@ -90,7 +90,7 @@ fn pluralize(word : String, count : Int) -> String {
 }
 
 ///|
-pub impl Show for JMESPathError with output(self, logger) {
+pub impl Show for JMESPathError with fn output(self, logger) {
   match self {
     ParseError(lex_position~, token_value~, token_type~, msg~, expression~) => {
       // lex_position + 1 to account for the starting double quote char.
@@ -170,7 +170,7 @@ pub(all) suberror JSONDecodeError {
 }
 
 ///|
-pub impl Show for JSONDecodeError with output(self, logger) {
+pub impl Show for JSONDecodeError with fn output(self, logger) {
   let JSONDecodeError(msg~, doc~, pos~) = self
   // Python: lineno = doc.count('\n', 0, pos) + 1
   //         colno = pos - doc.rfind('\n', 0, pos)
