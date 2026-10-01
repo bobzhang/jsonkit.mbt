@@ -70,16 +70,16 @@ test "multipleOf" {
 
 ///|
 test "compare numbers" {
-  inspect(
+  debug_inspect(
     compare_numbers(
       loads("18446744073709551615"),
       loads("18446744073709551616"),
     ),
     content="Some(-1)",
   )
-  inspect(compare_numbers(loads("1"), loads("1.0")), content="Some(0)")
-  inspect(compare_numbers(loads("NaN"), loads("1.0")), content="None")
-  inspect(
+  debug_inspect(compare_numbers(loads("1"), loads("1.0")), content="Some(0)")
+  debug_inspect(compare_numbers(loads("NaN"), loads("1.0")), content="None")
+  debug_inspect(
     compare_numbers(loads("9007199254740993"), loads("9007199254740992.0")),
     content="Some(1)",
   )

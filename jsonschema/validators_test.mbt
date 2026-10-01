@@ -15,7 +15,7 @@ fn fail_keyword(
   _instance : Json,
   _schema : Json,
 ) -> @jsonschema.Errors {
-  @jsonschema.Errors::new(fn(yield_) {
+  @jsonschema.Errors::new(fn(yield_) raise {
     guard errors is Array(errors) else { return true }
     for each in errors {
       let message = match each {
@@ -102,7 +102,10 @@ test "create: versions are registered and named" {
     content="Validator(schema={}, format_checker=None)",
   )
   inspect(
-    @jsonschema.create(meta_schema={ "$id": "something else" }, version="foo-bar").name,
+    @jsonschema.create(
+      meta_schema={ "$id": "something else" },
+      version="foo-bar",
+    ).name,
     content="FooBarValidator",
   )
 }
@@ -111,7 +114,10 @@ test "create: versions are registered and named" {
 test "create: unversioned classes are not registered" {
   let before = @jsonschema.registered_validators().length()
   ignore(@jsonschema.create(meta_schema={ "id": "id" }))
-  inspect(@jsonschema.registered_validators().length() == before, content="true")
+  inspect(
+    @jsonschema.registered_validators().length() == before,
+    content="true",
+  )
 }
 
 ///|
@@ -119,9 +125,11 @@ test "create: validates registers the meta-schema id" {
   let custom = @jsonschema.create(
     meta_schema={ "id": "meta schema id" },
     version="12",
-    id_of=s => match s {
-      Object({ "id": String(id), .. }) => Some(id)
-      _ => Some("")
+    id_of=s => {
+      match s {
+        Object({ "id": String(id), .. }) => Some(id)
+        _ => Some("")
+      }
     },
   )
   assert_true(
@@ -194,8 +202,11 @@ test "create: check_schema with a different meta-schema dialect" {
 ///|
 test "extend" {
   let cls = fail_validator()
-  let extended = @jsonschema.extend(cls, validators=[("new", fail_keyword)])
-  debug_inspect(extended.validators.keys().collect(), content="[\"fail\", \"new\"]")
+  let extended = cls.extend_with(validators=[("new", fail_keyword)])
+  debug_inspect(
+    extended.validators.keys().collect(),
+    content="[\"fail\", \"new\"]",
+  )
   debug_inspect(cls.validators.keys().collect(), content="[\"fail\"]")
   assert_true(extended.meta_schema == cls.meta_schema)
   assert_true(extended.type_checker == cls.type_checker)
@@ -204,14 +215,22 @@ test "extend" {
   let original = @jsonschema.create(
     meta_schema={ "$id": "the://wrong/id/", "__test__": correct_id },
     validators=[("fail", fail_keyword)],
-    id_of=s => match s {
-      Object({ "__test__": String(id), .. }) => Some(id)
-      _ => (cls.id_of)(s)
+    id_of=s => {
+      match s {
+        Object({ "__test__": String(id), .. }) => Some(id)
+        _ => (cls.id_of)(s)
+      }
     },
   )
-  debug_inspect((original.id_of)(original.meta_schema), content="Some(\"the://correct/id/\")")
-  let derived = @jsonschema.extend(original)
-  debug_inspect((derived.id_of)(derived.meta_schema), content="Some(\"the://correct/id/\")")
+  debug_inspect(
+    (original.id_of)(original.meta_schema),
+    content="Some(\"the://correct/id/\")",
+  )
+  let derived = original.extend_with()
+  debug_inspect(
+    (derived.id_of)(derived.meta_schema),
+    content="Some(\"the://correct/id/\")",
+  )
   // applicable validators
   let schema : Json = {
     "$defs": { "test": { "type": "number" } },
@@ -219,18 +238,16 @@ test "extend" {
     "maximum": 1,
   }
   assert_true(@jsonschema.draft4_validator.new(schema).is_valid(37))
-  assert_true(@jsonschema.extend(@jsonschema.draft4_validator).new(schema).is_valid(37))
+  assert_true(
+    @jsonschema.draft4_validator.extend_with().new(schema).is_valid(37),
+  )
 }
 
 ///|
 fn all_classes() -> Array[@jsonschema.ValidatorClass] {
   [
-    @jsonschema.draft3_validator,
-    @jsonschema.draft4_validator,
-    @jsonschema.draft6_validator,
-    @jsonschema.draft7_validator,
-    @jsonschema.draft201909_validator,
-    @jsonschema.draft202012_validator,
+    @jsonschema.draft3_validator, @jsonschema.draft4_validator, @jsonschema.draft6_validator,
+    @jsonschema.draft7_validator, @jsonschema.draft201909_validator, @jsonschema.draft202012_validator,
   ]
 }
 
@@ -261,7 +278,10 @@ test "meta-schema checks (every draft)" {
     assert_true(raises_schema_error(cls, { "minItems": "1" }), msg=cls.name)
     assert_eq(raises_schema_error(cls, { "enum": [] }), old, msg=cls.name)
     assert_eq(raises_schema_error(cls, { "enum": [12, 12] }), old, msg=cls.name)
-    assert_true(raises_schema_error(cls, { "pattern": "*notaregex" }), msg=cls.name)
+    assert_true(
+      raises_schema_error(cls, { "pattern": "*notaregex" }),
+      msg=cls.name,
+    )
     assert_false(
       raises_schema_error(cls, { "pattern": "*notaregex" }, format_checker=None),
       msg=cls.name,
@@ -281,7 +301,10 @@ test "validator basics (every draft)" {
     assert_false(cls.new({}).is_type(true, "number"))
     // unknown formats pass; formats are not validated by default
     cls
-    .new({ "format": "carrot" }, format_checker=@jsonschema.FormatChecker::new())
+    .new(
+      { "format": "carrot" },
+      format_checker=@jsonschema.FormatChecker::new(),
+    )
     .validate("bugs")
     assert_true(cls.new({}).format_checker is None)
   }
@@ -300,7 +323,9 @@ test "evolve (every draft)" {
     )
     assert_true(physical_equal(new.cls, cls))
     json_inspect(new.schema, content={ "type": "string" })
-    assert_true(new.format_checker is Some(fc) && physical_equal(fc, cls.format_checker))
+    assert_true(
+      new.format_checker is Some(fc) && physical_equal(fc, cls.format_checker),
+    )
     json_inspect(original.schema, content={ "type": "integer" })
   }
 }
@@ -316,10 +341,12 @@ test "formats are validated with a checker (every draft)" {
     let checker = @jsonschema.FormatChecker::new()
     checker.checks(
       "foo",
-      value => match value {
-        String("good") => true
-        String("bad") => raise Bad
-        _ => fail("What is \{value}?")
+      value => {
+        match value {
+          String("good") => true
+          String("bad") => raise Bad
+          _ => fail("What is \{@jsonschema.py_repr(value)}?")
+        }
       },
       raises=e => e is Bad,
     )
@@ -342,7 +369,9 @@ test "draft 6 functionality does not leak into drafts 3 and 4" {
       try cls.check_schema(schema) catch {
         @jsonschema.SchemaError(e) =>
           assert_true(
-            e.to_string().contains("\{@jsonschema.py_repr(schema)} is not of type"),
+            e
+            .to_string()
+            .contains("\{@jsonschema.py_repr(schema)} is not of type"),
           )
         _ => fail("expected a SchemaError")
       } noraise {
@@ -365,9 +394,10 @@ test "draft 6 functionality does not leak into drafts 3 and 4" {
 test "draft 3: type any" {
   let cls = @jsonschema.draft3_validator
   cls.new({ "type": "any" }).validate({ "anything": [] })
-  let crazy = @jsonschema.extend(
-    cls,
-    type_checker=cls.type_checker.redefine("any", (_, thing) => @jsonschema.loads("1") == thing || thing is Number(_)),
+  let crazy = cls.extend_with(
+    type_checker=cls.type_checker.redefine("any", (_, thing) => {
+      @jsonschema.loads("1") == thing || thing is Number(_)
+    }),
   )
   let v = crazy.new({ "type": "any" })
   v.validate(12)
@@ -416,12 +446,18 @@ test "validator_for" {
   assert_true(physical_equal(@jsonschema.validator_for({}), latest))
   // unknown $schema: the latest draft (upstream also warns)
   assert_true(
-    physical_equal(@jsonschema.validator_for({ "$schema": "unknownSchema" }), latest),
+    physical_equal(
+      @jsonschema.validator_for({ "$schema": "unknownSchema" }),
+      latest,
+    ),
   )
   let default = @jsonschema.draft4_validator
   assert_true(
     physical_equal(
-      @jsonschema.validator_for({ "$schema": "mailto:foo@example.com" }, default~),
+      @jsonschema.validator_for(
+        { "$schema": "mailto:foo@example.com" },
+        default~,
+      ),
       default,
     ),
   )
@@ -461,9 +497,11 @@ test "validate" {
     _ => fail("expected a SchemaError")
   }
   // best_match is used
-  try @jsonschema.validate(12, {
+  try
+    @jsonschema.validate(12, {
       "oneOf": [{ "type": "number", "minimum": 20 }, { "type": "array" }],
-    }) catch {
+    })
+  catch {
     @jsonschema.ValidationError(e) =>
       assert_true(e.to_string().contains("12 is less than the minimum of 20"))
     _ => fail("expected a ValidationError")
@@ -475,14 +513,17 @@ test "validate" {
 
 ///|
 test "referencing" {
-  let registry = @referencing.Registry::new(retrieve=_ => @referencing.draft202012().create_resource({
-    "type": "integer",
-  }))
+  let registry = @referencing.Registry::new(retrieve=_ => {
+    @referencing.draft202012().create_resource({ "type": "integer" })
+  })
   let validator = @jsonschema.draft202012_validator.new(
     { "$ref": "https://example.com/" },
     registry~,
   )
-  debug_inspect((validator.is_valid(12), validator.is_valid("foo")), content="(true, false)")
+  debug_inspect(
+    (validator.is_valid(12), validator.is_valid("foo")),
+    content="(true, false)",
+  )
   // custom registries do not retrieve remote resources
   let validator = @jsonschema.draft202012_validator.new(
     { "$ref": "https://example.com/" },

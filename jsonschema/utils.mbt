@@ -10,7 +10,7 @@ pub(all) enum PathItem {
 /// Python's ordering: keys by code point, indices numerically. (Upstream
 /// would raise `TypeError` comparing a key with an index; here keys sort
 /// first.)
-pub impl Compare for PathItem with compare(self, other) {
+pub impl Compare for PathItem with fn compare(self, other) {
   match (self, other) {
     (Key(a), Key(b)) => py_str_compare(a, b)
     (Index(a), Index(b)) => a.compare(b)
@@ -38,7 +38,7 @@ pub fn PathItem::to_json(self : PathItem) -> Json {
 }
 
 ///|
-pub impl Show for PathItem with output(self, logger) {
+pub impl Show for PathItem with fn output(self, logger) {
   match self {
     Key(k) => logger.write_string(k)
     Index(i) => logger.write_string(i.to_string())
@@ -248,6 +248,23 @@ fn uniq(container : ArrayView[Json]) -> Bool {
 /// `Json::Number`'s `repr~`. Use this to load schemas and instances when
 /// the draft 3 / 4 notion of `integer`, or Python-exact error messages,
 /// matter.
-pub fn loads(s : String) -> Json raise @pycompat.JSONDecodeError {
-  @pycompat.loads(s)
+pub fn loads(s : String) -> Json raise JSONDecodeError {
+  @pycompat.loads(s) catch {
+    @pycompat.JSONDecodeError(msg~, pos~, lineno~, colno~) =>
+      raise JSONDecodeError(msg~, pos~, lineno~, colno~)
+  }
+}
+
+///|
+/// Raised by `loads` for malformed documents (Python's
+/// `json.JSONDecodeError`); `Show` gives Python's message, e.g.
+/// `Expecting value: line 1 column 1 (char 0)`.
+pub suberror JSONDecodeError {
+  JSONDecodeError(msg~ : String, pos~ : Int, lineno~ : Int, colno~ : Int)
+}
+
+///|
+pub impl Show for JSONDecodeError with fn output(self, logger) {
+  let JSONDecodeError(msg~, pos~, lineno~, colno~) = self
+  logger.write_string("\{msg}: line \{lineno} column \{colno} (char \{pos})")
 }

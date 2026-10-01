@@ -18,7 +18,7 @@ fn kw_dependencies_draft3(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
@@ -33,10 +33,13 @@ fn kw_dependencies_draft3(
           .run(yield_) {
           return false
         }
-      } else if dependency is String(d) && validator.is_type(dependency, "string") {
+      } else if dependency is String(d) &&
+        validator.is_type(dependency, "string") {
         if !obj.contains(d) {
           if !yield_(
-              err("\{r(dependency)} is a dependency of \{@pycompat.repr_string(property)}"),
+              err(
+                "\{r(dependency)} is a dependency of \{@pycompat.repr_string(property)}",
+              ),
             ) {
             return false
           }
@@ -49,7 +52,9 @@ fn kw_dependencies_draft3(
           }
           if !present {
             if !yield_(
-                err("\{r(each)} is a dependency of \{@pycompat.repr_string(property)}"),
+                err(
+                  "\{r(each)} is a dependency of \{@pycompat.repr_string(property)}",
+                ),
               ) {
               return false
             }
@@ -69,7 +74,7 @@ fn kw_dependencies_draft4_draft6_draft7(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
@@ -86,7 +91,9 @@ fn kw_dependencies_draft4_draft6_draft7(
           }
           if !present {
             if !yield_(
-                err("\{r(each)} is a dependency of \{@pycompat.repr_string(property)}"),
+                err(
+                  "\{r(each)} is a dependency of \{@pycompat.repr_string(property)}",
+                ),
               ) {
               return false
             }
@@ -109,9 +116,11 @@ fn kw_disallow_draft3(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     for disallowed in ensure_list(disallow) {
-      let schema = Json::object(Map::from_array([("type", Json::array([disallowed]))]))
+      let schema = Json::object(
+        Map::from_array([("type", Json::array([disallowed]))]),
+      )
       if validator.evolve(schema~).is_valid(instance) {
         if !yield_(err("\{r(disallowed)} is disallowed for \{r(instance)}")) {
           return false
@@ -129,12 +138,14 @@ fn kw_extends_draft3(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.is_type(extends, "object") {
       return validator.descend(instance, extends).run(yield_)
     }
     for index, subschema in py_iter(extends) {
-      if !validator.descend(instance, subschema, schema_path=Index(index)).run(yield_) {
+      if !validator
+        .descend(instance, subschema, schema_path=Index(index))
+        .run(yield_) {
         return false
       }
     }
@@ -149,7 +160,7 @@ fn kw_items_draft3_draft4(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Array(xs) && validator.is_type(instance, "array") else {
       return true
     }
@@ -166,7 +177,12 @@ fn kw_items_draft3_draft4(
           break
         }
         let ok = validator
-          .descend(item, subschemas[index], path=Index(index), schema_path=Index(index))
+          .descend(
+            item,
+            subschemas[index],
+            path=Index(index),
+            schema_path=Index(index),
+          )
           .run(yield_)
         if !ok {
           return false
@@ -184,7 +200,7 @@ fn kw_additional_items(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     let items = get_key(schema, "items").unwrap_or(Json::empty_object())
     guard instance is Array(xs) &&
       validator.is_type(instance, "array") &&
@@ -218,7 +234,7 @@ fn kw_items_draft6_draft7_draft201909(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Array(xs) && validator.is_type(instance, "array") else {
       return true
     }
@@ -229,7 +245,12 @@ fn kw_items_draft6_draft7_draft201909(
           break
         }
         let ok = validator
-          .descend(item, subschemas[index], path=Index(index), schema_path=Index(index))
+          .descend(
+            item,
+            subschemas[index],
+            path=Index(index),
+            schema_path=Index(index),
+          )
           .run(yield_)
         if !ok {
           return false
@@ -253,7 +274,7 @@ fn kw_minimum_draft3_draft4(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "number") {
       return true
     }
@@ -265,7 +286,9 @@ fn kw_minimum_draft3_draft4(
       (py_lt(instance, minimum), "less than")
     }
     if failed {
-      return yield_(err("\{r(instance)} is \{cmp} the minimum of \{r(minimum)}"))
+      return yield_(
+        err("\{r(instance)} is \{cmp} the minimum of \{r(minimum)}"),
+      )
     }
     true
   })
@@ -278,7 +301,7 @@ fn kw_maximum_draft3_draft4(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "number") {
       return true
     }
@@ -290,7 +313,9 @@ fn kw_maximum_draft3_draft4(
       (py_gt(instance, maximum), "greater than")
     }
     if failed {
-      return yield_(err("\{r(instance)} is \{cmp} the maximum of \{r(maximum)}"))
+      return yield_(
+        err("\{r(instance)} is \{cmp} the maximum of \{r(maximum)}"),
+      )
     }
     true
   })
@@ -303,7 +328,7 @@ fn kw_properties_draft3(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
@@ -311,13 +336,21 @@ fn kw_properties_draft3(
       let (property, subschema) = entry
       if obj.get(property) is Some(value) {
         let ok = validator
-          .descend(value, subschema, path=Key(property), schema_path=Key(property))
+          .descend(
+            value,
+            subschema,
+            path=Key(property),
+            schema_path=Key(property),
+          )
           .run(yield_)
         if !ok {
           return false
         }
-      } else if get_key(subschema, "required") is Some(required) && truthy(required) {
-        let error = err("\{@pycompat.repr_string(property)} is a required property")
+      } else if get_key(subschema, "required") is Some(required) &&
+        truthy(required) {
+        let error = err(
+          "\{@pycompat.repr_string(property)} is a required property",
+        )
         if error.validator is None {
           error.validator = Some(Json::string("required"))
         }
@@ -349,7 +382,7 @@ fn kw_type_draft3(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     let types = ensure_list(types)
     let all_errors = []
     for index, t in types {
@@ -370,9 +403,11 @@ fn kw_type_draft3(
         }
       }
     }
-    let reprs = types.map(t => match t {
-      Object({ "name": name, .. }) => r(name)
-      _ => r(t)
+    let reprs = types.map(t => {
+      match t {
+        Object({ "name": name, .. }) => r(name)
+        _ => r(t)
+      }
     })
     yield_(
       ValidationError::new(
@@ -390,7 +425,7 @@ fn kw_contains_draft6_draft7(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Array(xs) && validator.is_type(instance, "array") else {
       return true
     }
@@ -411,7 +446,7 @@ fn kw_recursive_ref(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     let resolved = @referencing.lookup_recursive_ref(validator.resolver)
     validator
     .descend(instance, resolved.contents, resolver=resolved.resolver)
@@ -426,7 +461,7 @@ fn kw_unevaluated_items_draft2019(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Array(xs) && validator.is_type(instance, "array") else {
       return true
     }
@@ -456,7 +491,7 @@ fn kw_unevaluated_properties_draft2019(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }

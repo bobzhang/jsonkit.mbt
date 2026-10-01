@@ -119,7 +119,9 @@ def main():
         for rel, text in remotes:
             lines.append("  (")
             lines.append(f'    "{rel}",')
-            lines.append(raw_lines(text, "    "))
+            lines.append("    (")
+            lines.append(raw_lines(text, "      "))
+            lines.append("    ),")
             lines.append("  ),")
         lines.append("]")
         with open(os.path.join(OUT_DIR, "gen_remotes_test.mbt"), "w",

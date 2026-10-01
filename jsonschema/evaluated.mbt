@@ -33,7 +33,8 @@ fn find_evaluated_item_indexes_by_schema(
       ),
     )
   }
-  if get_key(schema, "$dynamicRef") is Some(dynamic_ref) && !(dynamic_ref is Null) {
+  if get_key(schema, "$dynamicRef") is Some(dynamic_ref) &&
+    !(dynamic_ref is Null) {
     guard dynamic_ref is String(dynamic_ref) else {
       raise PythonError("TypeError: bad $dynamicRef")
     }
@@ -79,7 +80,9 @@ fn find_evaluated_item_indexes_by_schema(
       for subschema in py_iter(subschemas) {
         if validator.descend(instance, subschema).is_empty() {
           evaluated_indexes.append(
-            find_evaluated_item_indexes_by_schema(validator, instance, subschema),
+            find_evaluated_item_indexes_by_schema(
+              validator, instance, subschema,
+            ),
           )
         }
       }
@@ -111,7 +114,8 @@ fn find_evaluated_property_keys_by_schema(
       ),
     )
   }
-  if get_key(schema, "$dynamicRef") is Some(dynamic_ref) && !(dynamic_ref is Null) {
+  if get_key(schema, "$dynamicRef") is Some(dynamic_ref) &&
+    !(dynamic_ref is Null) {
     guard dynamic_ref is String(dynamic_ref) else {
       raise PythonError("TypeError: bad $dynamicRef")
     }
@@ -124,7 +128,9 @@ fn find_evaluated_property_keys_by_schema(
       ),
     )
   }
-  evaluated_property_keys_common(validator, instance, schema, evaluated_keys, find_evaluated_property_keys_by_schema)
+  evaluated_property_keys_common(
+    validator, instance, schema, evaluated_keys, find_evaluated_property_keys_by_schema,
+  )
   evaluated_keys
 }
 
@@ -243,7 +249,9 @@ fn find_evaluated_item_indexes_by_schema_2019(
   if get_key(schema, "if") is Some(if_schema) {
     if validator.evolve(schema=if_schema).is_valid(instance) {
       evaluated_indexes.append(
-        find_evaluated_item_indexes_by_schema_2019(validator, instance, if_schema),
+        find_evaluated_item_indexes_by_schema_2019(
+          validator, instance, if_schema,
+        ),
       )
       if get_key(schema, "then") is Some(then) {
         evaluated_indexes.append(
@@ -270,7 +278,9 @@ fn find_evaluated_item_indexes_by_schema_2019(
       for subschema in py_iter(subschemas) {
         if validator.descend(instance, subschema).is_empty() {
           evaluated_indexes.append(
-            find_evaluated_item_indexes_by_schema_2019(validator, instance, subschema),
+            find_evaluated_item_indexes_by_schema_2019(
+              validator, instance, subschema,
+            ),
           )
         }
       }
@@ -311,6 +321,8 @@ fn find_evaluated_property_keys_by_schema_2019(
       ),
     )
   }
-  evaluated_property_keys_common(validator, instance, schema, evaluated_keys, find_evaluated_property_keys_by_schema_2019)
+  evaluated_property_keys_common(
+    validator, instance, schema, evaluated_keys, find_evaluated_property_keys_by_schema_2019,
+  )
   evaluated_keys
 }

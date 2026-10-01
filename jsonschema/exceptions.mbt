@@ -58,9 +58,9 @@ pub(all) suberror JsonSchemaError {
 }
 
 ///|
-pub impl Show for JsonSchemaError with output(self, logger) {
+pub impl Show for JsonSchemaError with fn output(self, logger) {
   match self {
-    ValidationError(e) | SchemaError(e) => logger.write_string(e.to_string())
+    ValidationError(e) | SchemaError(e) => logger.write_string("\{e}")
   }
 }
 
@@ -157,7 +157,9 @@ pub fn ValidationError::keyword(self : ValidationError) -> String? {
 
 ///|
 /// `relative_path`: same as `path`.
-pub fn ValidationError::relative_path(self : ValidationError) -> Array[PathItem] {
+pub fn ValidationError::relative_path(
+  self : ValidationError,
+) -> Array[PathItem] {
   self.path
 }
 
@@ -172,7 +174,9 @@ pub fn ValidationError::relative_schema_path(
 ///|
 /// The path to the offending element within the instance, from the root of
 /// the instance.
-pub fn ValidationError::absolute_path(self : ValidationError) -> Array[PathItem] {
+pub fn ValidationError::absolute_path(
+  self : ValidationError,
+) -> Array[PathItem] {
   match self.parent {
     None => self.path.copy()
     Some(parent) => parent.absolute_path() + self.path
@@ -226,7 +230,9 @@ pub fn ValidationError::json_path(self : ValidationError) -> String {
           sb.write_char('.')
           sb.write_string(k)
         } else {
-          let escaped = k.replace_all(old="\\", new="\\\\").replace_all(old="'", new="\\'")
+          let escaped = k
+            .replace_all(old="\\", new="\\\\")
+            .replace_all(old="'", new="\\'")
           sb.write_string("['\{escaped}']")
         }
     }
@@ -270,9 +276,11 @@ fn ValidationError::matches_type(self : ValidationError) -> Bool {
   }
   guard self.type_checker is Some(checker) else { return false }
   let instance = self.instance.unwrap_or(Json::null())
-  let check = (t : Json) => match t {
-    String(name) => checker.is_type(instance, name) catch { _ => false }
-    _ => false
+  let check = (t : Json) => {
+    match t {
+      String(name) => checker.is_type(instance, name) catch { _ => false }
+      _ => false
+    }
   }
   match expected {
     String(_) => check(expected)
@@ -308,7 +316,7 @@ fn rstrip(s : String) -> String {
 ///|
 /// `str(error)`: the message, followed (when the details are known) by the
 /// failing keyword, schema and instance, exactly like upstream.
-pub impl Show for ValidationError with output(self, logger) {
+pub impl Show for ValidationError with fn output(self, logger) {
   guard self.validator is Some(validator) &&
     self.validator_value is Some(_) &&
     self.instance is Some(instance) &&
@@ -344,7 +352,7 @@ pub suberror UnknownType {
 }
 
 ///|
-pub impl Show for UnknownType with output(self, logger) {
+pub impl Show for UnknownType with fn output(self, logger) {
   let UnknownType(type_~, instance~, schema~) = self
   let prefix = " ".repeat(16)
   let indent = " ".repeat(12)
@@ -364,7 +372,7 @@ pub suberror FormatError {
 }
 
 ///|
-pub impl Show for FormatError with output(self, logger) {
+pub impl Show for FormatError with fn output(self, logger) {
   let FormatError(message~, ..) = self
   logger.write_string(message)
 }

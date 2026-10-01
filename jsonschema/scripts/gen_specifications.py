@@ -54,8 +54,10 @@ def main():
         lines.append("  (")
         lines.append(f"    {json.dumps(uri)},")
         lines.append(f"    {json.dumps(rel)},")
+        lines.append("    (")
         for line in text.rstrip("\n").split("\n"):
-            lines.append(f"    #|{line}")
+            lines.append(f"      #|{line}")
+        lines.append("    ),")
         lines.append("  ),")
     lines.append("]")
     with open(OUT, "w", encoding="utf-8") as f:

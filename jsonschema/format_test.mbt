@@ -73,7 +73,8 @@ test "format error causes become validation error causes" {
     format_checker=checker,
   )
   try validator.validate("BOOM") catch {
-    @jsonschema.ValidationError(e) => assert_true(e.cause is Some(Boom("Boom!")))
+    @jsonschema.ValidationError(e) =>
+      assert_true(e.cause is Some(Boom("Boom!")))
     _ => fail("expected ValidationError")
   } noraise {
     _ => fail("expected ValidationError")

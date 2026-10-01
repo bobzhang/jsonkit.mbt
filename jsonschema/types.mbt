@@ -22,7 +22,7 @@ pub fn TypeChecker::new(
   for pair in type_checkers {
     m[pair.0] = pair.1
   }
-  { type_checkers: m }
+  { type_checkers: m, }
 }
 
 ///|
@@ -33,7 +33,7 @@ pub suberror UndefinedTypeCheck {
 }
 
 ///|
-pub impl Show for UndefinedTypeCheck with output(self, logger) {
+pub impl Show for UndefinedTypeCheck with fn output(self, logger) {
   let UndefinedTypeCheck(type_) = self
   logger.write_string(
     "Type \{@pycompat.repr_string(type_)} is unknown to this type checker",
@@ -42,20 +42,18 @@ pub impl Show for UndefinedTypeCheck with output(self, logger) {
 
 ///|
 /// `repr(checker)`: `<TypeChecker types={'array', 'boolean', ...}>`.
-pub impl Show for TypeChecker with output(self, logger) {
+pub impl Show for TypeChecker with fn output(self, logger) {
   let names = self.type_checkers.keys().collect()
   names.sort_by(py_str_compare)
   logger.write_string("<TypeChecker types={")
-  logger.write_string(
-    names.map(n => @pycompat.repr_string(n)).join(", "),
-  )
+  logger.write_string(names.map(n => @pycompat.repr_string(n)).join(", "))
   logger.write_string("}>")
 }
 
 ///|
 /// Two checkers are equal when they map the same types to the very same
 /// functions.
-pub impl Eq for TypeChecker with equal(self, other) {
+pub impl Eq for TypeChecker with fn equal(self, other) {
   if self.type_checkers.length() != other.type_checkers.length() {
     return false
   }
@@ -109,7 +107,7 @@ pub fn TypeChecker::redefine_many(
   for pair in definitions {
     m[pair.0] = pair.1
   }
-  { type_checkers: m }
+  { type_checkers: m, }
 }
 
 ///|
@@ -127,60 +125,59 @@ pub fn TypeChecker::remove(
     }
     m.remove(t)
   }
-  { type_checkers: m }
+  { type_checkers: m, }
 }
 
 ///|
-fn is_array(_ : TypeChecker, instance : Json) -> Bool raise {
+fn is_array(_ : TypeChecker, instance : Json) -> Bool {
   instance is Array(_)
 }
 
 ///|
-fn is_bool(_ : TypeChecker, instance : Json) -> Bool raise {
+fn is_bool(_ : TypeChecker, instance : Json) -> Bool {
   instance is (True | False)
 }
 
 ///|
 /// Python `isinstance(instance, int)` excluding bools.
-fn is_integer(_ : TypeChecker, instance : Json) -> Bool raise {
+fn is_integer(_ : TypeChecker, instance : Json) -> Bool {
   @pycompat.is_int(instance)
 }
 
 ///|
-fn is_null(_ : TypeChecker, instance : Json) -> Bool raise {
+fn is_null(_ : TypeChecker, instance : Json) -> Bool {
   instance is Null
 }
 
 ///|
 /// Python `isinstance(instance, numbers.Number)` excluding bools.
-fn is_number(_ : TypeChecker, instance : Json) -> Bool raise {
+fn is_number(_ : TypeChecker, instance : Json) -> Bool {
   instance is Number(_)
 }
 
 ///|
-fn is_object(_ : TypeChecker, instance : Json) -> Bool raise {
+fn is_object(_ : TypeChecker, instance : Json) -> Bool {
   instance is Object(_)
 }
 
 ///|
-fn is_string(_ : TypeChecker, instance : Json) -> Bool raise {
+fn is_string(_ : TypeChecker, instance : Json) -> Bool {
   instance is String(_)
 }
 
 ///|
-fn is_any(_ : TypeChecker, _ : Json) -> Bool raise {
+fn is_any(_ : TypeChecker, _ : Json) -> Bool {
   true
 }
 
 ///|
 /// draft6+ integers: Python ints, or floats for which `is_integer()` holds.
-fn is_integer_or_integral_float(
-  checker : TypeChecker,
-  instance : Json,
-) -> Bool raise {
+fn is_integer_or_integral_float(checker : TypeChecker, instance : Json) -> Bool {
   is_integer(checker, instance) ||
-  (@pycompat.is_float(instance) &&
-  @pycompat.is_whole(@pycompat.number_value(instance)))
+  (
+    @pycompat.is_float(instance) &&
+    @pycompat.is_whole(@pycompat.number_value(instance))
+  )
 }
 
 ///|
@@ -190,14 +187,14 @@ fn is_integer_or_integral_float(
 /// not an integer under drafts 3 and 4 (see `loads` for how the distinction
 /// is kept).
 pub let draft3_type_checker : TypeChecker = TypeChecker::new(type_checkers=[
-  ("any", is_any),
-  ("array", is_array),
-  ("boolean", is_bool),
-  ("integer", is_integer),
-  ("object", is_object),
-  ("null", is_null),
-  ("number", is_number),
-  ("string", is_string),
+  ("any", (c, i) => is_any(c, i)),
+  ("array", (c, i) => is_array(c, i)),
+  ("boolean", (c, i) => is_bool(c, i)),
+  ("integer", (c, i) => is_integer(c, i)),
+  ("object", (c, i) => is_object(c, i)),
+  ("null", (c, i) => is_null(c, i)),
+  ("number", (c, i) => is_number(c, i)),
+  ("string", (c, i) => is_string(c, i)),
 ])
 
 ///|
@@ -209,7 +206,8 @@ pub let draft4_type_checker : TypeChecker = draft3_type_checker.remove(["any"]) 
 ///|
 /// The type checker for draft 6.
 pub let draft6_type_checker : TypeChecker = draft4_type_checker.redefine(
-  "integer", is_integer_or_integral_float,
+  "integer",
+  (c, i) => is_integer_or_integral_float(c, i),
 )
 
 ///|

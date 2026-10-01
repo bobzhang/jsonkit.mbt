@@ -1,0 +1,260 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "bobzhang/jsonschema"
+
+import {
+  "bobzhang/referencing",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn best_match(Iter[ValidationError], key? : (ValidationError) -> Relevance) -> ValidationError?
+
+pub fn by_relevance(weak? : ArrayView[String], strong? : ArrayView[String]) -> (ValidationError) -> Relevance
+
+pub fn create(meta_schema~ : Json, validators? : ArrayView[(String, (Validator, Json, Json, Json) -> Errors)], version? : String, type_checker? : TypeChecker, format_checker? : FormatChecker, id_of? : (Json) -> String?, applicable_validators? : (Json) -> Array[(String, Json)]) -> ValidatorClass
+
+pub let draft201909_format_checker : FormatChecker
+
+pub let draft201909_type_checker : TypeChecker
+
+pub let draft201909_validator : ValidatorClass
+
+pub let draft202012_format_checker : FormatChecker
+
+pub let draft202012_type_checker : TypeChecker
+
+pub let draft202012_validator : ValidatorClass
+
+pub let draft3_format_checker : FormatChecker
+
+pub let draft3_type_checker : TypeChecker
+
+pub let draft3_validator : ValidatorClass
+
+pub let draft4_format_checker : FormatChecker
+
+pub let draft4_type_checker : TypeChecker
+
+pub let draft4_validator : ValidatorClass
+
+pub let draft6_format_checker : FormatChecker
+
+pub let draft6_type_checker : TypeChecker
+
+pub let draft6_validator : ValidatorClass
+
+pub let draft7_format_checker : FormatChecker
+
+pub let draft7_type_checker : TypeChecker
+
+pub let draft7_validator : ValidatorClass
+
+pub fn equal(Json, Json) -> Bool
+
+pub fn ignore_ref_siblings(Json) -> Array[(String, Json)]
+
+pub fn latest_version() -> ValidatorClass
+
+pub fn loads(String) -> Json raise JSONDecodeError
+
+pub fn py_repr(Json) -> String
+
+pub fn registered_validators() -> Map[String, ValidatorClass]
+
+pub fn relevance(ValidationError) -> Relevance
+
+pub fn specifications_registry() -> @referencing.Registry
+
+pub let strong_matches : Array[String]
+
+pub fn validate(Json, Json, cls? : ValidatorClass, format_checker? : FormatChecker, registry? : @referencing.Registry) -> Unit raise
+
+pub fn validates(ValidatorClass, String) -> ValidatorClass
+
+pub fn validator_for(Json, default? : ValidatorClass) -> ValidatorClass
+
+pub let weak_matches : Array[String]
+
+// Errors
+pub suberror FormatError {
+  FormatError(message~ : String, cause~ : Error?)
+}
+pub impl Show for FormatError
+
+pub suberror JSONDecodeError {
+  JSONDecodeError(msg~ : String, pos~ : Int, lineno~ : Int, colno~ : Int)
+}
+pub impl Show for JSONDecodeError
+
+pub(all) suberror JsonSchemaError {
+  ValidationError(ValidationError)
+  SchemaError(ValidationError)
+}
+pub impl Show for JsonSchemaError
+
+pub suberror LookupError {
+  KeyError(String)
+  IndexError(Int)
+  TypeError(String)
+} derive(@debug.Debug)
+
+pub suberror PythonError {
+  PythonError(String)
+} derive(@debug.Debug)
+pub impl Show for PythonError
+
+pub suberror UndefinedTypeCheck {
+  UndefinedTypeCheck(String)
+}
+pub impl Show for UndefinedTypeCheck
+
+pub suberror UnknownFormat {
+  UnknownFormat(String)
+} derive(@debug.Debug)
+
+pub suberror UnknownType {
+  UnknownType(type_~ : Json, instance~ : Json, schema~ : Json)
+}
+pub impl Show for UnknownType
+
+// Types and methods
+pub(all) enum ErrorKind {
+  Validation
+  Schema
+} derive(Eq, @debug.Debug)
+
+pub struct ErrorTree {
+  errors : Map[String, ValidationError]
+  // private fields
+}
+pub fn ErrorTree::at(Self, PathItem) -> Self raise LookupError
+pub fn ErrorTree::contains(Self, PathItem) -> Bool
+pub fn ErrorTree::iter(Self) -> Iter[PathItem]
+pub fn ErrorTree::length(Self) -> Int
+pub fn ErrorTree::new(errors? : ArrayView[ValidationError], instance? : Json) -> Self
+pub fn ErrorTree::total_errors(Self) -> Int
+pub impl Show for ErrorTree
+
+pub struct Errors {
+  // private fields
+}
+pub fn Errors::each(Self, (ValidationError) -> Unit raise) -> Unit raise
+pub fn Errors::empty() -> Self
+pub fn Errors::first(Self) -> ValidationError? raise
+pub fn Errors::is_empty(Self) -> Bool raise
+pub fn Errors::map(Self, (ValidationError) -> ValidationError raise) -> Self
+pub fn Errors::new(((ValidationError) -> Bool raise) -> Bool raise) -> Self
+pub fn Errors::run(Self, (ValidationError) -> Bool raise) -> Bool raise
+pub fn Errors::single(ValidationError) -> Self
+pub fn Errors::to_array(Self) -> Array[ValidationError] raise
+
+pub struct FormatCheck {
+  func : (Json) -> Bool raise
+  raises : (Error) -> Bool
+}
+
+pub struct FormatChecker {
+  checkers : Map[String, FormatCheck]
+}
+pub fn FormatChecker::check(Self, Json, String) -> Unit raise
+pub fn FormatChecker::checks(Self, String, (Json) -> Bool raise, raises? : (Error) -> Bool) -> Unit
+pub fn FormatChecker::cls_checks(String, (Json) -> Bool raise, raises? : (Error) -> Bool) -> Unit
+pub fn FormatChecker::conforms(Self, Json, String) -> Bool raise
+pub fn FormatChecker::new(formats? : ArrayView[String]) -> Self raise UnknownFormat
+pub impl Show for FormatChecker
+
+pub(all) enum PathItem {
+  Key(String)
+  Index(Int)
+} derive(Eq, Hash, @debug.Debug)
+pub fn PathItem::repr(Self) -> String
+pub fn PathItem::to_json(Self) -> Json
+pub impl Compare for PathItem
+pub impl Show for PathItem
+
+pub(all) struct Relevance {
+  neg_path_length : Int
+  not_weak : Bool
+  strong : Bool
+  not_matching_type : Bool
+} derive(Compare, Eq, @debug.Debug)
+
+pub struct TypeChecker {
+  // private fields
+}
+pub fn TypeChecker::is_type(Self, Json, String) -> Bool raise
+pub fn TypeChecker::new(type_checkers? : ArrayView[(String, (Self, Json) -> Bool raise)]) -> Self
+pub fn TypeChecker::redefine(Self, String, (Self, Json) -> Bool raise) -> Self
+pub fn TypeChecker::redefine_many(Self, ArrayView[(String, (Self, Json) -> Bool raise)]) -> Self
+pub fn TypeChecker::remove(Self, ArrayView[String]) -> Self raise UndefinedTypeCheck
+pub fn TypeChecker::types(Self) -> Array[String]
+pub impl Eq for TypeChecker
+pub impl Show for TypeChecker
+
+pub struct ValidationError {
+  kind : ErrorKind
+  message : String
+  path : Array[PathItem]
+  schema_path : Array[PathItem]
+  context : Array[ValidationError]
+  cause : Error?
+  mut validator : Json?
+  mut validator_value : Json?
+  mut instance : Json?
+  mut schema : Json?
+  mut parent : ValidationError?
+  // private fields
+}
+pub fn ValidationError::absolute_path(Self) -> Array[PathItem]
+pub fn ValidationError::absolute_schema_path(Self) -> Array[PathItem]
+pub fn ValidationError::class_name(Self) -> String
+pub fn ValidationError::create_from(Self, kind? : ErrorKind) -> Self
+pub fn ValidationError::json_path(Self) -> String
+pub fn ValidationError::keyword(Self) -> String?
+pub fn ValidationError::new(String, validator? : Json, path? : ArrayView[PathItem], cause? : Error, context? : ArrayView[Self], validator_value? : Json, instance? : Json, schema? : Json, schema_path? : ArrayView[PathItem], parent? : Self, type_checker? : TypeChecker, kind? : ErrorKind) -> Self
+pub fn ValidationError::relative_path(Self) -> Array[PathItem]
+pub fn ValidationError::relative_schema_path(Self) -> Array[PathItem]
+pub fn ValidationError::repr(Self) -> String
+pub fn ValidationError::to_error(Self) -> JsonSchemaError
+pub impl Show for ValidationError
+
+pub struct Validator {
+  cls : ValidatorClass
+  schema : Json
+  format_checker : FormatChecker?
+  // private fields
+}
+pub fn Validator::descend(Self, Json, Json, path? : PathItem, schema_path? : PathItem, resolver? : @referencing.Resolver) -> Errors
+pub fn Validator::evolve(Self, schema? : Json, format_checker? : FormatChecker?, resolver? : @referencing.Resolver) -> Self
+pub fn Validator::is_type(Self, Json, String) -> Bool raise
+pub fn Validator::is_valid(Self, Json) -> Bool raise
+pub fn Validator::iter_errors(Self, Json) -> Errors
+pub fn Validator::resolver(Self) -> @referencing.Resolver
+pub fn Validator::validate(Self, Json) -> Unit raise
+pub impl Show for Validator
+
+pub struct ValidatorClass {
+  name : String
+  validators : Map[String, (Validator, Json, Json, Json) -> Errors]
+  meta_schema : Json
+  type_checker : TypeChecker
+  format_checker : FormatChecker
+  id_of : (Json) -> String?
+  applicable_validators : (Json) -> Array[(String, Json)]
+  // private fields
+}
+pub fn ValidatorClass::check_schema(Self, Json, format_checker? : FormatChecker?) -> Unit raise
+pub fn ValidatorClass::extend_with(Self, validators? : ArrayView[(String, (Validator, Json, Json, Json) -> Errors)], version? : String, type_checker? : TypeChecker, format_checker? : FormatChecker) -> Self
+pub fn ValidatorClass::new(Self, Json, format_checker? : FormatChecker, registry? : @referencing.Registry) -> Validator raise
+pub impl Show for ValidatorClass
+
+// Type aliases
+pub type ApplicableValidators = (Json) -> Array[(String, Json)]
+
+pub type FormatCheckFn = (Json) -> Bool raise
+
+pub type KeywordFn = (Validator, Json, Json, Json) -> Errors
+
+pub type TypeCheckFn = (TypeChecker, Json) -> Bool raise
+
+// Traits

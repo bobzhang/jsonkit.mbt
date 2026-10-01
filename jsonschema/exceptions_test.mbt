@@ -14,14 +14,24 @@ fn contents(e : @jsonschema.ValidationError) -> String {
 }
 
 ///|
-fn best_match_of(instance : Json, schema : Json) -> @jsonschema.ValidationError raise {
-  let errors = @jsonschema.latest_version().new(schema).iter_errors(instance).to_array()
+fn best_match_of(
+  instance : Json,
+  schema : Json,
+) -> @jsonschema.ValidationError raise {
+  let errors = @jsonschema.latest_version()
+    .new(schema)
+    .iter_errors(instance)
+    .to_array()
   assert_true(errors.length() > 0, msg="No errors found")
   let best = @jsonschema.best_match(errors.iter()).unwrap()
   let reversed = errors.copy()
   reversed.rev_in_place()
   let reversed_best = @jsonschema.best_match(reversed.iter()).unwrap()
-  assert_eq(contents(best), contents(reversed_best), msg="No consistent best match!")
+  assert_eq(
+    contents(best),
+    contents(reversed_best),
+    msg="No consistent best match!",
+  )
   best
 }
 
@@ -29,7 +39,10 @@ fn best_match_of(instance : Json, schema : Json) -> @jsonschema.ValidationError 
 test "best_match: shallower errors are better matches" {
   let best = best_match_of({ "foo": { "bar": [] } }, {
     "properties": {
-      "foo": { "minProperties": 2, "properties": { "bar": { "type": "object" } } },
+      "foo": {
+        "minProperties": 2,
+        "properties": { "bar": { "type": "object" } },
+      },
     },
   })
   inspect(opt_repr(best.validator), content="'minProperties'")
@@ -56,7 +69,10 @@ test "best_match: hand constructed errors with context" {
     @jsonschema.ValidationError::new("child", path=[Key("foo")]),
     @jsonschema.ValidationError::new("grandchild", path=[Key("foo"), Key("bar")]),
   ])
-  inspect(@jsonschema.best_match([error].iter()).unwrap().message, content="child")
+  inspect(
+    @jsonschema.best_match([error].iter()).unwrap().message,
+    content="child",
+  )
 }
 
 ///|
@@ -73,7 +89,9 @@ test "best_match: oneOf and anyOf are weak matches" {
 /// The anyOf / oneOf traversal tests, run for both keywords.
 test "best_match: anyOf / oneOf traversal" {
   for kw in ["anyOf", "oneOf"] {
-    let k = (subschemas : Json) => Json::object(Map::from_array([(kw, subschemas)]))
+    let k = (subschemas : Json) => {
+      Json::object(Map::from_array([(kw, subschemas)]))
+    }
     let best = best_match_of({ "foo": { "bar": 12 } }, {
       "properties": {
         "foo": k([
@@ -83,73 +101,104 @@ test "best_match: anyOf / oneOf traversal" {
       },
     })
     inspect(opt_repr(best.validator_value), content="'array'")
-    let best = best_match_of({ "foo": { "bar": [] } }, k([
-      {
-        "properties": {
-          "foo": { "minProperties": 2, "properties": { "bar": { "type": "object" } } },
+    let best = best_match_of(
+      { "foo": { "bar": [] } },
+      k([
+        {
+          "properties": {
+            "foo": {
+              "minProperties": 2,
+              "properties": { "bar": { "type": "object" } },
+            },
+          },
         },
-      },
-    ]))
+      ]),
+    )
     inspect(opt_repr(best.validator), content="'minProperties'")
-    let best = best_match_of({ "foo": { "bar": [] } }, k([
-      { "type": "string" },
-      {
-        "properties": {
-          "foo": { "minProperties": 2, "properties": { "bar": { "type": "object" } } },
+    let best = best_match_of(
+      { "foo": { "bar": [] } },
+      k([
+        { "type": "string" },
+        {
+          "properties": {
+            "foo": {
+              "minProperties": 2,
+              "properties": { "bar": { "type": "object" } },
+            },
+          },
         },
-      },
-    ]))
+      ]),
+    )
     inspect(opt_repr(best.validator), content="'minProperties'")
     // no traversal for equally relevant errors
-    let best = best_match_of([], k([
-      { "type": "string" },
-      { "type": "integer" },
-      { "type": "object" },
-    ]))
+    let best = best_match_of(
+      [],
+      k([{ "type": "string" }, { "type": "integer" }, { "type": "object" }]),
+    )
     assert_eq(opt_repr(best.validator), @jsonschema.py_repr(Json::string(kw)))
-    let best = best_match_of({ "foo": 1, "bar": 1 }, k([
-      { "properties": { "foo": { "type": "string" } } },
-      { "properties": { "bar": { "type": "string" } } },
-    ]))
+    let best = best_match_of(
+      { "foo": 1, "bar": 1 },
+      k([
+        { "properties": { "foo": { "type": "string" } } },
+        { "properties": { "bar": { "type": "string" } } },
+      ]),
+    )
     assert_eq(opt_repr(best.validator), @jsonschema.py_repr(Json::string(kw)))
     // prefers subschemas with fewer errors
     let schema = k([
-        { "type": "array", "items": { "$ref": "#/$defs/int_array" } },
-        { "$ref": "#/$defs/int_array" },
-      ])
-    guard schema is Object(m)
-    m["$defs"] = { "int_array": { "type": "array", "items": { "type": "integer" } } }
+      { "type": "array", "items": { "$ref": "#/$defs/int_array" } },
+      { "$ref": "#/$defs/int_array" },
+    ])
+    guard schema is Object(m) else { fail("not an object") }
+    m["$defs"] = {
+      "int_array": { "type": "array", "items": { "type": "integer" } },
+    }
     let best = best_match_of(["not an int", 0], schema)
-    inspect("\{opt_repr(best.validator)} \{opt_repr(best.instance)}", content="'type' 'not an int'")
+    inspect(
+      "\{opt_repr(best.validator)} \{opt_repr(best.instance)}",
+      content="'type' 'not an int'",
+    )
     let best = best_match_of([0, "not an int"], schema)
-    inspect("\{opt_repr(best.validator)} \{opt_repr(best.instance)}", content="'type' 'not an int'")
+    inspect(
+      "\{opt_repr(best.validator)} \{opt_repr(best.instance)}",
+      content="'type' 'not an int'",
+    )
     // partially matching subschemas
-    let best = best_match_of({ "version": 1, "description": 0 }, k([
-      {
-        "properties": {
-          "version": { "const": 1 },
-          "description": { "type": "string" },
+    let best = best_match_of(
+      { "version": 1, "description": 0 },
+      k([
+        {
+          "properties": {
+            "version": { "const": 1 },
+            "description": { "type": "string" },
+          },
         },
-      },
-      {
-        "properties": {
-          "version": { "const": 2 },
-          "description": { "type": "string" },
+        {
+          "properties": {
+            "version": { "const": 2 },
+            "description": { "type": "string" },
+          },
         },
-      },
-    ]))
-    inspect("\{opt_repr(best.validator)} \{path_repr(best.path)}", content="'type' ['description']")
+      ]),
+    )
+    inspect(
+      "\{opt_repr(best.validator)} \{path_repr(best.path)}",
+      content="'type' ['description']",
+    )
     // single equally relevant error
     let best = best_match_of([], k([{ "type": "string" }]))
     inspect(opt_repr(best.validator), content="'type'")
     // single sibling errors: choose first
     let best = best_match_of([12, 13], k([{ "items": { "const": 37 } }]))
-    inspect("\{opt_repr(best.validator)} \{opt_repr(best.instance)}", content="'const' 12")
+    inspect(
+      "\{opt_repr(best.validator)} \{opt_repr(best.instance)}",
+      content="'const' 12",
+    )
     // non type matching sibling errors
-    let best = best_match_of([12, 12], k([
-      { "type": "object" },
-      { "items": { "const": 37 } },
-    ]))
+    let best = best_match_of(
+      [12, 12],
+      k([{ "type": "object" }, { "items": { "const": 37 } }]),
+    )
     inspect(opt_repr(best.validator), content="'const'")
   }
 }
@@ -188,14 +237,8 @@ test "best_match: allOf / nested oneOf" {
 ///|
 test "best_match: prioritizes matching types" {
   let any_ofs : Array[Json] = [
-    [
-      { "type": "array", "minItems": 2 },
-      { "type": "string", "minLength": 10 },
-    ],
-    [
-      { "type": "string", "minLength": 10 },
-      { "type": "array", "minItems": 2 },
-    ],
+    [{ "type": "array", "minItems": 2 }, { "type": "string", "minLength": 10 }],
+    [{ "type": "string", "minLength": 10 }, { "type": "array", "minItems": 2 }],
     [
       { "type": ["array", "object"], "minItems": 2 },
       { "type": ["integer", "string"], "minLength": 10 },
@@ -244,33 +287,62 @@ fn max_by_relevance(
 ///|
 test "by_relevance" {
   let shallow = @jsonschema.ValidationError::new("Oh no!", path=[Key("baz")])
-  let deep = @jsonschema.ValidationError::new("Oh yes!", path=[Key("foo"), Key("bar")])
-  assert_true(physical_equal(max_by_relevance([shallow, deep], @jsonschema.relevance), shallow))
-  assert_true(physical_equal(max_by_relevance([deep, shallow], @jsonschema.relevance), shallow))
+  let deep = @jsonschema.ValidationError::new("Oh yes!", path=[
+    Key("foo"),
+    Key("bar"),
+  ])
+  assert_true(
+    physical_equal(
+      max_by_relevance([shallow, deep], @jsonschema.relevance),
+      shallow,
+    ),
+  )
+  assert_true(
+    physical_equal(
+      max_by_relevance([deep, shallow], @jsonschema.relevance),
+      shallow,
+    ),
+  )
   let shallow = @jsonschema.ValidationError::new("Oh no!", path=[])
   let deep = @jsonschema.ValidationError::new("Oh yes!", path=[Key("foo")])
   for errors in [[shallow, deep], [deep, shallow]] {
     let sorted = errors.copy()
-    sorted.sort_by((a, b) => @jsonschema.relevance(a).compare(@jsonschema.relevance(b)))
+    sorted.sort_by((a, b) => {
+      @jsonschema.relevance(a).compare(@jsonschema.relevance(b))
+    })
     inspect(sorted.map(e => path_repr(e.path)).join(" "), content="['foo'] []")
   }
   let weak = @jsonschema.ValidationError::new("Oh no!", path=[], validator="a")
-  let normal = @jsonschema.ValidationError::new("Oh yes!", path=[], validator="b")
-  let strong = @jsonschema.ValidationError::new("Oh fine!", path=[], validator="c")
+  let normal = @jsonschema.ValidationError::new(
+    "Oh yes!",
+    path=[],
+    validator="b",
+  )
+  let strong = @jsonschema.ValidationError::new(
+    "Oh fine!",
+    path=[],
+    validator="c",
+  )
   let key = @jsonschema.by_relevance(weak=["a"])
   assert_true(physical_equal(max_by_relevance([weak, normal], key), normal))
   assert_true(physical_equal(max_by_relevance([normal, weak], key), normal))
   let key = @jsonschema.by_relevance(weak=["a"], strong=["c"])
-  assert_true(physical_equal(max_by_relevance([weak, normal, strong], key), strong))
-  assert_true(physical_equal(max_by_relevance([strong, normal, weak], key), strong))
+  assert_true(
+    physical_equal(max_by_relevance([weak, normal, strong], key), strong),
+  )
+  assert_true(
+    physical_equal(max_by_relevance([strong, normal, weak], key), strong),
+  )
 }
 
 ///|
 test "ErrorTree" {
-  let errors = Array::makei(8, i => @jsonschema.ValidationError::new(
-    "Something",
-    validator=Json::number(i.to_double()),
-  ))
+  let errors = Array::makei(8, i => {
+    @jsonschema.ValidationError::new(
+      "Something",
+      validator=Json::number(i.to_double()),
+    )
+  })
   inspect(@jsonschema.ErrorTree::new(errors~).total_errors(), content="8")
   let tree = @jsonschema.ErrorTree::new(errors=[
     @jsonschema.ValidationError::new("a message", path=[Key("bar")]),
@@ -283,23 +355,48 @@ test "ErrorTree" {
   assert_true(physical_equal(tree.errors["foo"], error))
   let tree = @jsonschema.ErrorTree::new(errors=[
     @jsonschema.ValidationError::new("a bar message", path=[Key("bar")]),
-    @jsonschema.ValidationError::new("a bar -> 0 message", path=[Key("bar"), Index(0)]),
+    @jsonschema.ValidationError::new("a bar -> 0 message", path=[
+      Key("bar"),
+      Index(0),
+    ]),
   ])
   assert_true(tree.at(Key("bar")).contains(Index(0)))
   assert_false(tree.at(Key("bar")).contains(Index(1)))
-  let e1 = @jsonschema.ValidationError::new("1", validator="foo", path=[Key("bar"), Index(0)])
-  let e2 = @jsonschema.ValidationError::new("2", validator="quux", path=[Key("bar"), Index(0)])
+  let e1 = @jsonschema.ValidationError::new("1", validator="foo", path=[
+    Key("bar"),
+    Index(0),
+  ])
+  let e2 = @jsonschema.ValidationError::new("2", validator="quux", path=[
+    Key("bar"),
+    Index(0),
+  ])
   let tree = @jsonschema.ErrorTree::new(errors=[e1, e2])
   let child = tree.at(Key("bar")).at(Index(0))
   assert_true(physical_equal(child.errors["foo"], e1))
   assert_true(physical_equal(child.errors["quux"], e2))
   // multiple errors with instance / iteration / repr
-  let e1 = @jsonschema.ValidationError::new("1", validator="foo", path=[Key("bar"), Key("bar2")], instance="i1")
-  let e2 = @jsonschema.ValidationError::new("2", validator="quux", path=[Key("foobar"), Index(2)], instance="i2")
+  let e1 = @jsonschema.ValidationError::new(
+    "1",
+    validator="foo",
+    path=[Key("bar"), Key("bar2")],
+    instance="i1",
+  )
+  let e2 = @jsonschema.ValidationError::new(
+    "2",
+    validator="quux",
+    path=[Key("foobar"), Index(2)],
+    instance="i2",
+  )
   let tree = @jsonschema.ErrorTree::new(errors=[e1, e2])
-  debug_inspect(tree.iter().collect(), content="[Key(\"bar\"), Key(\"foobar\")]")
+  debug_inspect(
+    tree.iter().collect(),
+    content="[Key(\"bar\"), Key(\"foobar\")]",
+  )
   inspect(tree, content="<ErrorTree (2 total errors)>")
-  inspect(@jsonschema.ErrorTree::new(errors=[e1]), content="<ErrorTree (1 total error)>")
+  inspect(
+    @jsonschema.ErrorTree::new(errors=[e1]),
+    content="<ErrorTree (1 total error)>",
+  )
   inspect(@jsonschema.ErrorTree::new(), content="<ErrorTree (0 total errors)>")
 }
 
@@ -313,10 +410,20 @@ test "ErrorTree indexing follows the instance" {
   } noraise {
     _ => fail("expected IndexError")
   }
-  let error = @jsonschema.ValidationError::new("a message", validator="foo", instance={}, path=[Key("foo")])
+  let error = @jsonschema.ValidationError::new(
+    "a message",
+    validator="foo",
+    instance={},
+    path=[Key("foo")],
+  )
   ignore(@jsonschema.ErrorTree::new(errors=[error]).at(Key("foo")))
   // accessing an error-free index does not add it to the tree
-  let error = @jsonschema.ValidationError::new("a message", validator="foo", instance=["spam", "eggs"], path=[Index(0)])
+  let error = @jsonschema.ValidationError::new(
+    "a message",
+    validator="foo",
+    instance=["spam", "eggs"],
+    path=[Index(0)],
+  )
   let tree = @jsonschema.ErrorTree::new(errors=[error])
   let subtree = tree.at(Index(1))
   inspect(subtree.total_errors(), content="0")
@@ -324,7 +431,12 @@ test "ErrorTree indexing follows the instance" {
   debug_inspect(tree.iter().collect(), content="[Index(0)]")
   inspect(tree.total_errors(), content="1")
   // error-free subtrees still know their instance
-  let error = @jsonschema.ValidationError::new("a message", validator="foo", instance={ "bar": [] }, path=[Key("foo")])
+  let error = @jsonschema.ValidationError::new(
+    "a message",
+    validator="foo",
+    instance={ "bar": [] },
+    path=[Key("foo")],
+  )
   let tree = @jsonschema.ErrorTree::new(errors=[error])
   let subtree = tree.at(Key("foo")).at(Key("bar"))
   inspect(subtree.total_errors(), content="0")
@@ -375,7 +487,9 @@ fn shows(error : @jsonschema.ValidationError) -> String {
   let s = error.to_string()
   match s.find("\n") {
     Some(i) => {
-      assert_eq(s.unsafe_substring(start=0, end=i), error.message) catch { _ => () }
+      assert_eq(s.unsafe_substring(start=0, end=i), error.message) catch {
+        _ => ()
+      }
       s.unsafe_substring(start=i + 1, end=s.length())
     }
     None => ""
@@ -452,7 +566,9 @@ test "error repr / str" {
 test "error str uses pprint" {
   // upstream uses int keys, which JSON cannot have
   let schema = Json::object(
-    Map::from_array(Array::makei(20, i => (i.to_string(), Json::number(i.to_double())))),
+    Map::from_array(
+      Array::makei(20, i => (i.to_string(), Json::number(i.to_double()))),
+    ),
   )
   let instance = Json::array(Array::makei(25, i => Json::number(i.to_double())))
   inspect(
@@ -511,10 +627,12 @@ test "error str uses pprint" {
   )
   inspect(
     shows(
-      make_error(
-        schema={ "do": 3, "not": 7, "sort": 37, "me": 73 },
-        instance={ "here": 73, "too": 37, "no": 7, "sorting": 3 },
-      ),
+      make_error(schema={ "do": 3, "not": 7, "sort": 37, "me": 73 }, instance={
+        "here": 73,
+        "too": 37,
+        "no": 7,
+        "sorting": 3,
+      }),
     ),
     content=(
       #|

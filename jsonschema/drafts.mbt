@@ -266,7 +266,7 @@ pub let draft202012_validator : ValidatorClass = create(
 )
 
 ///|
-let latest_cell : Ref[ValidatorClass?] = { val: None }
+let latest_cell : Ref[ValidatorClass?] = { val: None, }
 
 ///|
 fn init {

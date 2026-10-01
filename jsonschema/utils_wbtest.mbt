@@ -75,7 +75,10 @@ test "Python numeric equality" {
 test "uniq" {
   let nan = Json::number(@double.not_a_number)
   let neg_nan = Json::number(
-    @double.not_a_number.reinterpret_as_uint64().lxor(0x8000000000000000UL).reinterpret_as_double(),
+    @double.not_a_number
+    .reinterpret_as_uint64()
+    .lxor(0x8000000000000000UL)
+    .reinterpret_as_double(),
   )
   assert_true(uniq([1, 2, 3]))
   assert_false(uniq([1, 2, 1]))
@@ -107,7 +110,10 @@ test "uniq" {
 
 ///|
 test "format_as_index / extras_msg / ensure_list" {
-  inspect(format_as_index("bar", [Index(1), Index(2), Key("foo")]), content="bar[1][2]['foo']")
+  inspect(
+    format_as_index("bar", [Index(1), Index(2), Key("foo")]),
+    content="bar[1][2]['foo']",
+  )
   inspect(format_as_index("bar", []), content="bar")
   debug_inspect(extras_msg(["foo"]), content="(\"'foo'\", \"was\")")
   debug_inspect(extras_msg([1, "a"]), content="(\"1, 'a'\", \"were\")")

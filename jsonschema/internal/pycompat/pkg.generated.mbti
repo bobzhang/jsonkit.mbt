@@ -1,0 +1,61 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "bobzhang/jsonschema/internal/pycompat"
+
+import {
+  "moonbitlang/core/bigint",
+}
+
+// Values
+pub fn bigint_of_whole_double(Double) -> @bigint.BigInt
+
+pub fn compare_numbers(Json, Json) -> Int?
+
+pub fn int_value(Json) -> @bigint.BigInt
+
+pub fn is_float(Json) -> Bool
+
+pub fn is_int(Json) -> Bool
+
+pub fn is_number(Json) -> Bool
+
+pub fn is_whole(Double) -> Bool
+
+pub fn loads(String) -> Json raise JSONDecodeError
+
+pub fn multiple_of_failed(Json, Json) -> Bool
+
+pub fn number_value(Json) -> Double
+
+pub fn numbers_equal(Json, Json) -> Bool
+
+pub fn pformat(Json, width? : Int) -> String
+
+pub fn repr(Json) -> String
+
+pub fn repr_float(Double) -> String
+
+pub fn repr_int(Json) -> String
+
+pub fn repr_string(StringView) -> String
+
+pub fn short_repr(Json) -> String
+
+pub fn splitlines_keepends(Array[Int]) -> Array[Array[Int]]
+
+pub fn text_dedent(String) -> String
+
+pub fn text_indent(String, String) -> String
+
+pub fn write_repr(StringBuilder, Json) -> Unit
+
+// Errors
+pub suberror JSONDecodeError {
+  JSONDecodeError(msg~ : String, pos~ : Int, lineno~ : Int, colno~ : Int)
+}
+pub impl Show for JSONDecodeError
+
+// Types and methods
+
+// Type aliases
+
+// Traits

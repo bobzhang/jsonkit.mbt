@@ -34,7 +34,7 @@ pub struct ValidatorClass {
 }
 
 ///|
-pub impl Show for ValidatorClass with output(self, logger) {
+pub impl Show for ValidatorClass with fn output(self, logger) {
   logger.write_string("<class 'jsonschema.validators.\{self.name}'>")
 }
 
@@ -56,9 +56,9 @@ pub struct Validator {
 ///|
 /// `repr(validator)`: e.g. `Draft7Validator(schema={'type': 'string'},
 /// format_checker=None)` (the schema is abbreviated like `reprlib.repr`).
-pub impl Show for Validator with output(self, logger) {
+pub impl Show for Validator with fn output(self, logger) {
   let fc = match self.format_checker {
-    Some(fc) => fc.to_string()
+    Some(fc) => "\{fc}"
     None => "None"
   }
   logger.write_string(
@@ -92,7 +92,7 @@ pub fn specifications_registry() -> @referencing.Registry {
 }
 
 ///|
-let specifications_cache : Ref[@referencing.Registry?] = { val: None }
+let specifications_cache : Ref[@referencing.Registry?] = { val: None, }
 
 ///|
 /// `_VALIDATORS`: version name to validator class.
@@ -165,7 +165,9 @@ pub fn create(
     keyword_map[pair.0] = pair.1
   }
   let name = match version {
-    Some(v) => title_case(v).replace_all(old=" ", new="").replace_all(old="-", new="") + "Validator"
+    Some(v) =>
+      title_case(v).replace_all(old=" ", new="").replace_all(old="-", new="") +
+      "Validator"
     None => "Validator"
   }
   let cls = {
@@ -193,9 +195,21 @@ fn title_case(s : String) -> String {
     let is_letter = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
     if is_letter {
       if prev_letter {
-        sb.write_char(if c >= 'A' && c <= 'Z' { Int::unsafe_to_char(c.to_int() + 32) } else { c })
+        sb.write_char(
+          if c >= 'A' && c <= 'Z' {
+            Int::unsafe_to_char(c.to_int() + 32)
+          } else {
+            c
+          },
+        )
       } else {
-        sb.write_char(if c >= 'a' && c <= 'z' { Int::unsafe_to_char(c.to_int() - 32) } else { c })
+        sb.write_char(
+          if c >= 'a' && c <= 'z' {
+            Int::unsafe_to_char(c.to_int() - 32)
+          } else {
+            c
+          },
+        )
       }
     } else {
       sb.write_char(c)
@@ -207,9 +221,9 @@ fn title_case(s : String) -> String {
 
 ///|
 /// Create a new validator class by extending an existing one (upstream's
-/// `extend`). Keyword implementations in `validators` replace any existing
+/// `extend`; renamed as `extend` is reserved in MoonBit). Keyword implementations in `validators` replace any existing
 /// ones with the same name.
-pub fn extend(
+pub fn ValidatorClass::extend_with(
   cls : ValidatorClass,
   validators? : ArrayView[(String, KeywordFn)] = [],
   version? : String,
@@ -298,8 +312,10 @@ pub fn ValidatorClass::new(
     Some(r) => specifications_registry().combine([r])
   }
   if (schema is True || schema is False) &&
-    (self.specification.name == "draft-03" ||
-    self.specification.name == "draft-04") {
+    (
+      self.specification.name == "draft-03" ||
+      self.specification.name == "draft-04"
+    ) {
     // `referencing.jsonschema._legacy_id` does `"$ref" in contents`.
     raise PythonError("TypeError: argument of type 'bool' is not iterable")
   }
@@ -319,13 +335,14 @@ fn Validator::make(
   let validators = match schema {
     True | False => []
     _ =>
-      (cls.applicable_validators)(schema)
-      .filter_map(pair => match cls.validators.get(pair.0) {
-        Some(f) => Some((f, pair.0, pair.1))
-        None => None
+      (cls.applicable_validators)(schema).filter_map(pair => {
+        match cls.validators.get(pair.0) {
+          Some(f) => Some((f, pair.0, pair.1))
+          None => None
+        }
       })
   }
-  { cls, schema, format_checker, registry, resolver, validators }
+  { cls, schema, format_checker, registry, resolver, validators, }
 }
 
 ///|
@@ -388,7 +405,7 @@ fn false_schema_error(
 /// `iter_errors`).
 pub fn Validator::iter_errors(self : Validator, instance : Json) -> Errors {
   let schema = self.schema
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     match schema {
       True => return true
       False => return yield_(false_schema_error(instance, schema))
@@ -396,7 +413,7 @@ pub fn Validator::iter_errors(self : Validator, instance : Json) -> Errors {
     }
     for entry in self.validators {
       let (f, k, v) = entry
-      let ok = f(self, v, instance, schema).run(fn(error) {
+      let ok = f(self, v, instance, schema).run(fn(error) raise {
         error.set_unset(
           validator=Json::string(k),
           validator_value=v,
@@ -428,13 +445,11 @@ pub fn Validator::descend(
   schema_path? : PathItem,
   resolver? : @referencing.Resolver,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     match schema {
       True => return true
       False =>
-        return yield_(
-          false_schema_error(instance, schema, path?, schema_path?),
-        )
+        return yield_(false_schema_error(instance, schema, path?, schema_path?))
       _ => ()
     }
     let resolver = match resolver {
@@ -448,7 +463,7 @@ pub fn Validator::descend(
     for pair in (self.cls.applicable_validators)(schema) {
       let (k, v) = pair
       guard evolved.cls.validators.get(k) is Some(f) else { continue }
-      let ok = f(evolved, v, instance, schema).run(fn(error) {
+      let ok = f(evolved, v, instance, schema).run(fn(error) raise {
         error.set_unset(
           validator=Json::string(k),
           validator_value=v,
@@ -495,7 +510,11 @@ pub fn Validator::is_type(
 ) -> Bool raise {
   self.cls.type_checker.is_type(instance, type_) catch {
     UndefinedTypeCheck(_) =>
-      raise UnknownType(type_=Json::string(type_), instance~, schema=self.schema)
+      raise UnknownType(
+        type_=Json::string(type_),
+        instance~,
+        schema=self.schema,
+      )
     e => raise e
   }
 }

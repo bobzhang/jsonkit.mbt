@@ -27,13 +27,13 @@ pub fn Errors::new(
 ///|
 /// No errors.
 pub fn Errors::empty() -> Errors {
-  { run: _ => true }
+  { run: _ => true, }
 }
 
 ///|
 /// A single error.
 pub fn Errors::single(error : ValidationError) -> Errors {
-  { run: yield_ => yield_(error) }
+  { run: yield_ => yield_(error), }
 }
 
 ///|
@@ -94,5 +94,5 @@ pub fn Errors::map(
   self : Errors,
   f : (ValidationError) -> ValidationError raise,
 ) -> Errors {
-  { run: yield_ => (self.run)(e => yield_(f(e))) }
+  { run: yield_ => (self.run)(e => yield_(f(e))), }
 }

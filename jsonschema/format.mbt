@@ -45,7 +45,10 @@ pub fn FormatChecker::new(
 ) -> FormatChecker raise UnknownFormat {
   let checkers = Map([])
   match formats {
-    None => for k, v in class_checkers { checkers[k] = v }
+    None =>
+      for k, v in class_checkers {
+        checkers[k] = v
+      }
     Some(formats) =>
       for k in formats {
         match class_checkers.get(k) {
@@ -65,7 +68,7 @@ pub suberror UnknownFormat {
 
 ///|
 /// `repr(checker)`: `<FormatChecker checkers=['date', 'email', ...]>`.
-pub impl Show for FormatChecker with output(self, logger) {
+pub impl Show for FormatChecker with fn output(self, logger) {
   let names = self.checkers.keys().collect()
   names.sort_by(py_str_compare)
   logger.write_string("<FormatChecker checkers=[")
@@ -85,7 +88,7 @@ pub fn FormatChecker::checks(
   func : FormatCheckFn,
   raises? : (Error) -> Bool = raises_nothing,
 ) -> Unit {
-  self.checkers[format] = { func, raises }
+  self.checkers[format] = { func, raises, }
 }
 
 ///|
@@ -96,7 +99,7 @@ pub fn FormatChecker::cls_checks(
   func : FormatCheckFn,
   raises? : (Error) -> Bool = raises_nothing,
 ) -> Unit {
-  class_checkers[format] = { func, raises }
+  class_checkers[format] = { func, raises, }
 }
 
 ///|
@@ -109,7 +112,7 @@ pub fn FormatChecker::check(
   instance : Json,
   format : String,
 ) -> Unit raise {
-  guard self.checkers.get(format) is Some({ func, raises }) else { return }
+  guard self.checkers.get(format) is Some({ func, raises, }) else { return }
   let mut cause : Error? = None
   let result = func(instance) catch {
     e =>

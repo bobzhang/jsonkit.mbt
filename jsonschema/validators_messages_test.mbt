@@ -122,7 +122,9 @@ test "additionalProperties" {
 
 ///|
 test "const / contains (draft 6)" {
-  assert_true(message_for({ "foo": "bar" }, { "const": 12 }).contains("12 was expected"))
+  assert_true(
+    message_for({ "foo": "bar" }, { "const": 12 }).contains("12 was expected"),
+  )
   inspect(
     message_for(
       [2, {}, []],
@@ -137,7 +139,11 @@ test "const / contains (draft 6)" {
 test "invalid format default message" {
   let checker = @jsonschema.FormatChecker::new(formats=[])
   checker.checks("thing", _ => false)
-  let message = message_for("bla", { "format": "thing" }, format_checker=checker)
+  let message = message_for(
+    "bla",
+    { "format": "thing" },
+    format_checker=checker,
+  )
   assert_true(message.contains("'bla'"))
   assert_true(message.contains("'thing'"))
   assert_true(message.contains("is not a"))
@@ -193,10 +199,7 @@ test "array and string lengths" {
   )
   inspect(message_for("", { "minLength": 2 }), content="'' is too short")
   inspect(message_for("abc", { "maxLength": 2 }), content="'abc' is too long")
-  inspect(
-    message_for("", { "minLength": 1 }),
-    content="'' should be non-empty",
-  )
+  inspect(message_for("", { "minLength": 1 }), content="'' should be non-empty")
   inspect(
     message_for("abc", { "maxLength": 0 }),
     content="'abc' is expected to be empty",
@@ -259,7 +262,10 @@ test "contains" {
     content="[] does not contain items matching the given schema",
   )
   inspect(
-    message_for(["foo", 1], { "contains": { "type": "string" }, "minContains": 2 }),
+    message_for(["foo", 1], {
+      "contains": { "type": "string" },
+      "minContains": 2,
+    }),
     content="Too few items match the given schema (expected at least 2 but only 1 matched)",
   )
   inspect(

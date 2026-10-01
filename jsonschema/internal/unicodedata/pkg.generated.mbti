@@ -1,0 +1,55 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "bobzhang/jsonschema/internal/unicodedata"
+
+// Values
+pub fn alnum_set() -> Array[(Int, Int)]
+
+pub fn bidirectional(Int) -> String
+
+pub fn code_points(StringView) -> Array[Int]
+
+pub fn combining(Int) -> Int
+
+pub fn decimal_set() -> Array[(Int, Int)]
+
+pub fn from_code_points(ArrayView[Int]) -> String
+
+pub fn has_name(Int) -> Bool
+
+pub fn idna_is_contextj(Int) -> Bool
+
+pub fn idna_is_contexto(Int) -> Bool
+
+pub fn idna_is_pvalid(Int) -> Bool
+
+pub fn idna_is_script(Int, String) -> Bool
+
+pub fn idna_joining_type(Int) -> String?
+
+pub fn is_alnum(Int) -> Bool
+
+pub fn is_alpha(Int) -> Bool
+
+pub fn is_decimal(Int) -> Bool
+
+pub fn is_mark(Int) -> Bool
+
+pub fn is_printable(Int) -> Bool
+
+pub fn is_space(Int) -> Bool
+
+pub fn nfc(ArrayView[Int]) -> Array[Int]
+
+pub fn py_len(StringView) -> Int
+
+pub fn space_set() -> Array[(Int, Int)]
+
+pub fn write_code_point(StringBuilder, Int) -> Unit
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

@@ -1,28 +1,4 @@
 ///|
-fn format_checker_for(version : String) -> @jsonschema.FormatChecker {
-  match version {
-    "draft3" => @jsonschema.draft3_format_checker
-    "draft4" => @jsonschema.draft4_format_checker
-    "draft6" => @jsonschema.draft6_format_checker
-    "draft7" => @jsonschema.draft7_format_checker
-    "draft2019-09" => @jsonschema.draft201909_format_checker
-    _ => @jsonschema.draft202012_format_checker
-  }
-}
-
-///|
-fn validator_version_for(class_name : String) -> String {
-  match class_name {
-    "TestDraft3" => "draft3"
-    "TestDraft4" => "draft4"
-    "TestDraft6" => "draft6"
-    "TestDraft7" => "draft7"
-    "TestDraft201909" | "TestDraft201909Format" => "draft2019-09"
-    _ => "draft2020-12"
-  }
-}
-
-///|
 fn validator_class_for(class_name : String) -> @jsonschema.ValidatorClass {
   match class_name {
     "TestDraft3" => @jsonschema.draft3_validator
@@ -116,7 +92,7 @@ fn run_suite_file(
   let cases = @jsonschema.loads(text) catch {
     e => return "cannot parse \{path}: \{e}"
   }
-  guard cases is Array(cases)
+  guard cases is Array(cases) else { return "not a list of cases" }
   let file = match path.rev_find("/") {
     Some(i) => path.unsafe_substring(start=i + 1, end=path.length())
     None => path
@@ -132,12 +108,16 @@ fn run_suite_file(
     guard case
       is Object(
         { "description": String(case_description), "schema": schema, "tests": Array(tests), .. }
-      )
+      ) else {
+      return "malformed case"
+    }
     for t in tests {
       guard t
         is Object(
           { "description": String(description), "data": data, "valid": valid, .. }
-        )
+        ) else {
+        return "malformed test"
+      }
       let test_ = {
         subject,
         case_description,

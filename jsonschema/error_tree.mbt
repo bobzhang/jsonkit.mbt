@@ -37,14 +37,14 @@ pub fn ErrorTree::new(
   errors? : ArrayView[ValidationError] = [],
   instance? : Json,
 ) -> ErrorTree {
-  let tree = { errors: Map([]), contents: Map([]), instance }
+  let tree = { errors: Map([]), contents: Map([]), instance, }
   for error in errors {
     let mut container = tree
     for element in error.path {
       container = match container.contents.get(element) {
         Some(t) => t
         None => {
-          let t = { errors: Map([]), contents: Map([]), instance: None }
+          let t = { errors: Map([]), contents: Map([]), instance: None, }
           container.contents[element] = t
           t
         }
@@ -127,7 +127,7 @@ pub fn ErrorTree::length(self : ErrorTree) -> Int {
 
 ///|
 /// `repr(tree)`: `<ErrorTree (2 total errors)>`.
-pub impl Show for ErrorTree with output(self, logger) {
+pub impl Show for ErrorTree with fn output(self, logger) {
   let total = self.total_errors()
   let errors = if total == 1 { "error" } else { "errors" }
   logger.write_string("<ErrorTree (\{total} total \{errors})>")

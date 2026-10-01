@@ -37,10 +37,9 @@ fn describe(e : @jsonschema.ValidationError) -> String {
 fn sorted_errors(
   errors : Array[@jsonschema.ValidationError],
 ) -> Array[@jsonschema.ValidationError] {
-  let key = (e : @jsonschema.ValidationError) => (
-    e.path.map(p => p.to_string()),
-    e.schema_path.map(p => p.to_string()),
-  )
+  let key = (e : @jsonschema.ValidationError) => {
+    (e.path.map(p => p.to_string()), e.schema_path.map(p => p.to_string()))
+  }
   let lex = (a : Array[String], b : Array[String]) => {
     for i in 0..<@cmp.minimum(a.length(), b.length()) {
       let c = a[i].compare(b[i])
@@ -237,7 +236,9 @@ test "multiple nesting" {
   let errors = sorted_errors(validator.iter_errors(instance).to_array())
   inspect(
     errors
-    .map(e => "\{path_repr(e.path)} \{e.json_path()} \{path_repr(e.schema_path)} \{opt_repr(e.validator)}")
+    .map(e => {
+      "\{path_repr(e.path)} \{e.json_path()} \{path_repr(e.schema_path)} \{opt_repr(e.validator)}"
+    })
     .join("\n"),
     content=(
       #|[] $ ['type'] 'type'
@@ -418,7 +419,10 @@ test "propertyNames / if-then / if-else" {
 
 ///|
 test "boolean schema False" {
-  let errors = @jsonschema.draft7_validator.new(false).iter_errors(12).to_array()
+  let errors = @jsonschema.draft7_validator
+    .new(false)
+    .iter_errors(12)
+    .to_array()
   inspect(errors.length(), content="1")
   inspect(
     describe(errors[0]),
@@ -466,7 +470,10 @@ test "ref (via a registry; upstream uses a legacy RefResolver)" {
     "someRef",
     @referencing.draft7().create_resource(schema),
   )
-  let validator = @jsonschema.draft7_validator.new({ "$ref": "someRef" }, registry~)
+  let validator = @jsonschema.draft7_validator.new(
+    { "$ref": "someRef" },
+    registry~,
+  )
   let errors = validator.iter_errors({ "foo": "notAnInteger" }).to_array()
   inspect(errors.length(), content="1")
   inspect(
@@ -533,7 +540,9 @@ test "prefixItems" {
   let errors = v.iter_errors(["foo", 2, "bar", 4, "baz"]).to_array()
   inspect(
     errors
-    .map(e => "\{e.message} \{path_repr(e.absolute_path())} \{path_repr(e.schema_path)} \{e.json_path()}")
+    .map(e => {
+      "\{e.message} \{path_repr(e.absolute_path())} \{path_repr(e.schema_path)} \{e.json_path()}"
+    })
     .join("\n"),
     content=(
       #|2 is not of type 'string' [1] ['items', 'type'] $[1]
@@ -588,9 +597,7 @@ test "contains details" {
 test "ref sibling" {
   let v = @jsonschema.draft202012_validator.new({
     "$defs": { "foo": { "required": ["bar"] } },
-    "properties": {
-      "aprop": { "$ref": "#/$defs/foo", "required": ["baz"] },
-    },
+    "properties": { "aprop": { "$ref": "#/$defs/foo", "required": ["baz"] } },
   })
   let errors = v.iter_errors({ "aprop": {} }).to_array()
   inspect(errors.length(), content="2")

@@ -31,9 +31,11 @@ pub fn by_relevance(
   let strong = strong.to_owned()
   fn(error) {
     let keyword = error.keyword()
-    let in_ = (set : Array[String]) => match keyword {
-      Some(k) => set.contains(k)
-      None => false
+    let in_ = (set : Array[String]) => {
+      match keyword {
+        Some(k) => set.contains(k)
+        None => false
+      }
     }
     {
       neg_path_length: -error.path.length(),
@@ -145,7 +147,7 @@ pub fn best_match(
 /// Python's lexicographic comparison of two path deques.
 fn path_less(a : Array[PathItem], b : Array[PathItem]) -> Bool {
   for i in 0..<@cmp.minimum(a.length(), b.length()) {
-    let c = a[i].compare(b[i])
+    let c = Compare::compare(a[i], b[i])
     if c != 0 {
       return c < 0
     }

@@ -1,0 +1,34 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "bobzhang/jsonschema/internal/regex"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn compile(String) -> Pattern raise PatternError
+
+pub fn is_valid(String) -> Bool
+
+pub fn search(String, StringView) -> Bool raise
+
+// Errors
+pub suberror PatternError {
+  PatternError(String)
+} derive(@debug.Debug)
+
+pub suberror UnsupportedPattern {
+  UnsupportedPattern(String)
+} derive(@debug.Debug)
+
+// Types and methods
+pub struct Pattern {
+  pattern : String
+  // private fields
+}
+pub fn Pattern::search(Self, StringView) -> Bool raise UnsupportedPattern
+pub fn Pattern::search_groups(Self, StringView) -> Array[String?]? raise UnsupportedPattern
+
+// Type aliases
+
+// Traits

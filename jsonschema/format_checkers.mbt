@@ -4,27 +4,27 @@
 
 ///|
 /// The format checker for draft 3.
-pub let draft3_format_checker : FormatChecker = { checkers: Map([]) }
+pub let draft3_format_checker : FormatChecker = { checkers: Map([]), }
 
 ///|
 /// The format checker for draft 4.
-pub let draft4_format_checker : FormatChecker = { checkers: Map([]) }
+pub let draft4_format_checker : FormatChecker = { checkers: Map([]), }
 
 ///|
 /// The format checker for draft 6.
-pub let draft6_format_checker : FormatChecker = { checkers: Map([]) }
+pub let draft6_format_checker : FormatChecker = { checkers: Map([]), }
 
 ///|
 /// The format checker for draft 7.
-pub let draft7_format_checker : FormatChecker = { checkers: Map([]) }
+pub let draft7_format_checker : FormatChecker = { checkers: Map([]), }
 
 ///|
 /// The format checker for draft 2019-09.
-pub let draft201909_format_checker : FormatChecker = { checkers: Map([]) }
+pub let draft201909_format_checker : FormatChecker = { checkers: Map([]), }
 
 ///|
 /// The format checker for draft 2020-12.
-pub let draft202012_format_checker : FormatChecker = { checkers: Map([]) }
+pub let draft202012_format_checker : FormatChecker = { checkers: Map([]), }
 
 ///|
 /// Upstream's `_checks_drafts`: register `func` under per-draft names in the
@@ -70,7 +70,7 @@ fn checks_drafts(
 }
 
 ///|
-fn is_email(instance : Json) -> Bool raise {
+fn is_email(instance : Json) -> Bool {
   guard instance is String(s) else { return true }
   s.contains("@")
 }
@@ -188,7 +188,7 @@ fn is_relative_json_pointer(instance : Json) -> Bool raise {
 }
 
 ///|
-fn is_uri_template(instance : Json) -> Bool raise {
+fn is_uri_template(instance : Json) -> Bool {
   guard instance is String(s) else { return true }
   @formats.uri_template_validate(s)
 }
@@ -219,8 +219,8 @@ fn is_regex_error(e : Error) -> Bool {
 fn init {
   // Registration order mirrors `jsonschema/_format.py` (it matters for the
   // class-level registry, where draft 3's `time` replaces the RFC 3339 one).
-  checks_drafts(is_email, name="email")
-  checks_drafts(is_email, name="idn-email")
+  checks_drafts(i => is_email(i), name="email")
+  checks_drafts(i => is_email(i), name="idn-email")
   checks_drafts(
     is_ipv4,
     draft3="ip-address",
@@ -301,7 +301,7 @@ fn init {
     raises=@formats.is_json_pointer_exception,
   )
   checks_drafts(
-    is_uri_template,
+    i => is_uri_template(i),
     draft6="uri-template",
     draft7="uri-template",
     draft201909="uri-template",

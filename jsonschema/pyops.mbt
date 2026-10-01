@@ -8,7 +8,7 @@ pub suberror PythonError {
 } derive(Debug)
 
 ///|
-pub impl Show for PythonError with output(self, logger) {
+pub impl Show for PythonError with fn output(self, logger) {
   let PythonError(msg) = self
   logger.write_string(msg)
 }
@@ -67,10 +67,12 @@ fn num_cmp(a : Json, b : Json) -> Int? raise PythonError {
     (Number(_), Number(_)) => @pycompat.compare_numbers(a, b)
     (True | False, _) | (_, True | False) => {
       // bool is an int in Python
-      let to_num = (j : Json) => match j {
-        True => int_json(1)
-        False => int_json(0)
-        _ => j
+      let to_num = (j : Json) => {
+        match j {
+          True => int_json(1)
+          False => int_json(0)
+          _ => j
+        }
       }
       num_cmp(to_num(a), to_num(b))
     }
@@ -158,9 +160,9 @@ fn py_iter(j : Json) -> Array[Json] raise PythonError {
     Array(xs) => xs
     Object(m) => m.keys().map(k => Json::string(k)).collect()
     String(s) =>
-      @unicodedata.code_points(s).map(c => Json::string(
-        @unicodedata.from_code_points([c]),
-      ))
+      @unicodedata.code_points(s).map(c => {
+        Json::string(@unicodedata.from_code_points([c]))
+      })
     _ =>
       raise PythonError("TypeError: '\{type_name(j)}' object is not iterable")
   }

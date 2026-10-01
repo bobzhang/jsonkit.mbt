@@ -25,7 +25,7 @@ fn kw_pattern_properties(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "object") {
       return true
     }
@@ -54,7 +54,7 @@ fn kw_property_names(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "object") {
       return true
     }
@@ -74,33 +74,43 @@ fn kw_additional_properties(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
     let extras = find_additional_properties(obj, schema)
     if validator.is_type(additional, "object") {
       for extra in extras {
-        if !validator.descend(obj[extra], additional, path=Key(extra)).run(yield_) {
+        if !validator
+          .descend(obj[extra], additional, path=Key(extra))
+          .run(yield_) {
           return false
         }
       }
     } else if !truthy(additional) && extras.length() > 0 {
       if has_key(schema, "patternProperties") {
         let verb = if extras.length() == 1 { "does" } else { "do" }
-        let joined = py_sorted(extras).map(e => @pycompat.repr_string(e)).join(", ")
+        let joined = py_sorted(extras)
+          .map(e => @pycompat.repr_string(e))
+          .join(", ")
         let patterns = py_sorted(
-            object_items(get_key(schema, "patternProperties").unwrap()).map(p => p.0),
+            object_items(get_key(schema, "patternProperties").unwrap()).map(p => {
+              p.0
+            }),
           )
           .map(p => @pycompat.repr_string(p))
           .join(", ")
-        return yield_(err("\{joined} \{verb} not match any of the regexes: \{patterns}"))
+        return yield_(
+          err("\{joined} \{verb} not match any of the regexes: \{patterns}"),
+        )
       } else {
         let (extras_repr, verb) = extras_msg(
           py_sorted(extras).map(e => Json::string(e)),
         )
         return yield_(
-          err("Additional properties are not allowed (\{extras_repr} \{verb} unexpected)"),
+          err(
+            "Additional properties are not allowed (\{extras_repr} \{verb} unexpected)",
+          ),
         )
       }
     }
@@ -115,7 +125,7 @@ fn kw_items(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Array(xs) && validator.is_type(instance, "array") else {
       return true
     }
@@ -136,7 +146,9 @@ fn kw_items(
       }
       let item = if prefix != 1 { "items" } else { "item" }
       return yield_(
-        err("Expected at most \{prefix} \{item} but found \{extra} extra: \{r(rest)}"),
+        err(
+          "Expected at most \{prefix} \{item} but found \{extra} extra: \{r(rest)}",
+        ),
       )
     }
     for index in prefix..<total {
@@ -155,7 +167,7 @@ fn kw_const(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !equal(instance, const_) {
       return yield_(err("\{r(const_)} was expected"))
     }
@@ -170,7 +182,7 @@ fn kw_contains(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Array(xs) && validator.is_type(instance, "array") else {
       return true
     }
@@ -220,13 +232,15 @@ fn kw_exclusive_minimum(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "number") {
       return true
     }
     if py_le(instance, minimum) {
       return yield_(
-        err("\{r(instance)} is less than or equal to the minimum of \{r(minimum)}"),
+        err(
+          "\{r(instance)} is less than or equal to the minimum of \{r(minimum)}",
+        ),
       )
     }
     true
@@ -240,13 +254,15 @@ fn kw_exclusive_maximum(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "number") {
       return true
     }
     if py_ge(instance, maximum) {
       return yield_(
-        err("\{r(instance)} is greater than or equal to the maximum of \{r(maximum)}"),
+        err(
+          "\{r(instance)} is greater than or equal to the maximum of \{r(maximum)}",
+        ),
       )
     }
     true
@@ -260,7 +276,7 @@ fn kw_minimum(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "number") {
       return true
     }
@@ -280,7 +296,7 @@ fn kw_maximum(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "number") {
       return true
     }
@@ -300,7 +316,7 @@ fn kw_multiple_of(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "number") {
       return true
     }
@@ -318,7 +334,7 @@ fn kw_min_items(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.is_type(instance, "array") &&
       py_lt(int_json(py_len(instance)), mi) {
       let message = if @pycompat.numbers_equal(mi, int_json(1)) {
@@ -339,7 +355,7 @@ fn kw_max_items(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.is_type(instance, "array") &&
       py_gt(int_json(py_len(instance)), mi) {
       let message = if @pycompat.numbers_equal(mi, int_json(0)) {
@@ -360,7 +376,7 @@ fn kw_unique_items(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if truthy(ui) &&
       validator.is_type(instance, "array") &&
       instance is Array(xs) &&
@@ -378,10 +394,12 @@ fn kw_pattern(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.is_type(instance, "string") && instance is String(s) {
       guard patrn is String(p) else {
-        raise PythonError("TypeError: first argument must be string or compiled pattern")
+        raise PythonError(
+          "TypeError: first argument must be string or compiled pattern",
+        )
       }
       if !@regex.search(p, s) {
         return yield_(err("\{r(instance)} does not match \{r(patrn)}"))
@@ -398,7 +416,7 @@ fn kw_format(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard validator.format_checker is Some(checker) && format is String(f) else {
       return true
     }
@@ -418,7 +436,7 @@ fn kw_min_length(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.is_type(instance, "string") &&
       py_lt(int_json(py_len(instance)), ml) {
       let message = if @pycompat.numbers_equal(ml, int_json(1)) {
@@ -439,7 +457,7 @@ fn kw_max_length(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.is_type(instance, "string") &&
       py_gt(int_json(py_len(instance)), ml) {
       let message = if @pycompat.numbers_equal(ml, int_json(0)) {
@@ -460,7 +478,7 @@ fn kw_dependent_required(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
@@ -472,7 +490,9 @@ fn kw_dependent_required(
       for each in py_iter(dependency) {
         if !has_key(instance, py_str(each)) || !(each is String(_)) {
           if !yield_(
-              err("\{r(each)} is a dependency of \{@pycompat.repr_string(property)}"),
+              err(
+                "\{r(each)} is a dependency of \{@pycompat.repr_string(property)}",
+              ),
             ) {
             return false
           }
@@ -490,7 +510,7 @@ fn kw_dependent_schemas(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
@@ -516,7 +536,7 @@ fn kw_enum(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if py_iter(enums).iter().all(each => !equal(each, instance)) {
       return yield_(err("\{r(instance)} is not one of \{r(enums)}"))
     }
@@ -531,7 +551,7 @@ fn kw_ref(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard ref_ is String(s) else {
       raise PythonError("TypeError: $ref must be a string")
     }
@@ -546,7 +566,7 @@ fn kw_dynamic_ref(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard dynamic_ref is String(s) else {
       raise PythonError("TypeError: $dynamicRef must be a string")
     }
@@ -561,7 +581,7 @@ fn kw_type(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     let types = ensure_list(types)
     for t in types {
       guard t is String(name) else {
@@ -583,7 +603,7 @@ fn kw_properties(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
@@ -591,7 +611,12 @@ fn kw_properties(
       let (property, subschema) = entry
       if obj.get(property) is Some(value) {
         let ok = validator
-          .descend(value, subschema, path=Key(property), schema_path=Key(property))
+          .descend(
+            value,
+            subschema,
+            path=Key(property),
+            schema_path=Key(property),
+          )
           .run(yield_)
         if !ok {
           return false
@@ -609,7 +634,7 @@ fn kw_required(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
@@ -635,7 +660,7 @@ fn kw_min_properties(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.is_type(instance, "object") &&
       py_lt(int_json(py_len(instance)), mp) {
       let message = if @pycompat.numbers_equal(mp, int_json(1)) {
@@ -656,7 +681,7 @@ fn kw_max_properties(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if !validator.is_type(instance, "object") {
       return true
     }
@@ -680,9 +705,11 @@ fn kw_all_of(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     for index, subschema in py_iter(all_of) {
-      if !validator.descend(instance, subschema, schema_path=Index(index)).run(yield_) {
+      if !validator
+        .descend(instance, subschema, schema_path=Index(index))
+        .run(yield_) {
         return false
       }
     }
@@ -697,7 +724,7 @@ fn kw_any_of(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     let all_errors = []
     for index, subschema in py_iter(any_of) {
       let errs = validator
@@ -724,7 +751,7 @@ fn kw_one_of(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     let subschemas = py_iter(one_of)
     let all_errors = []
     let mut first_valid : (Int, Json)? = None
@@ -769,7 +796,7 @@ fn kw_not(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.evolve(schema=not_schema).is_valid(instance) {
       return yield_(
         err("\{r(instance)} should not be valid under \{r(not_schema)}"),
@@ -786,7 +813,7 @@ fn kw_if(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     if validator.evolve(schema=if_schema).is_valid(instance) {
       if get_key(schema, "then") is Some(then) {
         return validator
@@ -809,7 +836,7 @@ fn kw_unevaluated_items(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Array(xs) && validator.is_type(instance, "array") else {
       return true
     }
@@ -839,7 +866,7 @@ fn kw_unevaluated_properties(
   instance : Json,
   schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Object(obj) && validator.is_type(instance, "object") else {
       return true
     }
@@ -880,14 +907,18 @@ fn unevaluated_properties_errors(
         py_sorted(unevaluated_keys).map(k => Json::string(k)),
       )
       return yield_(
-        err("Unevaluated properties are not allowed (\{extras} \{verb} unexpected)"),
+        err(
+          "Unevaluated properties are not allowed (\{extras} \{verb} unexpected)",
+        ),
       )
     } else {
       let (extras, verb) = extras_msg(
         unevaluated_keys.map(k => Json::string(k)),
       )
       return yield_(
-        err("Unevaluated properties are not valid under the given schema (\{extras} \{verb} unevaluated and invalid)"),
+        err(
+          "Unevaluated properties are not valid under the given schema (\{extras} \{verb} unevaluated and invalid)",
+        ),
       )
     }
   }
@@ -901,7 +932,7 @@ fn kw_prefix_items(
   instance : Json,
   _schema : Json,
 ) -> Errors {
-  Errors::new(fn(yield_) {
+  Errors::new(fn(yield_) raise {
     guard instance is Array(xs) && validator.is_type(instance, "array") else {
       return true
     }
@@ -911,7 +942,12 @@ fn kw_prefix_items(
         break
       }
       let ok = validator
-        .descend(item, subschemas[index], schema_path=Index(index), path=Index(index))
+        .descend(
+          item,
+          subschemas[index],
+          schema_path=Index(index),
+          path=Index(index),
+        )
         .run(yield_)
       if !ok {
         return false
