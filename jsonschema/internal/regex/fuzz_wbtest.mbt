@@ -10,10 +10,12 @@ test "differential: random patterns against CPython" {
     guard (try! @json.parse(line)) is [String(pattern), Array(rows)] else {
       fail("bad case")
     }
-    let results = rows.map(row => match row {
-      [String(s), True] => (s, true)
-      [String(s), _] => (s, false)
-      _ => ("", false)
+    let results = rows.map(row => {
+      match row {
+        [String(s), True] => (s, true)
+        [String(s), _] => (s, false)
+        _ => ("", false)
+      }
     })
     let p = compile(pattern) catch {
       e => {
@@ -31,15 +33,23 @@ test "differential: random patterns against CPython" {
     for r in results {
       let got = p.search(r.0)
       if got != r.1 {
-        failures.push("\{p.engine()} \{pattern.escape()} on \{r.0.escape()}: got \{got}")
+        failures.push(
+          "\{p.engine()} \{pattern.escape()} on \{r.0.escape()}: got \{got}",
+        )
       }
-      let bt = backtrack_search(root, groups, @unicodedata.code_points(r.0)) is Some(_)
+      let bt = backtrack_search(root, groups, @unicodedata.code_points(r.0))
+        is Some(_)
       if bt != r.1 {
-        failures.push("backtrack \{pattern.escape()} on \{r.0.escape()}: got \{bt}")
+        failures.push(
+          "backtrack \{pattern.escape()} on \{r.0.escape()}: got \{bt}",
+        )
       }
     }
   }
   println("regex fuzz: \{on_core}/\{total} patterns on core")
   debug_inspect(failures.length(), content="0")
-  debug_inspect(failures[:@cmp.minimum(failures.length(), 30)].to_owned(), content="[]")
+  debug_inspect(
+    failures[:@cmp.minimum(failures.length(), 30)].to_owned(),
+    content="[]",
+  )
 }

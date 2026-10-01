@@ -105,9 +105,11 @@ fn combining_class(cp : Int) -> Int? {
 
 ///|
 fn valid_contextj(label : Array[Int], pos : Int) -> Bool raise LibError {
-  let virama = (cp : Int) => match combining_class(cp) {
-    Some(v) => v == 9
-    None => raise IDNAError("Unknown codepoint adjacent to joiner")
+  let virama = (cp : Int) => {
+    match combining_class(cp) {
+      Some(v) => v == 9
+      None => raise IDNAError("Unknown codepoint adjacent to joiner")
+    }
   }
   let cp_value = label[pos]
   if cp_value == 0x200C {
@@ -152,7 +154,10 @@ fn valid_contexto(label : Array[Int], pos : Int) -> Bool {
   let cp_value = label[pos]
   let n = label.length()
   if cp_value == 0x00B7 {
-    return 0 < pos && pos < n - 1 && label[pos - 1] == 0x6C && label[pos + 1] == 0x6C
+    return 0 < pos &&
+      pos < n - 1 &&
+      label[pos - 1] == 0x6C &&
+      label[pos + 1] == 0x6C
   }
   if cp_value == 0x0375 {
     if pos < n - 1 && n > 1 {

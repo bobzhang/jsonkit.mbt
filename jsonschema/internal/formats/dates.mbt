@@ -28,9 +28,7 @@ pub fn validate_rfc3339(date_string : String) -> Bool raise {
   let pattern = @regex.compile(
     "(?a)^(\\d{4})-(0[1-9]|1[0-2])-(\\d{2})T(?:[01]\\d|2[0123]):(?:[0-5]\\d):(?:[0-5]\\d)(?:\\.\\d+)?(?:Z|[+-](?:[01]\\d|2[0123]):[0-5]\\d)$",
   )
-  guard pattern.search_groups(date_string) is Some(groups) else {
-    return false
-  }
+  guard pattern.search_groups(date_string) is Some(groups) else { return false }
   let year = parse_ascii_int(groups[1].unwrap())
   let month = parse_ascii_int(groups[2].unwrap())
   let day = parse_ascii_int(groups[3].unwrap())

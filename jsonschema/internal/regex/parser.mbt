@@ -256,7 +256,13 @@ fn Parser::parse_seq(
         }
         let lazy_ = self.matches('?')
         let possessive = !lazy_ && self.matches('+')
-        items[items.length() - 1] = Repeat(item, min~, max~, lazy_~, possessive~)
+        items[items.length() - 1] = Repeat(
+          item,
+          min~,
+          max~,
+          lazy_~,
+          possessive~,
+        )
       }
       _ => items.push(Literal(this, case_=self.case_mode()))
     }
@@ -391,7 +397,11 @@ fn Parser::escape(self : Parser) -> Node raise PatternError {
     'b' => return At(Boundary(ascii=self.flags.ascii))
     'B' => return At(NonBoundary(ascii=self.flags.ascii))
     'd' | 'D' | 's' | 'S' | 'w' | 'W' =>
-      return Set(category_set(c, self.flags.ascii), negate=false, case_=Sensitive)
+      return Set(
+        category_set(c, self.flags.ascii),
+        negate=false,
+        case_=Sensitive,
+      )
     _ => ()
   }
   if self.literal_escape(c, false) is Some(v) {
