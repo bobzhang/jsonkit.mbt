@@ -39,7 +39,7 @@ pub struct Resolver {
 pub fn Resolver::new(
   base_uri~ : String,
   registry~ : Registry,
-  previous? : @list.List[String] = @list.empty(),
+  previous~ : @list.List[String] = @list.List([]),
 ) -> Resolver {
   { base_uri, registry, previous, }
 }

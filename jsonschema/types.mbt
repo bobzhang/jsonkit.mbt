@@ -16,7 +16,7 @@ pub struct TypeChecker {
 ///|
 /// `TypeChecker(type_checkers)`.
 pub fn TypeChecker::new(
-  type_checkers? : ArrayView[(String, TypeCheckFn)] = [],
+  type_checkers~ : ArrayView[(String, TypeCheckFn)] = [],
 ) -> TypeChecker {
   let m = Map([])
   for pair in type_checkers {

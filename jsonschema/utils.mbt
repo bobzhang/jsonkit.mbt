@@ -3,7 +3,7 @@
 /// array index, like the `str | int` items of upstream's path deques.
 pub(all) enum PathItem {
   Key(String)
-  Index(Int)
+  Index(Int32)
 } derive(Eq, Hash, Debug)
 
 ///|
@@ -260,7 +260,7 @@ pub fn loads(s : String) -> Json raise JSONDecodeError {
 /// `json.JSONDecodeError`); `Show` gives Python's message, e.g.
 /// `Expecting value: line 1 column 1 (char 0)`.
 pub suberror JSONDecodeError {
-  JSONDecodeError(msg~ : String, pos~ : Int, lineno~ : Int, colno~ : Int)
+  JSONDecodeError(msg~ : String, pos~ : Int32, lineno~ : Int32, colno~ : Int32)
 }
 
 ///|

@@ -3,7 +3,7 @@
 /// (Python's `int | str`): array indices are `Index`, everything else `Key`.
 pub(all) enum Segment {
   Key(String)
-  Index(Int)
+  Index(Int32)
 } derive(Debug, Eq)
 
 ///|

@@ -28,7 +28,7 @@ fn truthy(j : Json) -> Bool {
 
 ///|
 /// `len(x)`.
-fn py_len(j : Json) -> Int raise PythonError {
+fn py_len(j : Json) -> Int32 raise PythonError {
   match j {
     String(s) => @unicodedata.py_len(s)
     Array(xs) => xs.length()
@@ -55,14 +55,14 @@ fn type_name(j : Json) -> String {
 
 ///|
 /// A Python `int` as JSON.
-fn int_json(n : Int) -> Json {
+fn int_json(n : Int32) -> Json {
   Json::number(n.to_double())
 }
 
 ///|
 /// Python's numeric comparison `a OP b` (`None` when either side is not a
 /// number; comparisons involving NaN are false).
-fn num_cmp(a : Json, b : Json) -> Int? raise PythonError {
+fn num_cmp(a : Json, b : Json) -> Int32? raise PythonError {
   match (a, b) {
     (Number(_), Number(_)) => @pycompat.compare_numbers(a, b)
     (True | False, _) | (_, True | False) => {
@@ -114,7 +114,7 @@ fn py_str(j : Json) -> String {
 
 ///|
 /// Python's ordering of `str`s (by code point).
-fn py_str_compare(a : String, b : String) -> Int {
+fn py_str_compare(a : String, b : String) -> Int32 {
   let x = @unicodedata.code_points(a)
   let y = @unicodedata.code_points(b)
   for i in 0..<@cmp.minimum(x.length(), y.length()) {

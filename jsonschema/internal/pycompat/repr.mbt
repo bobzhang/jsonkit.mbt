@@ -2,7 +2,7 @@
 const HEX_DIGITS : String = "0123456789abcdef"
 
 ///|
-fn write_hex(sb : StringBuilder, v : Int, width : Int) -> Unit {
+fn write_hex(sb : StringBuilder, v : Int32, width : Int32) -> Unit {
   for i = width - 1; i >= 0; i = i - 1 {
     sb.write_char(HEX_DIGITS.get_char((v >> (4 * i)) & 0xF).unwrap())
   }
@@ -26,7 +26,7 @@ fn write_repr_string(sb : StringBuilder, s : StringView) -> Unit {
   for cp in cps {
     if cp == quote.to_int() || cp == '\\' {
       sb.write_char('\\')
-      sb.write_char(Int::unsafe_to_char(cp))
+      sb.write_char(Int32::unsafe_to_char(cp))
     } else if cp == '\t' {
       sb.write_string("\\t")
     } else if cp == '\n' {
@@ -37,7 +37,7 @@ fn write_repr_string(sb : StringBuilder, s : StringView) -> Unit {
       sb.write_string("\\x")
       write_hex(sb, cp, 2)
     } else if cp < 0x7F {
-      sb.write_char(Int::unsafe_to_char(cp))
+      sb.write_char(Int32::unsafe_to_char(cp))
     } else if @unicodedata.is_printable(cp) {
       @unicodedata.write_code_point(sb, cp)
     } else if cp <= 0xFF {
@@ -57,7 +57,7 @@ fn write_repr_string(sb : StringBuilder, s : StringView) -> Unit {
 ///|
 /// Shortest round-trip decimal digits of a positive finite double, together
 /// with the decimal point position: `d = 0.DIGITS * 10^decpt`.
-fn shortest_digits(d : Double) -> (String, Int) {
+fn shortest_digits(d : Double) -> (String, Int32) {
   let s = d.to_string()
   let (mantissa, exp) = match s.find("e") {
     Some(i) => {

@@ -15,7 +15,7 @@ fn draft_specification(
   in_subarray~ : Array[String],
   in_subvalues~ : Array[String],
   quirks~ : Quirks,
-  pointer_in_value? : Array[String] = in_value,
+  pointer_in_value~ : Array[String] = in_value,
   pointer_quirks~ : PointerQuirks,
 ) -> Specification {
   Specification::new(

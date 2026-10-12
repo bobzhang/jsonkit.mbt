@@ -24,7 +24,7 @@ pub fn relative_json_pointer(instance : String) -> Bool raise LibError {
   }
   // instance.lstrip(string.digits)
   let mut i = 0
-  while i < instance.length() && instance.code_unit_at(i) is ('0'..='9') {
+  while i < instance.length() && instance.code_unit_at(i) is ('0'..<='9') {
     i += 1
   }
   let prefix = instance.unsafe_substring(start=0, end=i)

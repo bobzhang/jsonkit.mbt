@@ -1,19 +1,19 @@
 ///|
 /// `isoduration.parser.util.is_number`: `[+\-0-9.,eE]`.
-fn iso_is_number(c : Int) -> Bool {
+fn iso_is_number(c : Int32) -> Bool {
   c is ('+' | '-' | '.' | ',' | 'e' | 'E') || (c >= '0' && c <= '9')
 }
 
 ///|
 /// `ch.isalpha() and ch.lower() != "e"`.
-fn iso_is_letter(c : Int) -> Bool {
+fn iso_is_letter(c : Int32) -> Bool {
   @unicodedata.is_alpha(c) && c != 'e' && c != 'E'
 }
 
 ///|
 /// `Decimal(tmp_value)` for strings over `[+\-0-9.eE]`; returns whether the
 /// value is non-zero.
-fn iso_decimal(s : Array[Int]) -> Bool raise LibError {
+fn iso_decimal(s : Array[Int32]) -> Bool raise LibError {
   // [+-]? (digits ('.' digits?)? | '.' digits) ([eE] [+-]? digits)?
   let n = s.length()
   let mut i = 0
@@ -64,8 +64,8 @@ fn iso_decimal(s : Array[Int]) -> Bool raise LibError {
 ///|
 /// `parse_designator`: pops designators until `target`.
 fn iso_designator(
-  designators : Array[Int],
-  target : Int,
+  designators : Array[Int32],
+  target : Int32,
 ) -> Unit raise LibError {
   while designators.length() > 0 {
     let key = designators.remove(0)
@@ -100,9 +100,9 @@ pub fn parse_duration(duration_str : String) -> Unit raise LibError {
   }
   let date_str = cps[beginning:].to_owned()
   // parse_date_duration
-  let designators : Array[Int] = ['Y', 'M', 'D', 'W']
+  let designators : Array[Int32] = ['Y', 'M', 'D', 'W']
   let mut any_nonzero = false
-  let tmp_value : Array[Int] = []
+  let tmp_value : Array[Int32] = []
   for idx, ch in date_str {
     if ch == 'T' {
       if tmp_value.length() > 0 && tmp_value == date_str[:idx].to_owned() {
@@ -138,9 +138,9 @@ pub fn parse_duration(duration_str : String) -> Unit raise LibError {
 }
 
 ///|
-fn parse_time_duration(time_str : ArrayView[Int]) -> Unit raise LibError {
-  let designators : Array[Int] = ['H', 'M', 'S']
-  let tmp_value : Array[Int] = []
+fn parse_time_duration(time_str : ArrayView[Int32]) -> Unit raise LibError {
+  let designators : Array[Int32] = ['H', 'M', 'S']
+  let tmp_value : Array[Int32] = []
   for ch in time_str {
     if iso_is_letter(ch) {
       iso_designator(designators, ch)

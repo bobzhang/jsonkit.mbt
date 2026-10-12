@@ -220,7 +220,7 @@ test "pointer array indices follow Python int() (generated with CPython 3.13)" {
     Json::array(Array::makei(20, i => Json::number(i.to_double()))),
   )
   let resolver = @referencing.Registry::new().resolver()
-  let cases : Array[(String, Int?)] = [
+  let cases : Array[(String, Int32?)] = [
     ("0", Some(0)),
     ("19", Some(19)),
     ("-1", Some(-1)),

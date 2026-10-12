@@ -28,7 +28,7 @@ pub(all) enum Node {
   /// `identity()`
   Identity
   /// `index(index)`
-  Index(Int)
+  Index(Int32)
   /// `index_expression(children)`
   IndexExpression(Array[Node])
   /// `key_val_pair(key_name, node)`
@@ -52,7 +52,7 @@ pub(all) enum Node {
   /// `subexpression(children)`
   Subexpression(Array[Node])
   /// `slice(start, end, step)`
-  Slice(Int?, Int?, Int?)
+  Slice(Int32?, Int32?, Int32?)
   /// `value_projection(left, right)`
   ValueProjection(Node, Node)
 } derive(Eq, Debug)
@@ -123,7 +123,7 @@ pub fn Node::value(self : Node) -> Json? {
 }
 
 ///|
-fn optional_int_json(i : Int?) -> Json {
+fn optional_int_json(i : Int32?) -> Json {
   match i {
     Some(i) => Json::number(i.to_double())
     None => Json::null()

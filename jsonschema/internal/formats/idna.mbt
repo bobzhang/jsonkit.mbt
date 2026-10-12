@@ -2,20 +2,20 @@
 // `idna.encode(s)` with its default arguments (no UTS #46 mapping).
 
 ///|
-const IDNA_MAX_INPUT_LENGTH : Int = 1024
+const IDNA_MAX_INPUT_LENGTH : Int32 = 1024
 
 ///|
-fn is_dot(c : Int) -> Bool {
+fn is_dot(c : Int32) -> Bool {
   c is ('.' | 0x3002 | 0xFF0E | 0xFF61)
 }
 
 ///|
-fn bidi(cp : Int) -> String {
+fn bidi(cp : Int32) -> String {
   @unicodedata.bidirectional(cp)
 }
 
 ///|
-fn check_bidi(label : Array[Int]) -> Unit raise LibError {
+fn check_bidi(label : Array[Int32]) -> Unit raise LibError {
   if label.length() > IDNA_MAX_INPUT_LENGTH {
     raise IDNAError("Label too long")
   }
@@ -94,7 +94,7 @@ fn check_bidi(label : Array[Int]) -> Unit raise LibError {
 ///|
 /// `_combining_class`: raises (a `ValueError` upstream) for unnamed code
 /// points of class 0.
-fn combining_class(cp : Int) -> Int? {
+fn combining_class(cp : Int32) -> Int32? {
   let v = @unicodedata.combining(cp)
   if v == 0 && !@unicodedata.has_name(cp) {
     None
@@ -104,8 +104,8 @@ fn combining_class(cp : Int) -> Int? {
 }
 
 ///|
-fn valid_contextj(label : Array[Int], pos : Int) -> Bool raise LibError {
-  let virama = (cp : Int) => {
+fn valid_contextj(label : Array[Int32], pos : Int32) -> Bool raise LibError {
+  let virama = (cp : Int32) => {
     match combining_class(cp) {
       Some(v) => v == 9
       None => raise IDNAError("Unknown codepoint adjacent to joiner")
@@ -150,7 +150,7 @@ fn valid_contextj(label : Array[Int], pos : Int) -> Bool raise LibError {
 }
 
 ///|
-fn valid_contexto(label : Array[Int], pos : Int) -> Bool {
+fn valid_contexto(label : Array[Int32], pos : Int32) -> Bool {
   let cp_value = label[pos]
   let n = label.length()
   if cp_value == 0x00B7 {
@@ -194,7 +194,7 @@ fn valid_contexto(label : Array[Int], pos : Int) -> Bool {
 }
 
 ///|
-fn check_label(label : Array[Int]) -> Unit raise LibError {
+fn check_label(label : Array[Int32]) -> Unit raise LibError {
   if label.length() > IDNA_MAX_INPUT_LENGTH {
     raise IDNAError("Label too long")
   }
@@ -240,7 +240,7 @@ fn check_label(label : Array[Int]) -> Unit raise LibError {
 
 ///|
 /// `idna.ulabel` for an ASCII label.
-fn ulabel_ascii(label : Array[Int]) -> Unit raise LibError {
+fn ulabel_ascii(label : Array[Int32]) -> Unit raise LibError {
   if label.length() > IDNA_MAX_INPUT_LENGTH {
     raise IDNAError("Label too long")
   }
@@ -271,7 +271,7 @@ fn ulabel_ascii(label : Array[Int]) -> Unit raise LibError {
 
 ///|
 /// `idna.alabel(label)`; returns the encoded length.
-fn alabel(label : Array[Int]) -> Int raise LibError {
+fn alabel(label : Array[Int32]) -> Int32 raise LibError {
   if label.length() > IDNA_MAX_INPUT_LENGTH {
     raise IDNAError("Label too long")
   }
@@ -301,7 +301,7 @@ pub fn idna_encode(s : String) -> Unit raise LibError {
   if cps.length() > 254 {
     raise IDNAError("Domain too long")
   }
-  let labels : Array[Array[Int]] = [[]]
+  let labels : Array[Array[Int32]] = [[]]
   for c in cps {
     if is_dot(c) {
       labels.push([])

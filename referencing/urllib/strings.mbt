@@ -1,6 +1,6 @@
 ///|
 /// Substring by UTF-16 code-unit offsets (Python-style slicing with clamping).
-fn substr(s : String, start : Int, end? : Int) -> String {
+fn substr(s : String, start : Int32, end? : Int32) -> String {
   let len = s.length()
   let end = match end {
     Some(e) => if e < 0 { 0 } else if e > len { len } else { e }

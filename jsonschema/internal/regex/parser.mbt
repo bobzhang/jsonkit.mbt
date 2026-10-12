@@ -1,16 +1,16 @@
 ///|
 /// Recursive-descent port of CPython's `re._parser` for `str` patterns.
 priv struct Parser {
-  src : Array[Int]
-  mut pos : Int
+  src : Array[Int32]
+  mut pos : Int32
   mut flags : Flags
   /// number of groups opened so far + 1 (like `State.groups`)
-  mut groups : Int
-  group_names : Map[String, Int]
-  open_groups : Array[Int]
-  mut lookbehind_groups : Int?
+  mut groups : Int32
+  group_names : Map[String, Int32]
+  open_groups : Array[Int32]
+  mut lookbehind_groups : Int32?
   /// widths of closed groups, for lookbehind fixed-width checks
-  group_widths : Map[Int, (Int, Int)]
+  group_widths : Map[Int32, (Int32, Int32)]
 }
 
 ///|
@@ -30,7 +30,7 @@ fn Parser::case_mode(self : Parser) -> CaseMode {
 }
 
 ///|
-fn Parser::next(self : Parser) -> Int? {
+fn Parser::next(self : Parser) -> Int32? {
   if self.pos < self.src.length() {
     Some(self.src[self.pos])
   } else {
@@ -39,7 +39,7 @@ fn Parser::next(self : Parser) -> Int? {
 }
 
 ///|
-fn Parser::get(self : Parser) -> Int? {
+fn Parser::get(self : Parser) -> Int32? {
   if self.pos < self.src.length() {
     let c = self.src[self.pos]
     self.pos += 1
@@ -50,7 +50,7 @@ fn Parser::get(self : Parser) -> Int? {
 }
 
 ///|
-fn Parser::matches(self : Parser, c : Int) -> Bool {
+fn Parser::matches(self : Parser, c : Int32) -> Bool {
   if self.next() == Some(c) {
     self.pos += 1
     true
@@ -60,22 +60,22 @@ fn Parser::matches(self : Parser, c : Int) -> Bool {
 }
 
 ///|
-fn is_ascii_letter(c : Int) -> Bool {
+fn is_ascii_letter(c : Int32) -> Bool {
   (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
 }
 
 ///|
-fn is_digit(c : Int) -> Bool {
+fn is_digit(c : Int32) -> Bool {
   c >= '0' && c <= '9'
 }
 
 ///|
-fn is_octdigit(c : Int) -> Bool {
+fn is_octdigit(c : Int32) -> Bool {
   c >= '0' && c <= '7'
 }
 
 ///|
-fn hex_value(c : Int) -> Int? {
+fn hex_value(c : Int32) -> Int32? {
   if c >= '0' && c <= '9' {
     Some(c - '0')
   } else if c >= 'a' && c <= 'f' {
@@ -88,13 +88,13 @@ fn hex_value(c : Int) -> Int? {
 }
 
 ///|
-fn cps_to_string(cps : ArrayView[Int]) -> String {
+fn cps_to_string(cps : ArrayView[Int32]) -> String {
   @unicodedata.from_code_points(cps)
 }
 
 ///|
 /// Parse a Python regular expression.
-fn parse(pattern : String) -> (Node, Flags, Int) raise PatternError {
+fn parse(pattern : String) -> (Node, Flags, Int32) raise PatternError {
   let p : Parser = {
     src: @unicodedata.code_points(pattern),
     pos: 0,
@@ -123,7 +123,7 @@ fn parse(pattern : String) -> (Node, Flags, Int) raise PatternError {
 fn Parser::parse_sub(
   self : Parser,
   first : Bool,
-  nested : Int,
+  nested : Int32,
 ) -> Node raise PatternError {
   let items = [self.parse_seq(first, nested)]
   while self.matches('|') {
@@ -145,7 +145,7 @@ fn is_repeat(n : Node) -> Bool {
 fn Parser::parse_seq(
   self : Parser,
   first : Bool,
-  nested : Int,
+  nested : Int32,
 ) -> Node raise PatternError {
   let items : Array[Node] = []
   for ;; {
@@ -196,7 +196,7 @@ fn Parser::parse_seq(
       '*' | '+' | '?' | '{' => {
         let here = self.pos
         let mut min = 0
-        let mut max : Int? = None
+        let mut max : Int32? = None
         if this == '?' {
           max = Some(1)
         } else if this == '+' {
@@ -224,7 +224,7 @@ fn Parser::parse_seq(
             self.pos = here
             continue
           }
-          let to_int = (ds : Array[Int]) => {
+          let to_int = (ds : Array[Int32]) => {
             let mut v = 0L
             for d in ds {
               v = v * 10L + (d - '0').to_int64()
@@ -276,7 +276,7 @@ fn Parser::parse_seq(
 
 ///|
 /// Category sets, honouring the ASCII flag.
-fn category_set(c : Int, ascii : Bool) -> Array[(Int, Int)] {
+fn category_set(c : Int32, ascii : Bool) -> Array[(Int32, Int32)] {
   match c {
     'd' => if ascii { [('0', '9')] } else { @unicodedata.decimal_set() }
     'D' => complement_set(category_set('d', ascii))
@@ -296,9 +296,9 @@ fn category_set(c : Int, ascii : Bool) -> Array[(Int, Int)] {
 ///|
 fn Parser::hex_escape(
   self : Parser,
-  count : Int,
-  escape : Array[Int],
-) -> Int raise PatternError {
+  count : Int32,
+  escape : Array[Int32],
+) -> Int32 raise PatternError {
   let mut v = 0
   for _ in 0..<count {
     match self.next() {
@@ -318,10 +318,10 @@ fn Parser::hex_escape(
 /// escape is not one of the literal-producing forms.
 fn Parser::literal_escape(
   self : Parser,
-  c : Int,
+  c : Int32,
   in_class : Bool,
-) -> Int? raise PatternError {
-  let escape : Array[Int] = ['\\', c]
+) -> Int32? raise PatternError {
+  let escape : Array[Int32] = ['\\', c]
   match c {
     'a' => Some(7)
     'f' => Some(12)
@@ -447,7 +447,7 @@ fn Parser::escape(self : Parser) -> Node raise PatternError {
 ///|
 fn Parser::check_lookbehind_group(
   self : Parser,
-  gid : Int,
+  gid : Int32,
 ) -> Unit raise PatternError {
   if self.lookbehind_groups is Some(lb) {
     if !self.group_widths.contains(gid) {
@@ -464,8 +464,8 @@ fn Parser::check_lookbehind_group(
 ///|
 fn Parser::class_item(
   self : Parser,
-  this : Int,
-) -> Result[Int, Array[(Int, Int)]] raise PatternError {
+  this : Int32,
+) -> Result[Int32, Array[(Int32, Int32)]] raise PatternError {
   if this != '\\' {
     return Ok(this)
   }
@@ -489,7 +489,7 @@ fn Parser::class_item(
 
 ///|
 fn Parser::parse_class(self : Parser) -> Node raise PatternError {
-  let ranges : Array[(Int, Int)] = []
+  let ranges : Array[(Int32, Int32)] = []
   let negate = self.matches('^')
   let mut nonempty = false
   for ;; {
@@ -534,7 +534,7 @@ fn Parser::parse_class(self : Parser) -> Node raise PatternError {
 }
 
 ///|
-fn is_identifier(name : Array[Int]) -> Bool {
+fn is_identifier(name : Array[Int32]) -> Bool {
   if name.length() == 0 {
     return false
   }
@@ -552,9 +552,9 @@ fn is_identifier(name : Array[Int]) -> Bool {
 ///|
 fn Parser::get_until(
   self : Parser,
-  terminator : Int,
+  terminator : Int32,
   what : String,
-) -> Array[Int] raise PatternError {
+) -> Array[Int32] raise PatternError {
   let name = []
   for ;; {
     match self.get() {
@@ -570,12 +570,12 @@ fn Parser::get_until(
 }
 
 ///|
-fn flag_of(c : Int) -> Bool {
+fn flag_of(c : Int32) -> Bool {
   c is ('i' | 'L' | 'm' | 's' | 'x' | 'a' | 'u')
 }
 
 ///|
-fn Flags::with_flag(self : Flags, c : Int, on : Bool) -> Flags {
+fn Flags::with_flag(self : Flags, c : Int32, on : Bool) -> Flags {
   match c {
     'i' => { ..self, ignorecase: on, }
     'm' => { ..self, multiline: on, }
@@ -592,7 +592,7 @@ fn Flags::with_flag(self : Flags, c : Int, on : Bool) -> Flags {
 fn Parser::parse_group(
   self : Parser,
   at_start : Bool,
-  nested : Int,
+  nested : Int32,
 ) -> Node? raise PatternError {
   let mut capture = true
   let mut is_atomic = false
@@ -719,7 +719,7 @@ fn Parser::parse_group(
       is_atomic = true
     } else if flag_of(char) || char == '-' {
       // inline flags
-      let add : Array[Int] = []
+      let add : Array[Int32] = []
       let mut c = char
       if c != '-' {
         for ;; {
@@ -762,7 +762,7 @@ fn Parser::parse_group(
         }
         return None
       }
-      let del : Array[Int] = []
+      let del : Array[Int32] = []
       if c == '-' {
         match self.get() {
           None => raise self.error("missing flag")
@@ -855,10 +855,10 @@ fn Parser::parse_group(
 }
 
 ///|
-const MAXWIDTH : Int = 0x7FFFFFFF
+const MAXWIDTH : Int32 = 0x7FFFFFFF
 
 ///|
-fn add_width(a : Int, b : Int) -> Int {
+fn add_width(a : Int32, b : Int32) -> Int32 {
   if a >= MAXWIDTH - b {
     MAXWIDTH
   } else {
@@ -868,7 +868,7 @@ fn add_width(a : Int, b : Int) -> Int {
 
 ///|
 /// `SubPattern.getwidth()`: (min, max) match width.
-fn Parser::width(self : Parser, n : Node) -> (Int, Int) {
+fn Parser::width(self : Parser, n : Node) -> (Int32, Int32) {
   match n {
     Literal(_) | Set(_) => (1, 1)
     At(_) | Look(_) => (0, 0)

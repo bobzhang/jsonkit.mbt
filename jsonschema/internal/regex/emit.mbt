@@ -3,7 +3,7 @@
 
 ///|
 /// The largest repetition count `@string.Regex` accepts.
-const MAX_CORE_REPEAT : Int = 256
+const MAX_CORE_REPEAT : Int32 = 256
 
 ///|
 priv struct Emitter {
@@ -11,20 +11,20 @@ priv struct Emitter {
 }
 
 ///|
-fn write_hex_escape(sb : StringBuilder, c : Int) -> Unit {
+fn write_hex_escape(sb : StringBuilder, c : Int32) -> Unit {
   sb.write_string("\\u{")
   sb.write_string(c.to_string(radix=16))
   sb.write_char('}')
 }
 
 ///|
-fn is_ascii_alnum(c : Int) -> Bool {
+fn is_ascii_alnum(c : Int32) -> Bool {
   is_ascii_letter(c) || is_digit(c)
 }
 
 ///|
 /// ASCII-only case folding of a set (`(?ai)`).
-fn fold_set_ascii(set : Array[(Int, Int)]) -> Array[(Int, Int)] {
+fn fold_set_ascii(set : Array[(Int32, Int32)]) -> Array[(Int32, Int32)] {
   let extra = []
   for r in set {
     let (lo, hi) = r
@@ -48,10 +48,10 @@ fn fold_set_ascii(set : Array[(Int, Int)]) -> Array[(Int, Int)] {
 /// matches: like CPython, the positive set is case-folded first and only
 /// then complemented.
 fn class_members(
-  set : Array[(Int, Int)],
+  set : Array[(Int32, Int32)],
   negate : Bool,
   case_ : CaseMode,
-) -> Array[(Int, Int)] {
+) -> Array[(Int32, Int32)] {
   let folded = match case_ {
     Sensitive => set
     UnicodeFold => normalize_set(set + @unicodedata.case_fold_extras(set))
@@ -65,7 +65,7 @@ fn class_members(
 }
 
 ///|
-fn Emitter::emit_set(self : Emitter, set : Array[(Int, Int)]) -> Unit {
+fn Emitter::emit_set(self : Emitter, set : Array[(Int32, Int32)]) -> Unit {
   // drop surrogate code points: the engine matches supplementary characters
   // as surrogate pairs, so classes must not match lone surrogates
   let ranges = []
@@ -99,9 +99,9 @@ fn Emitter::emit_set(self : Emitter, set : Array[(Int, Int)]) -> Unit {
 }
 
 ///|
-fn Emitter::emit_literal(self : Emitter, c : Int) -> Unit {
+fn Emitter::emit_literal(self : Emitter, c : Int32) -> Unit {
   if is_ascii_alnum(c) {
-    self.sb.write_char(Int::unsafe_to_char(c))
+    self.sb.write_char(Int32::unsafe_to_char(c))
   } else if c >= 0xD800 && c <= 0xDFFF {
     self.sb.write_string("[^\\u{0}-\\u{10ffff}]")
   } else {

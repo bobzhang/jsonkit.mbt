@@ -146,12 +146,12 @@ fn default_applicable(schema : Json) -> Array[(String, Json)] {
 /// spaces and dashes, plus `Validator`) and registered with `validates`.
 pub fn create(
   meta_schema~ : Json,
-  validators? : ArrayView[(String, KeywordFn)] = [],
+  validators~ : ArrayView[(String, KeywordFn)] = [],
   version? : String,
-  type_checker? : TypeChecker = draft202012_type_checker,
-  format_checker? : FormatChecker = draft202012_format_checker,
-  id_of? : (Json) -> String? = fn(j) { @referencing.draft202012().id_of(j) },
-  applicable_validators? : ApplicableValidators = default_applicable,
+  type_checker~ : TypeChecker = draft202012_type_checker,
+  format_checker~ : FormatChecker = draft202012_format_checker,
+  id_of~ : (Json) -> String? = fn(j) { @referencing.draft202012().id_of(j) },
+  applicable_validators~ : ApplicableValidators = default_applicable,
 ) -> ValidatorClass {
   let dialect_id = id_of(meta_schema).unwrap_or("urn:unknown-dialect")
   let specification = @referencing.specification_with(
@@ -197,7 +197,7 @@ fn title_case(s : String) -> String {
       if prev_letter {
         sb.write_char(
           if c >= 'A' && c <= 'Z' {
-            Int::unsafe_to_char(c.to_int() + 32)
+            Int32::unsafe_to_char(c.to_int() + 32)
           } else {
             c
           },
@@ -205,7 +205,7 @@ fn title_case(s : String) -> String {
       } else {
         sb.write_char(
           if c >= 'a' && c <= 'z' {
-            Int::unsafe_to_char(c.to_int() - 32)
+            Int32::unsafe_to_char(c.to_int() - 32)
           } else {
             c
           },
@@ -225,7 +225,7 @@ fn title_case(s : String) -> String {
 /// ones with the same name.
 pub fn ValidatorClass::extend_with(
   cls : ValidatorClass,
-  validators? : ArrayView[(String, KeywordFn)] = [],
+  validators~ : ArrayView[(String, KeywordFn)] = [],
   version? : String,
   type_checker? : TypeChecker,
   format_checker? : FormatChecker,

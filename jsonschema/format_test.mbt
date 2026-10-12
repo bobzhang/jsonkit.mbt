@@ -169,7 +169,7 @@ test "individual formats" {
 ///|
 /// Lexicographic order of strings (MoonBit's `String` order compares
 /// lengths first).
-fn lexicographic(a : String, b : String) -> Int {
+fn lexicographic(a : String, b : String) -> Int32 {
   for i in 0..<@cmp.minimum(a.length(), b.length()) {
     let c = a.code_unit_at(i).compare(b.code_unit_at(i))
     if c != 0 {

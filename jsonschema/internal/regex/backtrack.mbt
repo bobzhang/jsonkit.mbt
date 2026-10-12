@@ -8,16 +8,16 @@
 /// The parsed pattern with every character class resolved to the code
 /// points it matches.
 priv enum BNode {
-  BChar(Array[(Int, Int)])
+  BChar(Array[(Int32, Int32)])
   BAt(AtKind)
   BSeq(Array[BNode])
   BAlt(Array[BNode])
-  BGroup(Int?, BNode)
-  BRepeat(BNode, Int, Int?, Int) // 0 greedy, 1 lazy, 2 possessive
-  BBackref(Int, CaseMode)
-  BLook(BNode, Bool, Bool, Int) // ahead, negate, behind width
+  BGroup(Int32?, BNode)
+  BRepeat(BNode, Int32, Int32?, Int32) // 0 greedy, 1 lazy, 2 possessive
+  BBackref(Int32, CaseMode)
+  BLook(BNode, Bool, Bool, Int32) // ahead, negate, behind width
   BAtomic(BNode)
-  BCond(Int, BNode, BNode?)
+  BCond(Int32, BNode, BNode?)
 }
 
 ///|
@@ -52,7 +52,7 @@ fn lower_node(n : Node) -> BNode {
 }
 
 ///|
-fn chars_contain(set : Array[(Int, Int)], cp : Int) -> Bool {
+fn chars_contain(set : Array[(Int32, Int32)], cp : Int32) -> Bool {
   for lo = 0, hi = set.length(); lo < hi; {
     let mid = lo + (hi - lo) / 2
     if cp < set[mid].0 {
@@ -69,14 +69,14 @@ fn chars_contain(set : Array[(Int, Int)], cp : Int) -> Bool {
 
 ///|
 priv struct Matcher {
-  input : Array[Int]
+  input : Array[Int32]
   /// start / end of each group (index 0 unused), -1 when unset
-  starts : Array[Int]
-  ends : Array[Int]
+  starts : Array[Int32]
+  ends : Array[Int32]
 }
 
 ///|
-fn Matcher::is_word(self : Matcher, i : Int, ascii : Bool) -> Bool {
+fn Matcher::is_word(self : Matcher, i : Int32, ascii : Bool) -> Bool {
   if i < 0 || i >= self.input.length() {
     return false
   }
@@ -92,7 +92,7 @@ fn Matcher::is_word(self : Matcher, i : Int, ascii : Bool) -> Bool {
 }
 
 ///|
-fn Matcher::at(self : Matcher, kind : AtKind, pos : Int) -> Bool {
+fn Matcher::at(self : Matcher, kind : AtKind, pos : Int32) -> Bool {
   let n = self.input.length()
   match kind {
     BeginString => pos == 0
@@ -107,7 +107,7 @@ fn Matcher::at(self : Matcher, kind : AtKind, pos : Int) -> Bool {
 }
 
 ///|
-fn same_case(a : Int, b : Int, case_ : CaseMode) -> Bool {
+fn same_case(a : Int32, b : Int32, case_ : CaseMode) -> Bool {
   a == b || chars_contain(class_members([(a, a)], false, case_), b)
 }
 
@@ -116,8 +116,8 @@ fn same_case(a : Int, b : Int, case_ : CaseMode) -> Bool {
 fn Matcher::run(
   self : Matcher,
   node : BNode,
-  pos : Int,
-  k : (Int) -> Bool,
+  pos : Int32,
+  k : (Int32) -> Bool,
 ) -> Bool {
   match node {
     BChar(set) =>
@@ -228,9 +228,9 @@ fn Matcher::run(
 fn Matcher::run_seq(
   self : Matcher,
   items : Array[BNode],
-  i : Int,
-  pos : Int,
-  k : (Int) -> Bool,
+  i : Int32,
+  pos : Int32,
+  k : (Int32) -> Bool,
 ) -> Bool {
   if i == items.length() {
     k(pos)
@@ -243,12 +243,12 @@ fn Matcher::run_seq(
 fn Matcher::run_repeat(
   self : Matcher,
   p : BNode,
-  min : Int,
-  max : Int?,
+  min : Int32,
+  max : Int32?,
   lazy_ : Bool,
-  count : Int,
-  pos : Int,
-  k : (Int) -> Bool,
+  count : Int32,
+  pos : Int32,
+  k : (Int32) -> Bool,
 ) -> Bool {
   let can_more = match max {
     Some(m) => count < m
@@ -279,9 +279,9 @@ fn Matcher::run_repeat(
 /// match (as code point offsets), if any.
 fn backtrack_search(
   root : BNode,
-  groups : Int,
-  input : Array[Int],
-) -> Array[(Int, Int)]? {
+  groups : Int32,
+  input : Array[Int32],
+) -> Array[(Int32, Int32)]? {
   for start in 0..<=input.length() {
     let m = {
       input,

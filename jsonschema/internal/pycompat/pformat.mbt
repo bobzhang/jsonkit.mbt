@@ -1,13 +1,13 @@
 ///|
 priv struct PrettyPrinter {
-  width : Int
+  width : Int32
   sb : StringBuilder
 }
 
 ///|
 /// Python `pprint.pformat(obj, width=width, sort_dicts=False)` (default
 /// `indent=1`, `compact=False`, unlimited depth).
-pub fn pformat(j : Json, width? : Int = 80) -> String {
+pub fn pformat(j : Json, width~ : Int32 = 80) -> String {
   let p = { width, sb: StringBuilder(), }
   p.format(j, 0, 0, 0)
   p.sb.to_string()
@@ -17,9 +17,9 @@ pub fn pformat(j : Json, width? : Int = 80) -> String {
 fn PrettyPrinter::format(
   self : PrettyPrinter,
   obj : Json,
-  indent : Int,
-  allowance : Int,
-  level : Int,
+  indent : Int32,
+  allowance : Int32,
+  level : Int32,
 ) -> Unit {
   let rep = repr(obj)
   let max_width = self.width - indent - allowance
@@ -47,9 +47,9 @@ fn PrettyPrinter::format(
 fn PrettyPrinter::pprint_dict(
   self : PrettyPrinter,
   m : Map[String, Json],
-  indent : Int,
-  allowance : Int,
-  level : Int,
+  indent : Int32,
+  allowance : Int32,
+  level : Int32,
 ) -> Unit {
   self.sb.write_char('{')
   if m.length() > 0 {
@@ -87,9 +87,9 @@ fn PrettyPrinter::pprint_dict(
 fn PrettyPrinter::pprint_list(
   self : PrettyPrinter,
   xs : Array[Json],
-  indent : Int,
-  allowance : Int,
-  level : Int,
+  indent : Int32,
+  allowance : Int32,
+  level : Int32,
 ) -> Unit {
   self.sb.write_char('[')
   // _format_items
@@ -108,7 +108,7 @@ fn PrettyPrinter::pprint_list(
 
 ///|
 /// Python `str.splitlines(keepends=True)` over code points.
-pub fn splitlines_keepends(cps : Array[Int]) -> Array[Array[Int]] {
+pub fn splitlines_keepends(cps : Array[Int32]) -> Array[Array[Int32]] {
   let lines = []
   let mut current = []
   let n = cps.length()
@@ -145,7 +145,7 @@ pub fn splitlines_keepends(cps : Array[Int]) -> Array[Array[Int]] {
 
 ///|
 /// `re.findall(r'\S*\s*', line)` minus the trailing empty match.
-fn split_words(line : Array[Int]) -> Array[Array[Int]] {
+fn split_words(line : Array[Int32]) -> Array[Array[Int32]] {
   let parts = []
   let n = line.length()
   for i = 0; i < n; {
@@ -166,7 +166,7 @@ fn split_words(line : Array[Int]) -> Array[Array[Int]] {
 }
 
 ///|
-fn repr_cps(cps : Array[Int]) -> String {
+fn repr_cps(cps : Array[Int32]) -> String {
   repr_string(@unicodedata.from_code_points(cps))
 }
 
@@ -174,9 +174,9 @@ fn repr_cps(cps : Array[Int]) -> String {
 fn PrettyPrinter::pprint_str(
   self : PrettyPrinter,
   s : String,
-  indent : Int,
-  allowance : Int,
-  level : Int,
+  indent : Int32,
+  allowance : Int32,
+  level : Int32,
 ) -> Unit {
   if s.length() == 0 {
     self.sb.write_string(repr_string(s))
@@ -202,7 +202,7 @@ fn PrettyPrinter::pprint_str(
     } else {
       let parts = split_words(line)
       let mut max_width2 = max_width
-      let mut current : Array[Int] = []
+      let mut current : Array[Int32] = []
       for j, part in parts {
         let candidate = current + part
         if j == parts.length() - 1 && i == lines.length() - 1 {

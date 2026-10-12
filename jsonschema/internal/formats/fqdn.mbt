@@ -12,7 +12,7 @@
 /// Whether a (lowercased) code point matches `[-A-Z\d]` under Python's
 /// `re.IGNORECASE` (Unicode digits, and the case-insensitive aliases of
 /// ASCII letters).
-fn fqdn_label_char(c : Int) -> Bool {
+fn fqdn_label_char(c : Int32) -> Bool {
   (c >= 'a' && c <= 'z') ||
   (c >= 'A' && c <= 'Z') ||
   c == '-' ||
@@ -27,7 +27,7 @@ fn fqdn_label_char(c : Int) -> Bool {
 /// checks: ASCII letters, KELVIN SIGN (to `k`) and LATIN CAPITAL LETTER I
 /// WITH DOT ABOVE (to `i` + COMBINING DOT ABOVE). Other code points either
 /// lowercase to non-ASCII characters or are kept as-is.
-pub fn py_lower(cps : ArrayView[Int]) -> Array[Int] {
+pub fn py_lower(cps : ArrayView[Int32]) -> Array[Int32] {
   let out = []
   for c in cps {
     if c >= 'A' && c <= 'Z' {
@@ -48,7 +48,7 @@ pub fn py_lower(cps : ArrayView[Int]) -> Array[Int] {
 /// `fqdn.FQDN(fqdn, min_labels=min_labels).is_valid` (fqdn 1.5).
 ///
 /// Raises `ValueError` for the empty string, like upstream.
-pub fn fqdn_is_valid(fqdn : String, min_labels~ : Int) -> Bool raise LibError {
+pub fn fqdn_is_valid(fqdn : String, min_labels~ : Int32) -> Bool raise LibError {
   if fqdn.length() == 0 {
     raise ValueError("fqdn must be str")
   }

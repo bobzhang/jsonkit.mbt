@@ -39,7 +39,7 @@ fn checks_drafts(
   draft7? : String,
   draft201909? : String,
   draft202012? : String,
-  raises? : (Error) -> Bool = raises_nothing,
+  raises~ : (Error) -> Bool = raises_nothing,
 ) -> Unit {
   let func : FormatCheckFn = instance => {
     func(instance) catch {

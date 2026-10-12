@@ -87,7 +87,7 @@ test "with_contents and default specification" {
 }
 
 ///|
-fn numbered_registry(total : Int) -> @referencing.Registry raise {
+fn numbered_registry(total : Int32) -> @referencing.Registry raise {
   @referencing.Registry::new().with_contents(
     Array::makei(total, i => (i.to_string(), ({ "foo": "bar" } : Json))),
     default_specification=@referencing.opaque_specification,

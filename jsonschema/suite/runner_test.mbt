@@ -143,7 +143,7 @@ fn run_suite_file(
       }
       let up = upstream.get_char(index)
       index += 1
-      let upstream_skipped = up is Some('A'..='Z')
+      let upstream_skipped = up is Some('A'..<='Z')
       let reason = skip(test_)
       if (reason is Some(_)) != upstream_skipped {
         notes.push("skip mismatch: \{case_description} / \{description}")

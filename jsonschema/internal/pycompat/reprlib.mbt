@@ -1,5 +1,5 @@
 ///|
-fn truncate_middle(s : String, max : Int) -> String {
+fn truncate_middle(s : String, max : Int32) -> String {
   let cps = @unicodedata.code_points(s)
   if cps.length() <= max {
     return s
@@ -20,7 +20,7 @@ pub fn short_repr(j : Json) -> String {
 }
 
 ///|
-fn short_repr_level(j : Json, level : Int) -> String {
+fn short_repr_level(j : Json, level : Int32) -> String {
   match j {
     String(s) => {
       let cps = @unicodedata.code_points(s)

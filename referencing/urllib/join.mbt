@@ -21,7 +21,7 @@
 pub fn urljoin(
   base : String,
   url : String,
-  allow_fragments? : Bool = true,
+  allow_fragments~ : Bool = true,
 ) -> String raise ValueError {
   if base == "" {
     return url

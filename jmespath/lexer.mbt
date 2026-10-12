@@ -8,7 +8,7 @@
 /// `number` tokens an integer and `literal` tokens a JSON value.
 pub(all) enum TokenValue {
   Str(String)
-  Int(Int)
+  Int(Int32)
   Literal(Json)
 } derive(Eq, Debug)
 
@@ -29,17 +29,17 @@ fn TokenValue::py_str(self : TokenValue) -> String {
 pub(all) struct Token {
   type_ : String
   value : TokenValue
-  start : Int
-  end : Int
+  start : Int32
+  end : Int32
 } derive(Eq, Debug)
 
 ///|
 /// The JMESPath tokenizer (`jmespath.lexer.Lexer`).
 pub struct Lexer {
-  priv mut position : Int
+  priv mut position : Int32
   priv mut chars : Array[Char]
   priv mut current : Char?
-  priv mut length : Int
+  priv mut length : Int32
 }
 
 ///|
@@ -66,22 +66,22 @@ fn simple_token_type(c : Char) -> String? {
 
 ///|
 fn is_start_identifier(c : Char) -> Bool {
-  c is ('a'..='z' | 'A'..='Z' | '_')
+  c is ('a'..<='z' | 'A'..<='Z' | '_')
 }
 
 ///|
 fn is_valid_identifier(c : Char?) -> Bool {
-  c is Some('a'..='z' | 'A'..='Z' | '_' | '0'..='9')
+  c is Some('a'..<='z' | 'A'..<='Z' | '_' | '0'..<='9')
 }
 
 ///|
 fn is_valid_number(c : Char?) -> Bool {
-  c is Some('0'..='9')
+  c is Some('0'..<='9')
 }
 
 ///|
 /// Python's `int(buff)` for `-?[0-9]+`, saturating at the `Int` range.
-fn parse_token_int(buff : String) -> Int {
+fn parse_token_int(buff : String) -> Int32 {
   let mut negative = false
   let mut acc = 0L
   for c in buff {
@@ -287,7 +287,7 @@ fn Lexer::next(self : Lexer) -> Char? {
 
 ///|
 /// `self._expression[start:]` (code point indexed).
-fn Lexer::expression_from(self : Lexer, start : Int) -> String {
+fn Lexer::expression_from(self : Lexer, start : Int32) -> String {
   String::from_array(self.chars[start:])
 }
 

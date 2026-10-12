@@ -1,16 +1,16 @@
 ///|
-fn is_ascii_digit(c : Int) -> Bool {
+fn is_ascii_digit(c : Int32) -> Bool {
   c >= '0' && c <= '9'
 }
 
 ///|
-fn is_hex_digit(c : Int) -> Bool {
+fn is_hex_digit(c : Int32) -> Bool {
   (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')
 }
 
 ///|
 /// Split a code point array on a separator.
-fn split_cps(cps : ArrayView[Int], sep : Int) -> Array[Array[Int]] {
+fn split_cps(cps : ArrayView[Int32], sep : Int32) -> Array[Array[Int32]] {
   let parts = [[]]
   for c in cps {
     if c == sep {
@@ -24,7 +24,7 @@ fn split_cps(cps : ArrayView[Int], sep : Int) -> Array[Array[Int]] {
 
 ///|
 /// `ipaddress.IPv4Address._ip_int_from_string` (Python 3.13).
-fn ipv4_int(cps : ArrayView[Int]) -> Int64 raise LibError {
+fn ipv4_int(cps : ArrayView[Int32]) -> Int64 raise LibError {
   if cps.length() == 0 {
     raise AddressValueError("Address cannot be empty")
   }
@@ -92,7 +92,7 @@ pub fn ipv6_address(address : String) -> String? raise LibError {
 
 ///|
 /// `IPv6Address._ip_int_from_string` (validation only).
-fn ipv6_check(ip : ArrayView[Int]) -> Unit raise LibError {
+fn ipv6_check(ip : ArrayView[Int32]) -> Unit raise LibError {
   if ip.length() == 0 {
     raise AddressValueError("Address cannot be empty")
   }
@@ -100,7 +100,7 @@ fn ipv6_check(ip : ArrayView[Int]) -> Unit raise LibError {
     raise AddressValueError("At most 45 characters expected")
   }
   // split(':', maxsplit=9)
-  let parts : Array[Array[Int]] = [[]]
+  let parts : Array[Array[Int32]] = [[]]
   for c in ip {
     if c == ':' && parts.length() < 10 {
       parts.push([])
@@ -122,7 +122,7 @@ fn ipv6_check(ip : ArrayView[Int]) -> Unit raise LibError {
   if parts.length() > 9 {
     raise AddressValueError("At most 8 colons permitted")
   }
-  let mut skip_index : Int? = None
+  let mut skip_index : Int32? = None
   for i in 1..<(parts.length() - 1) {
     if parts[i].length() == 0 {
       if skip_index is Some(_) {
@@ -166,7 +166,7 @@ fn ipv6_check(ip : ArrayView[Int]) -> Unit raise LibError {
       (n, 0)
     }
   }
-  let check_hextet = (h : Array[Int]) => {
+  let check_hextet = (h : Array[Int32]) => {
     if !h.iter().all(is_hex_digit) {
       raise AddressValueError("Only hex digits permitted")
     }

@@ -2,7 +2,7 @@
 const PUNY_CAP : Int64 = 0x7FFFFFFFFFFF
 
 ///|
-fn puny_t(j : Int, bias : Int) -> Int {
+fn puny_t(j : Int32, bias : Int32) -> Int32 {
   let res = 36 * (j + 1) - bias
   if res < 1 {
     1
@@ -14,7 +14,7 @@ fn puny_t(j : Int, bias : Int) -> Int {
 }
 
 ///|
-fn puny_adapt(delta : Int64, first : Bool, numchars : Int) -> Int {
+fn puny_adapt(delta : Int64, first : Bool, numchars : Int32) -> Int32 {
   let mut delta = if first { delta / 700L } else { delta / 2L }
   delta += delta / numchars.to_int64()
   let mut divisions = 0
@@ -27,13 +27,13 @@ fn puny_adapt(delta : Int64, first : Bool, numchars : Int) -> Int {
 
 ///|
 /// Python's `str.encode("punycode")` (RFC 3492) over code points.
-pub fn punycode_encode(text : ArrayView[Int]) -> String {
+pub fn punycode_encode(text : ArrayView[Int32]) -> String {
   let digits = "abcdefghijklmnopqrstuvwxyz0123456789"
   let sb = StringBuilder()
   let mut basic = 0
   for c in text {
     if c < 0x80 {
-      sb.write_char(Int::unsafe_to_char(c))
+      sb.write_char(Int32::unsafe_to_char(c))
       basic += 1
     }
   }
@@ -87,7 +87,7 @@ pub fn punycode_encode(text : ArrayView[Int]) -> String {
 
 ///|
 /// Python's `bytes.decode("punycode")` (strict) over an ASCII label.
-pub fn punycode_decode(text : String) -> Array[Int] raise LibError {
+pub fn punycode_decode(text : String) -> Array[Int32] raise LibError {
   let cps = @unicodedata.code_points(text)
   let mut pos_dash = -1
   for i, c in cps {

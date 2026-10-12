@@ -279,9 +279,9 @@ pub fn TreeInterpreter::visit(
 /// Python's `value[start:stop:step]` for lists (`PySlice_AdjustIndices`).
 fn py_slice(
   items : Array[Json],
-  start : Int?,
-  stop : Int?,
-  step : Int?,
+  start : Int32?,
+  stop : Int32?,
+  step : Int32?,
 ) -> Array[Json] raise JMESPathError {
   let step = match step {
     Some(s) => s
@@ -291,7 +291,7 @@ fn py_slice(
     raise ValueError("slice step cannot be zero")
   }
   let length = items.length()
-  let adjust = (bound : Int?, default : Int) => {
+  let adjust = (bound : Int32?, default : Int32) => {
     match bound {
       None => default
       Some(b) =>
@@ -342,7 +342,7 @@ fn py_slice(
 /// `GraphvizVisitor`: renders an AST as a dot file.
 priv struct GraphvizVisitor {
   lines : Array[String]
-  mut count : Int
+  mut count : Int32
 }
 
 ///|

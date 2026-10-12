@@ -12,7 +12,7 @@ pub let strong_matches : Array[String] = []
 /// not error._matches_type())`, compared lexicographically (higher is more
 /// relevant).
 pub(all) struct Relevance {
-  neg_path_length : Int
+  neg_path_length : Int32
   not_weak : Bool
   strong : Bool
   not_matching_type : Bool
@@ -24,8 +24,8 @@ pub(all) struct Relevance {
 /// `weak` keywords are superseded by other same-level errors; `strong`
 /// keywords take priority.
 pub fn by_relevance(
-  weak? : ArrayView[String] = weak_matches,
-  strong? : ArrayView[String] = strong_matches,
+  weak~ : ArrayView[String] = weak_matches,
+  strong~ : ArrayView[String] = strong_matches,
 ) -> (ValidationError) -> Relevance {
   let weak = weak.to_owned()
   let strong = strong.to_owned()
@@ -92,7 +92,7 @@ fn most_relevant(
 /// Returns `None` if there were no errors.
 pub fn best_match(
   errors : Iter[ValidationError],
-  key? : (ValidationError) -> Relevance = relevance,
+  key~ : (ValidationError) -> Relevance = relevance,
 ) -> ValidationError? {
   guard most_relevant(errors, key) is Some((_, first)) else { return None }
   let mut best = first
@@ -108,7 +108,7 @@ pub fn best_match(
     }
     // Rank each subschema by how deep its most relevant error is, and
     // amongst those equally deep, by how few errors it produced.
-    let mut best_rank : (Relevance, Int)? = None
+    let mut best_rank : (Relevance, Int32)? = None
     let mut best_in_subschema : ValidationError? = None
     let mut tied = false
     for group in groups {
