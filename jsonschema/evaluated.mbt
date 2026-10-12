@@ -3,7 +3,7 @@
 // (draft 2019-09).
 
 ///|
-fn range_indexes(n : Int) -> Array[Int] {
+fn range_indexes(n : Int32) -> Array[Int32] {
   Array::makei(n, i => i)
 }
 
@@ -14,7 +14,7 @@ fn find_evaluated_item_indexes_by_schema(
   validator : Validator,
   instance : Json,
   schema : Json,
-) -> Array[Int] raise {
+) -> Array[Int32] raise {
   if validator.is_type(schema, "boolean") {
     return []
   }
@@ -211,7 +211,7 @@ fn find_evaluated_item_indexes_by_schema_2019(
   validator : Validator,
   instance : Json,
   schema : Json,
-) -> Array[Int] raise {
+) -> Array[Int32] raise {
   if validator.is_type(schema, "boolean") {
     return []
   }

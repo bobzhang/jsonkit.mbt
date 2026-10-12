@@ -5,7 +5,7 @@
 fn message_for(
   instance : Json,
   schema : Json,
-  cls? : @jsonschema.ValidatorClass = @jsonschema.latest_version(),
+  cls~ : @jsonschema.ValidatorClass = @jsonschema.latest_version(),
   format_checker? : @jsonschema.FormatChecker,
 ) -> String raise {
   cls.check_schema(schema)

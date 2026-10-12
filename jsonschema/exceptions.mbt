@@ -69,16 +69,16 @@ pub impl Show for JsonSchemaError with fn output(self, logger) {
 pub fn ValidationError::new(
   message : String,
   validator? : Json,
-  path? : ArrayView[PathItem] = [],
+  path~ : ArrayView[PathItem] = [],
   cause? : Error,
-  context? : ArrayView[ValidationError] = [],
+  context~ : ArrayView[ValidationError] = [],
   validator_value? : Json,
   instance? : Json,
   schema? : Json,
-  schema_path? : ArrayView[PathItem] = [],
+  schema_path~ : ArrayView[PathItem] = [],
   parent? : ValidationError,
   type_checker? : TypeChecker,
-  kind? : ErrorKind = Validation,
+  kind~ : ErrorKind = Validation,
 ) -> ValidationError {
   let error = {
     kind,
@@ -105,7 +105,7 @@ pub fn ValidationError::new(
 /// `SchemaError` (`kind=Schema`; the type checker is not copied).
 pub fn ValidationError::create_from(
   other : ValidationError,
-  kind? : ErrorKind = Schema,
+  kind~ : ErrorKind = Schema,
 ) -> ValidationError {
   ValidationError::new(
     other.message,

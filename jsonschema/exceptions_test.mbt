@@ -464,11 +464,11 @@ test "ErrorTree indexing follows the instance" {
 
 ///|
 fn make_error(
-  path? : Array[@jsonschema.PathItem] = [],
-  schema_path? : Array[@jsonschema.PathItem] = [],
-  validator? : Json = "type",
-  instance? : Json = 5,
-  schema? : Json = { "type": "string" },
+  path~ : Array[@jsonschema.PathItem] = [],
+  schema_path~ : Array[@jsonschema.PathItem] = [],
+  validator~ : Json = "type",
+  instance~ : Json = 5,
+  schema~ : Json = { "type": "string" },
 ) -> @jsonschema.ValidationError {
   @jsonschema.ValidationError::new(
     "hello",
@@ -511,7 +511,7 @@ test "error repr / str" {
     ("schema", { "type": "string" }),
   ]
   for omit in 0..<4 {
-    let get = (i : Int) => if i == omit { None } else { Some(full[i].1) }
+    let get = (i : Int32) => if i == omit { None } else { Some(full[i].1) }
     let error = @jsonschema.ValidationError::new(
       "message",
       validator?=get(0),

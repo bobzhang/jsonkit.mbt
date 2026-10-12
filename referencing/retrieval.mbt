@@ -26,7 +26,7 @@ pub fn unbounded_cache() -> RetrieveCache {
 ///|
 /// A least-recently-used cache holding at most `maxsize` resources (Python's
 /// `functools.lru_cache(maxsize=maxsize)`). Errors are not cached.
-pub fn lru_cache(maxsize~ : Int) -> RetrieveCache {
+pub fn lru_cache(maxsize~ : Int32) -> RetrieveCache {
   retrieve => {
     // `Map` preserves insertion order: the first entry is the least recently
     // used one.
@@ -91,9 +91,9 @@ pub fn lru_cache(maxsize~ : Int) -> RetrieveCache {
 /// ```
 pub fn to_cached_resource(
   retrieve : (String) -> String raise,
-  cache? : RetrieveCache = unbounded_cache(),
-  loads? : (String) -> Json raise = s => @json.parse(s),
-  from_contents? : (Json) -> Resource raise = contents => {
+  cache~ : RetrieveCache = unbounded_cache(),
+  loads~ : (String) -> Json raise = s => @json.parse(s),
+  from_contents~ : (Json) -> Resource raise = contents => {
     Resource::from_contents(contents)
   },
 ) -> (String) -> Resource raise {

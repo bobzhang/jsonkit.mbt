@@ -5,14 +5,14 @@
 ///|
 priv struct JsonScanner {
   s : String
-  len : Int
+  len : Int32
 }
 
 ///|
 fn JsonScanner::error(
   self : JsonScanner,
   msg : String,
-  idx : Int,
+  idx : Int32,
 ) -> JSONDecodeError {
   // Python positions count code points, ours are UTF-16 offsets.
   let pos = self.s.char_length(end_offset=idx.clamp(min=0, max=self.len))
@@ -20,12 +20,12 @@ fn JsonScanner::error(
 }
 
 ///|
-fn JsonScanner::char_at(self : JsonScanner, idx : Int) -> Int {
+fn JsonScanner::char_at(self : JsonScanner, idx : Int32) -> Int32 {
   self.s.code_unit_at(idx).to_int()
 }
 
 ///|
-fn JsonScanner::skip_ws(self : JsonScanner, idx : Int) -> Int {
+fn JsonScanner::skip_ws(self : JsonScanner, idx : Int32) -> Int32 {
   let mut i = idx
   while i < self.len && self.char_at(i) is (0x20 | 0x09 | 0x0a | 0x0d) {
     i += 1
@@ -36,7 +36,7 @@ fn JsonScanner::skip_ws(self : JsonScanner, idx : Int) -> Int {
 ///|
 fn JsonScanner::starts_with_at(
   self : JsonScanner,
-  idx : Int,
+  idx : Int32,
   word : String,
 ) -> Bool {
   idx + word.length() <= self.len &&
@@ -44,11 +44,11 @@ fn JsonScanner::starts_with_at(
 }
 
 ///|
-fn hex_value(c : Int) -> Int {
+fn hex_value(c : Int32) -> Int32 {
   match c {
-    0x30..=0x39 => c - 0x30
-    0x61..=0x66 => c - 0x61 + 10
-    0x41..=0x46 => c - 0x41 + 10
+    0x30..<=0x39 => c - 0x30
+    0x61..<=0x66 => c - 0x61 + 10
+    0x41..<=0x46 => c - 0x41 + 10
     _ => -1
   }
 }
@@ -57,8 +57,8 @@ fn hex_value(c : Int) -> Int {
 /// `scanstring`: `begin` is the index just after the opening quote.
 fn JsonScanner::scanstring(
   self : JsonScanner,
-  begin : Int,
-) -> (String, Int) raise JSONDecodeError {
+  begin : Int32,
+) -> (String, Int32) raise JSONDecodeError {
   let buf = StringBuilder()
   let mut next = begin
   while true {
@@ -88,7 +88,7 @@ fn JsonScanner::scanstring(
     }
     let c = self.char_at(next)
     if c != 'u' {
-      let decoded : Int = match c {
+      let decoded : Int32 = match c {
         '"' => '"'
         '\\' => '\\'
         '/' => '/'
@@ -99,7 +99,7 @@ fn JsonScanner::scanstring(
         't' => 0x09
         _ => raise self.error("Invalid \\escape", next - 1)
       }
-      buf.write_char(Int::unsafe_to_char(decoded))
+      buf.write_char(Int32::unsafe_to_char(decoded))
       next += 1
     } else {
       next += 1
@@ -117,7 +117,7 @@ fn JsonScanner::scanstring(
       }
       // Strings are UTF-16 here, so surrogate pairs written unit by unit
       // join up exactly like Python's surrogate-pair handling.
-      buf.write_char(Int::unsafe_to_char(code))
+      buf.write_char(Int32::unsafe_to_char(code))
       next = end4
     }
   }
@@ -133,10 +133,15 @@ let json_nan_constant : Json = make_float(@double.not_a_number)
 ///|
 /// `_match_number_unicode`.  Returns `None` when there is no number here
 /// (`StopIteration` upstream).
-fn JsonScanner::match_number(self : JsonScanner, start : Int) -> (Json, Int)? {
+fn JsonScanner::match_number(
+  self : JsonScanner,
+  start : Int32,
+) -> (Json, Int32)? {
   let end_idx = self.len - 1
   let mut idx = start
-  let is_digit = (i : Int) => i <= end_idx && self.char_at(i) is (0x30..=0x39)
+  let is_digit = (i : Int32) => {
+    i <= end_idx && self.char_at(i) is (0x30..<=0x39)
+  }
   if self.char_at(idx) == '-' {
     idx += 1
     if idx > end_idx {
@@ -144,7 +149,7 @@ fn JsonScanner::match_number(self : JsonScanner, start : Int) -> (Json, Int)? {
     }
   }
   let c = self.char_at(idx)
-  if c is (0x31..=0x39) {
+  if c is (0x31..<=0x39) {
     idx += 1
     while is_digit(idx) {
       idx += 1
@@ -195,8 +200,8 @@ fn JsonScanner::match_number(self : JsonScanner, start : Int) -> (Json, Int)? {
 ///|
 fn JsonScanner::scan_once(
   self : JsonScanner,
-  idx : Int,
-) -> (Json, Int) raise JSONDecodeError {
+  idx : Int32,
+) -> (Json, Int32) raise JSONDecodeError {
   if idx >= self.len {
     raise self.error("Expecting value", idx)
   }
@@ -226,8 +231,8 @@ fn JsonScanner::scan_once(
 ///|
 fn JsonScanner::parse_object(
   self : JsonScanner,
-  start : Int,
-) -> (Json, Int) raise JSONDecodeError {
+  start : Int32,
+) -> (Json, Int32) raise JSONDecodeError {
   let end_idx = self.len - 1
   let map : Map[String, Json] = Map([])
   let mut idx = self.skip_ws(start)
@@ -268,8 +273,8 @@ fn JsonScanner::parse_object(
 ///|
 fn JsonScanner::parse_array(
   self : JsonScanner,
-  start : Int,
-) -> (Json, Int) raise JSONDecodeError {
+  start : Int32,
+) -> (Json, Int32) raise JSONDecodeError {
   let end_idx = self.len - 1
   let items : Array[Json] = []
   let mut idx = self.skip_ws(start)
@@ -335,13 +340,13 @@ fn dumps_string(buf : StringBuilder, s : String) -> Unit {
       0x09 => buf.write_string("\\t")
       0x08 => buf.write_string("\\b")
       0x0c => buf.write_string("\\f")
-      0x20..=0x7e => buf.write_char(Int::unsafe_to_char(c))
+      0x20..<=0x7e => buf.write_char(Int32::unsafe_to_char(c))
       _ => {
         buf.write_string("\\u")
         let hex = "0123456789abcdef"
         for shift in [12, 8, 4, 0] {
           buf.write_char(
-            Int::unsafe_to_char(hex.code_unit_at((c >> shift) & 0xf).to_int()),
+            Int32::unsafe_to_char(hex.code_unit_at((c >> shift) & 0xf).to_int()),
           )
         }
       }
@@ -415,14 +420,20 @@ fn py_repr_string(buf : StringBuilder, s : String) -> Unit {
     } else if code < 0x20 || (code >= 0x7f && code <= 0xa0) || code == 0xad {
       let hex = "0123456789abcdef"
       buf.write_string("\\x")
-      buf.write_char(Int::unsafe_to_char(hex.code_unit_at(code >> 4).to_int()))
-      buf.write_char(Int::unsafe_to_char(hex.code_unit_at(code & 0xf).to_int()))
+      buf.write_char(
+        Int32::unsafe_to_char(hex.code_unit_at(code >> 4).to_int()),
+      )
+      buf.write_char(
+        Int32::unsafe_to_char(hex.code_unit_at(code & 0xf).to_int()),
+      )
     } else if code >= 0xd800 && code <= 0xdfff {
       let hex = "0123456789abcdef"
       buf.write_string("\\u")
       for shift in [12, 8, 4, 0] {
         buf.write_char(
-          Int::unsafe_to_char(hex.code_unit_at((code >> shift) & 0xf).to_int()),
+          Int32::unsafe_to_char(
+            hex.code_unit_at((code >> shift) & 0xf).to_int(),
+          ),
         )
       }
     } else {

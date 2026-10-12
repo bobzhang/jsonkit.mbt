@@ -28,32 +28,32 @@
 /// `ValueError`, `TypeError` and `OverflowError` constructors.
 pub(all) suberror JMESPathError {
   ParseError(
-    lex_position~ : Int,
+    lex_position~ : Int32,
     token_value~ : String,
     token_type~ : String,
     msg~ : String,
     expression~ : String?
   )
   IncompleteExpressionError(
-    lex_position~ : Int,
+    lex_position~ : Int32,
     token_value~ : String?,
     token_type~ : String?,
     expression~ : String?
   )
   LexerError(
-    lexer_position~ : Int,
+    lexer_position~ : Int32,
     lexer_value~ : String,
     message~ : String,
     expression~ : String?
   )
   ArityError(
-    expected_arity~ : Int,
-    actual_arity~ : Int,
+    expected_arity~ : Int32,
+    actual_arity~ : Int32,
     function_name~ : String
   )
   VariadictArityError(
-    expected_arity~ : Int,
-    actual_arity~ : Int,
+    expected_arity~ : Int32,
+    actual_arity~ : Int32,
     function_name~ : String
   )
   JMESPathTypeError(
@@ -81,7 +81,7 @@ fn optional_str(s : String?) -> String {
 }
 
 ///|
-fn pluralize(word : String, count : Int) -> String {
+fn pluralize(word : String, count : Int32) -> String {
   if count == 1 {
     word
   } else {
@@ -166,7 +166,7 @@ pub fn JMESPathError::is_value_error(self : JMESPathError) -> Bool {
 /// Raised by `loads` (Python's `json.JSONDecodeError`).  `pos`, `lineno` and
 /// `colno` count code points, like Python.
 pub(all) suberror JSONDecodeError {
-  JSONDecodeError(msg~ : String, doc~ : String, pos~ : Int)
+  JSONDecodeError(msg~ : String, doc~ : String, pos~ : Int32)
 }
 
 ///|

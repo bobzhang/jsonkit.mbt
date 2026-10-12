@@ -19,12 +19,12 @@ pub struct Pattern {
   priv core : @string.Regex?
   /// set for patterns run by the backtracking matcher
   priv backtrack : BNode?
-  priv groups : Int
+  priv groups : Int32
 }
 
 ///|
 /// CPython's `re._MAXCACHE`.
-const MAX_CACHE : Int = 512
+const MAX_CACHE : Int32 = 512
 
 ///|
 let cache : Map[String, Pattern] = Map([])
@@ -117,7 +117,7 @@ fn Pattern::core_search(
   self : Pattern,
   re : @string.Regex,
   s : StringView,
-) -> (Int, Array[String?])? {
+) -> (Int32, Array[String?])? {
   let to_result = (m : @string.MatchResult) => {
     (
       m.before().length(),

@@ -757,7 +757,7 @@ fn kw_one_of(
   Errors::new(fn(yield_) raise {
     let subschemas = py_iter(one_of)
     let all_errors = []
-    let mut first_valid : (Int, Json)? = None
+    let mut first_valid : (Int32, Json)? = None
     for index, subschema in subschemas {
       let errs = validator
         .descend(instance, subschema, schema_path=Index(index))

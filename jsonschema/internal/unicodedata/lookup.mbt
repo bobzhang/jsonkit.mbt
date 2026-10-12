@@ -1,6 +1,6 @@
 ///|
 /// Binary search over a flattened array of inclusive `[start, end]` pairs.
-fn in_ranges(ranges : FixedArray[Int], cp : Int) -> Bool {
+fn in_ranges(ranges : FixedArray[Int32], cp : Int32) -> Bool {
   let n = ranges.length() / 2
   for lo = 0, hi = n; lo < hi; {
     let mid = lo + (hi - lo) / 2
@@ -18,7 +18,7 @@ fn in_ranges(ranges : FixedArray[Int], cp : Int) -> Bool {
 
 ///|
 /// Index of the run containing `cp` in a sorted array of run starts.
-fn run_index(starts : FixedArray[Int], cp : Int) -> Int {
+fn run_index(starts : FixedArray[Int32], cp : Int32) -> Int32 {
   // largest i such that starts[i] <= cp
   for lo = 0, hi = starts.length(); lo < hi; {
     let mid = lo + (hi - lo) / 2
@@ -34,49 +34,49 @@ fn run_index(starts : FixedArray[Int], cp : Int) -> Int {
 
 ///|
 /// `chr(cp).isdecimal()`.
-pub fn is_decimal(cp : Int) -> Bool {
+pub fn is_decimal(cp : Int32) -> Bool {
   in_ranges(decimal_ranges, cp)
 }
 
 ///|
 /// `chr(cp).isalnum()`.
-pub fn is_alnum(cp : Int) -> Bool {
+pub fn is_alnum(cp : Int32) -> Bool {
   in_ranges(alnum_ranges, cp)
 }
 
 ///|
 /// `chr(cp).isalpha()`.
-pub fn is_alpha(cp : Int) -> Bool {
+pub fn is_alpha(cp : Int32) -> Bool {
   in_ranges(alpha_ranges, cp)
 }
 
 ///|
 /// `chr(cp).isspace()`.
-pub fn is_space(cp : Int) -> Bool {
+pub fn is_space(cp : Int32) -> Bool {
   in_ranges(space_ranges, cp)
 }
 
 ///|
 /// `chr(cp).isprintable()`.
-pub fn is_printable(cp : Int) -> Bool {
+pub fn is_printable(cp : Int32) -> Bool {
   in_ranges(printable_ranges, cp)
 }
 
 ///|
 /// `unicodedata.category(chr(cp)).startswith("M")`.
-pub fn is_mark(cp : Int) -> Bool {
+pub fn is_mark(cp : Int32) -> Bool {
   in_ranges(mark_ranges, cp)
 }
 
 ///|
 /// Whether `unicodedata.name(chr(cp))` succeeds.
-pub fn has_name(cp : Int) -> Bool {
+pub fn has_name(cp : Int32) -> Bool {
   !in_ranges(unnamed_ranges, cp)
 }
 
 ///|
 /// `unicodedata.combining(chr(cp))`.
-pub fn combining(cp : Int) -> Int {
+pub fn combining(cp : Int32) -> Int32 {
   let i = run_index(ccc_starts, cp)
   if i < 0 {
     0
@@ -87,7 +87,7 @@ pub fn combining(cp : Int) -> Int {
 
 ///|
 /// `unicodedata.bidirectional(chr(cp))` (`""` when unknown).
-pub fn bidirectional(cp : Int) -> String {
+pub fn bidirectional(cp : Int32) -> String {
   let i = run_index(bidi_starts, cp)
   if i < 0 {
     ""
@@ -99,7 +99,7 @@ pub fn bidirectional(cp : Int) -> String {
 ///|
 /// The code points of a MoonBit (UTF-16) string as Python sees them: valid
 /// surrogate pairs combine, lone surrogates are kept as-is.
-pub fn code_points(s : StringView) -> Array[Int] {
+pub fn code_points(s : StringView) -> Array[Int32] {
   let out = []
   let n = s.length()
   for i = 0; i < n; {
@@ -119,7 +119,7 @@ pub fn code_points(s : StringView) -> Array[Int] {
 
 ///|
 /// Inverse of `code_points`.
-pub fn from_code_points(cps : ArrayView[Int]) -> String {
+pub fn from_code_points(cps : ArrayView[Int32]) -> String {
   let sb = StringBuilder()
   for cp in cps {
     write_code_point(sb, cp)
@@ -129,19 +129,19 @@ pub fn from_code_points(cps : ArrayView[Int]) -> String {
 
 ///|
 /// Append a code point (possibly a lone surrogate) to a builder.
-pub fn write_code_point(sb : StringBuilder, cp : Int) -> Unit {
+pub fn write_code_point(sb : StringBuilder, cp : Int32) -> Unit {
   if cp >= 0x10000 {
     let v = cp - 0x10000
-    sb.write_char(Int::unsafe_to_char(0xD800 + (v >> 10)))
-    sb.write_char(Int::unsafe_to_char(0xDC00 + (v & 0x3FF)))
+    sb.write_char(Int32::unsafe_to_char(0xD800 + (v >> 10)))
+    sb.write_char(Int32::unsafe_to_char(0xDC00 + (v & 0x3FF)))
   } else {
-    sb.write_char(Int::unsafe_to_char(cp))
+    sb.write_char(Int32::unsafe_to_char(cp))
   }
 }
 
 ///|
 /// `len(s)` in Python: the number of code points.
-pub fn py_len(s : StringView) -> Int {
+pub fn py_len(s : StringView) -> Int32 {
   let n = s.length()
   let mut count = 0
   for i = 0; i < n; {
@@ -159,30 +159,30 @@ pub fn py_len(s : StringView) -> Int {
 }
 
 ///|
-fn pairs(ranges : FixedArray[Int]) -> Array[(Int, Int)] {
+fn pairs(ranges : FixedArray[Int32]) -> Array[(Int32, Int32)] {
   Array::makei(ranges.length() / 2, i => (ranges[2 * i], ranges[2 * i + 1]))
 }
 
 ///|
 /// Inclusive ranges of `str.isdecimal()` code points.
-pub fn decimal_set() -> Array[(Int, Int)] {
+pub fn decimal_set() -> Array[(Int32, Int32)] {
   pairs(decimal_ranges)
 }
 
 ///|
 /// Inclusive ranges of `str.isalnum()` code points.
-pub fn alnum_set() -> Array[(Int, Int)] {
+pub fn alnum_set() -> Array[(Int32, Int32)] {
   pairs(alnum_ranges)
 }
 
 ///|
 /// Inclusive ranges of `str.isspace()` code points.
-pub fn space_set() -> Array[(Int, Int)] {
+pub fn space_set() -> Array[(Int32, Int32)] {
   pairs(space_ranges)
 }
 
 ///|
-fn in_pairs(set : ArrayView[(Int, Int)], cp : Int) -> Bool {
+fn in_pairs(set : ArrayView[(Int32, Int32)], cp : Int32) -> Bool {
   for lo = 0, hi = set.length(); lo < hi; {
     let mid = lo + (hi - lo) / 2
     if cp < set[mid].0 {
@@ -201,8 +201,10 @@ fn in_pairs(set : ArrayView[(Int, Int)], cp : Int) -> Bool {
 /// The code points case-insensitively equivalent (for Python's `re` with
 /// `IGNORECASE`, `str` patterns) to some member of `set` (sorted, merged
 /// inclusive ranges), as extra single-code-point ranges.
-pub fn case_fold_extras(set : ArrayView[(Int, Int)]) -> Array[(Int, Int)] {
-  let roots : Set[Int] = Set([])
+pub fn case_fold_extras(
+  set : ArrayView[(Int32, Int32)],
+) -> Array[(Int32, Int32)] {
+  let roots : Set[Int32] = Set([])
   let n = case_classes.length() / 2
   for i in 0..<n {
     if in_pairs(set, case_classes[2 * i]) {

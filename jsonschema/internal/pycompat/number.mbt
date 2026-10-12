@@ -79,7 +79,7 @@ pub fn number_value(j : Json) -> Double {
 ///|
 /// Compare a Python int with a finite or infinite float exactly; `None` when
 /// unordered (NaN).
-fn compare_int_float(n : @bigint.BigInt, f : Double) -> Int? {
+fn compare_int_float(n : @bigint.BigInt, f : Double) -> Int32? {
   if f.is_nan() {
     None
   } else if f.is_pos_inf() {
@@ -102,7 +102,7 @@ fn compare_int_float(n : @bigint.BigInt, f : Double) -> Int? {
 /// Python numeric comparison of two JSON numbers (`int` and `float` are
 /// compared exactly, like Python does). Returns `None` when the operands are
 /// unordered (a NaN is involved) or not both numbers.
-pub fn compare_numbers(a : Json, b : Json) -> Int? {
+pub fn compare_numbers(a : Json, b : Json) -> Int32? {
   guard a is Number(da, ..) && b is Number(db, ..) else { return None }
   match (is_int(a), is_int(b)) {
     (true, true) =>

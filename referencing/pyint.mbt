@@ -3,12 +3,12 @@
 /// characters except U+001C..U+001F, which the numeric parser rejects.
 fn is_py_int_space(c : Char) -> Bool {
   match c.to_int() {
-    0x09..=0x0d
+    0x09..<=0x0d
     | 0x20
     | 0x85
     | 0xa0
     | 0x1680
-    | 0x2000..=0x200a
+    | 0x2000..<=0x200a
     | 0x2028
     | 0x2029
     | 0x202f
@@ -21,7 +21,7 @@ fn is_py_int_space(c : Char) -> Bool {
 ///|
 /// Code points of the digit zero of every Unicode decimal-digit run
 /// (category Nd, Unicode 15.1 as in CPython 3.13); each run is `zero..=zero+9`.
-let decimal_zeros : ReadOnlyArray[Int] = [
+let decimal_zeros : ReadOnlyArray[Int32] = [
   0x30, 0x660, 0x6f0, 0x7c0, 0x966, 0x9e6, 0xa66, 0xae6, 0xb66, 0xbe6, 0xc66, 0xce6,
   0xd66, 0xde6, 0xe50, 0xed0, 0xf20, 0x1040, 0x1090, 0x17e0, 0x1810, 0x1946, 0x19d0,
   0x1a80, 0x1a90, 0x1b50, 0x1bb0, 0x1c40, 0x1c50, 0xa620, 0xa8d0, 0xa900, 0xa9d0,
@@ -33,7 +33,7 @@ let decimal_zeros : ReadOnlyArray[Int] = [
 
 ///|
 /// The value of a Unicode decimal digit (Python's `unicodedata.decimal`).
-fn py_decimal_value(c : Char) -> Int? {
+fn py_decimal_value(c : Char) -> Int32? {
   let code = c.to_int()
   for zero in decimal_zeros {
     if code >= zero && code <= zero + 9 {
@@ -47,7 +47,7 @@ fn py_decimal_value(c : Char) -> Int? {
 /// Python's `int(s)` (base 10): surrounding numeric whitespace, an optional
 /// sign, Unicode decimal digits, and single underscores between digits.
 /// Values beyond `Int` saturate (they can never be valid indices anyway).
-fn py_int(s : String) -> Int? {
+fn py_int(s : String) -> Int32? {
   let chars = s.iter().to_array()
   let mut start = 0
   let mut end = chars.length()

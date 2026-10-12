@@ -52,7 +52,7 @@ fn make_int(d : Double) -> Json {
 ///|
 /// Shortest round-trip decimal digits of a finite, non-zero, positive double
 /// and the position of the decimal point (`value = 0.DIGITS * 10^decpt`).
-fn shortest_digits(d : Double) -> (String, Int) {
+fn shortest_digits(d : Double) -> (String, Int32) {
   let s = d.to_string()
   let (mantissa, exp) = match s.find("e") {
     Some(i) => {
@@ -177,8 +177,8 @@ fn py_number_dumps(d : Double, repr : String?) -> String {
 /// Python's `str.isspace()` for a single character.
 fn py_isspace(c : Char) -> Bool {
   match c.to_int() {
-    0x09..=0x0d | 0x1c..=0x20 | 0x85 | 0xa0 | 0x1680 => true
-    0x2000..=0x200a | 0x2028 | 0x2029 | 0x202f | 0x205f | 0x3000 => true
+    0x09..<=0x0d | 0x1c..<=0x20 | 0x85 | 0xa0 | 0x1680 => true
+    0x2000..<=0x200a | 0x2028 | 0x2029 | 0x202f | 0x205f | 0x3000 => true
     _ => false
   }
 }
@@ -190,7 +190,7 @@ fn py_isspace(c : Char) -> Bool {
 /// which `str.isspace()` accepts, is rejected.
 fn py_numeric_isspace(c : Char) -> Bool {
   match c.to_int() {
-    0x09..=0x0d | 0x20 => true
+    0x09..<=0x0d | 0x20 => true
     code if code >= 127 => py_isspace(c)
     _ => false
   }
@@ -225,17 +225,17 @@ fn py_lstrip(s : String) -> String {
 ///|
 /// Checks `digit (_? digit)*` starting at `i`; returns the end index, or
 /// `None` if there is no valid digit group at `i`.
-fn scan_py_digits(chars : Array[Char], i : Int) -> Int? {
-  if i >= chars.length() || !(chars[i] is ('0'..='9')) {
+fn scan_py_digits(chars : Array[Char], i : Int32) -> Int32? {
+  if i >= chars.length() || !(chars[i] is ('0'..<='9')) {
     return None
   }
   let mut j = i + 1
   while j < chars.length() {
-    if chars[j] is ('0'..='9') {
+    if chars[j] is ('0'..<='9') {
       j += 1
     } else if chars[j] == '_' &&
       j + 1 < chars.length() &&
-      chars[j + 1] is ('0'..='9') {
+      chars[j + 1] is ('0'..<='9') {
       j += 2
     } else {
       break

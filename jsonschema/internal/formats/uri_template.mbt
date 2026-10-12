@@ -1,5 +1,5 @@
 ///|
-fn ut_var_start(c : Int) -> Bool {
+fn ut_var_start(c : Int32) -> Bool {
   (c >= 'a' && c <= 'z') ||
   (c >= 'A' && c <= 'Z') ||
   (c >= '0' && c <= '9') ||
@@ -7,7 +7,7 @@ fn ut_var_start(c : Int) -> Bool {
 }
 
 ///|
-fn ut_variable(spec : ArrayView[Int]) -> Unit raise LibError {
+fn ut_variable(spec : ArrayView[Int32]) -> Unit raise LibError {
   // `var_spec[0:1] not in Charset.VAR_START` (substring test: "" passes)
   if spec.length() > 0 && !ut_var_start(spec[0]) {
     raise ValueError("Bad variable")
@@ -65,7 +65,7 @@ fn ut_variable(spec : ArrayView[Int]) -> Unit raise LibError {
 }
 
 ///|
-fn ut_expression(variables : ArrayView[Int]) -> Unit raise LibError {
+fn ut_expression(variables : ArrayView[Int32]) -> Unit raise LibError {
   let mut vars = variables
   if vars.length() > 0 &&
     vars[vars.length() - 1] is (',' | '.' | '/' | ';' | '&') {
@@ -81,7 +81,7 @@ fn ut_expression(variables : ArrayView[Int]) -> Unit raise LibError {
 pub fn uri_template_validate(template : String) -> Bool {
   let cps = @unicodedata.code_points(template)
   // re.split(r'(\{[^\}]*\})', template)
-  let parts : Array[(Bool, ArrayView[Int])] = []
+  let parts : Array[(Bool, ArrayView[Int32])] = []
   let mut start = 0
   let n = cps.length()
   for i = 0; i < n; {
@@ -135,7 +135,7 @@ pub fn uri_template_validate(template : String) -> Bool {
 
 ///|
 /// `re.match('^([a-zA-Z0-9_]|%[0-9a-fA-F][0-9a-fA-F]).*$', expansion)`.
-fn simple_expansion(e : ArrayView[Int]) -> Bool {
+fn simple_expansion(e : ArrayView[Int32]) -> Bool {
   let rest = if e.length() > 0 && ut_var_start(e[0]) {
     e[1:]
   } else if e.length() >= 3 &&

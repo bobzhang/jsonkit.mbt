@@ -3,7 +3,7 @@
 
 ///|
 /// Code points for which `str.isdecimal()` holds (`\d` in `re`).
-let decimal_ranges : FixedArray[Int] = [
+let decimal_ranges : FixedArray[Int32] = [
   48, 57, 1632, 1641, 1776, 1785, 1984, 1993, 2406, 2415, 2534, 2543, 2662, 2671,
   2790, 2799, 2918, 2927, 3046, 3055, 3174, 3183, 3302, 3311, 3430, 3439, 3558, 3567,
   3664, 3673, 3792, 3801, 3872, 3881, 4160, 4169, 4240, 4249, 6112, 6121, 6160, 6169,
@@ -19,7 +19,7 @@ let decimal_ranges : FixedArray[Int] = [
 
 ///|
 /// Code points for which `str.isalnum()` holds (`\w` in `re`, minus `_`).
-let alnum_ranges : FixedArray[Int] = [
+let alnum_ranges : FixedArray[Int32] = [
   48, 57, 65, 90, 97, 122, 170, 170, 178, 179, 181, 181, 185, 186, 188, 190, 192,
   214, 216, 246, 248, 705, 710, 721, 736, 740, 748, 748, 750, 750, 880, 884, 886,
   887, 890, 893, 895, 895, 902, 902, 904, 906, 908, 908, 910, 929, 931, 1013, 1015,
@@ -145,7 +145,7 @@ let alnum_ranges : FixedArray[Int] = [
 
 ///|
 /// Code points for which `str.isalpha()` holds.
-let alpha_ranges : FixedArray[Int] = [
+let alpha_ranges : FixedArray[Int32] = [
   65, 90, 97, 122, 170, 170, 181, 181, 186, 186, 192, 214, 216, 246, 248, 705, 710,
   721, 736, 740, 748, 748, 750, 750, 880, 884, 886, 887, 890, 893, 895, 895, 902,
   902, 904, 906, 908, 908, 910, 929, 931, 1013, 1015, 1153, 1162, 1327, 1329, 1366,
@@ -257,14 +257,14 @@ let alpha_ranges : FixedArray[Int] = [
 
 ///|
 /// Code points for which `str.isspace()` holds (`\s` in `re`).
-let space_ranges : FixedArray[Int] = [
+let space_ranges : FixedArray[Int32] = [
   9, 13, 28, 32, 133, 133, 160, 160, 5760, 5760, 8192, 8202, 8232, 8233, 8239, 8239,
   8287, 8287, 12288, 12288,
 ]
 
 ///|
 /// Code points for which `str.isprintable()` holds (used by `repr`).
-let printable_ranges : FixedArray[Int] = [
+let printable_ranges : FixedArray[Int32] = [
   32, 126, 161, 172, 174, 887, 890, 895, 900, 906, 908, 908, 910, 929, 931, 1327,
   1329, 1366, 1369, 1418, 1421, 1423, 1425, 1479, 1488, 1514, 1519, 1524, 1542, 1563,
   1565, 1756, 1758, 1805, 1808, 1866, 1869, 1969, 1984, 2042, 2045, 2093, 2096, 2110,
@@ -387,7 +387,7 @@ let printable_ranges : FixedArray[Int] = [
 
 ///|
 /// Code points whose general category is `M*`.
-let mark_ranges : FixedArray[Int] = [
+let mark_ranges : FixedArray[Int32] = [
   768, 879, 1155, 1161, 1425, 1469, 1471, 1471, 1473, 1474, 1476, 1477, 1479, 1479,
   1552, 1562, 1611, 1631, 1648, 1648, 1750, 1756, 1759, 1764, 1767, 1768, 1770, 1773,
   1809, 1809, 1840, 1866, 1958, 1968, 2027, 2035, 2045, 2045, 2070, 2073, 2075, 2083,
@@ -441,7 +441,7 @@ let mark_ranges : FixedArray[Int] = [
 
 ///|
 /// Code points for which `unicodedata.name` raises `ValueError`.
-let unnamed_ranges : FixedArray[Int] = [
+let unnamed_ranges : FixedArray[Int32] = [
   0, 31, 127, 159, 888, 889, 896, 899, 907, 907, 909, 909, 930, 930, 1328, 1328,
   1367, 1368, 1419, 1420, 1424, 1424, 1480, 1487, 1515, 1518, 1525, 1535, 1806, 1806,
   1867, 1868, 1970, 1983, 2043, 2044, 2094, 2095, 2111, 2111, 2140, 2141, 2143, 2143,
@@ -563,7 +563,7 @@ let unnamed_ranges : FixedArray[Int] = [
 
 ///|
 /// Run starts of canonical combining classes.
-let ccc_starts : FixedArray[Int] = [
+let ccc_starts : FixedArray[Int32] = [
   0, 768, 789, 790, 794, 795, 796, 801, 803, 807, 809, 820, 825, 829, 837, 838, 839,
   842, 845, 847, 848, 851, 855, 856, 857, 859, 860, 861, 863, 864, 866, 867, 880,
   1155, 1160, 1425, 1426, 1430, 1431, 1434, 1435, 1436, 1442, 1448, 1450, 1451, 1453,
@@ -613,7 +613,7 @@ let ccc_starts : FixedArray[Int] = [
 
 ///|
 /// Canonical combining class for each run.
-let ccc_values : FixedArray[Int] = [
+let ccc_values : FixedArray[Int32] = [
   0, 230, 232, 220, 232, 216, 220, 202, 220, 202, 220, 1, 220, 230, 240, 230, 220,
   230, 220, 0, 230, 220, 230, 232, 220, 230, 233, 234, 233, 234, 233, 230, 0, 230,
   0, 220, 230, 220, 230, 222, 220, 230, 220, 230, 220, 230, 222, 228, 230, 10, 11,
@@ -654,7 +654,7 @@ let bidi_names : FixedArray[String] = [
 
 ///|
 /// Run starts of bidirectional classes.
-let bidi_starts : FixedArray[Int] = [
+let bidi_starts : FixedArray[Int32] = [
   0, 9, 10, 11, 12, 13, 14, 28, 31, 32, 33, 35, 38, 43, 44, 45, 46, 48, 58, 59, 65,
   91, 97, 123, 127, 133, 134, 160, 161, 162, 166, 170, 171, 173, 174, 176, 178, 180,
   181, 182, 185, 186, 187, 192, 215, 216, 247, 248, 697, 699, 706, 720, 722, 736,
@@ -839,7 +839,7 @@ let bidi_starts : FixedArray[Int] = [
 
 ///|
 /// Index into `bidi_names` for each run.
-let bidi_values : FixedArray[Int] = [
+let bidi_values : FixedArray[Int32] = [
   4, 22, 3, 22, 23, 3, 4, 3, 22, 23, 15, 8, 15, 7, 5, 7, 5, 6, 5, 15, 10, 15, 10,
   15, 4, 3, 4, 5, 15, 8, 15, 10, 15, 4, 15, 8, 6, 15, 10, 15, 6, 10, 15, 10, 15,
   10, 15, 10, 15, 10, 15, 10, 15, 10, 15, 10, 15, 14, 10, 15, 10, 0, 10, 15, 10,
@@ -944,7 +944,7 @@ let bidi_values : FixedArray[Int] = [
 
 ///|
 /// Code points with a canonical decomposition.
-let decomp_cps : FixedArray[Int] = [
+let decomp_cps : FixedArray[Int32] = [
   192, 193, 194, 195, 196, 197, 199, 200, 201, 202, 203, 204, 205, 206, 207, 209,
   210, 211, 212, 213, 214, 217, 218, 219, 220, 221, 224, 225, 226, 227, 228, 229,
   231, 232, 233, 234, 235, 236, 237, 238, 239, 241, 242, 243, 244, 245, 246, 249,
@@ -1117,7 +1117,7 @@ let decomp_cps : FixedArray[Int] = [
 
 ///|
 /// Offsets into `decomp_data`.
-let decomp_offsets : FixedArray[Int] = [
+let decomp_offsets : FixedArray[Int32] = [
   0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40,
   42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80,
   82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116,
@@ -1265,7 +1265,7 @@ let decomp_offsets : FixedArray[Int] = [
 
 ///|
 /// Flattened canonical decompositions.
-let decomp_data : FixedArray[Int] = [
+let decomp_data : FixedArray[Int32] = [
   65, 768, 65, 769, 65, 770, 65, 771, 65, 776, 65, 778, 67, 807, 69, 768, 69, 769,
   69, 770, 69, 776, 73, 768, 73, 769, 73, 770, 73, 776, 78, 771, 79, 768, 79, 769,
   79, 770, 79, 771, 79, 776, 85, 768, 85, 769, 85, 770, 85, 776, 89, 769, 97, 768,
@@ -1492,7 +1492,7 @@ let decomp_data : FixedArray[Int] = [
 
 ///|
 /// Primary composites as sorted `(first, second, composite)` triples.
-let compose_triples : FixedArray[Int] = [
+let compose_triples : FixedArray[Int32] = [
   60, 824, 8814, 61, 824, 8800, 62, 824, 8815, 65, 768, 192, 65, 769, 193, 65, 770,
   194, 65, 771, 195, 65, 772, 256, 65, 774, 258, 65, 775, 550, 65, 776, 196, 65,
   777, 7842, 65, 778, 197, 65, 780, 461, 65, 783, 512, 65, 785, 514, 65, 803, 7840,
@@ -1686,7 +1686,7 @@ let compose_triples : FixedArray[Int] = [
 
 ///|
 /// `(code point, class representative)` pairs, sorted by code point, of `re`'s case-insensitive equivalence classes (code points absent are alone).
-let case_classes : FixedArray[Int] = [
+let case_classes : FixedArray[Int32] = [
   65, 65, 66, 66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 73, 73, 74, 74,
   75, 75, 76, 76, 77, 77, 78, 78, 79, 79, 80, 80, 81, 81, 82, 82, 83, 83, 84, 84,
   85, 85, 86, 86, 87, 87, 88, 88, 89, 89, 90, 90, 97, 65, 98, 66, 99, 67, 100, 68,
@@ -2120,7 +2120,7 @@ let case_classes : FixedArray[Int] = [
 
 ///|
 /// `idna.idnadata.codepoint_classes['PVALID']` as inclusive ranges.
-let idna_pvalid_ranges : FixedArray[Int] = [
+let idna_pvalid_ranges : FixedArray[Int32] = [
   45, 45, 48, 57, 97, 122, 223, 246, 248, 255, 257, 257, 259, 259, 261, 261, 263,
   263, 265, 265, 267, 267, 269, 269, 271, 271, 273, 273, 275, 275, 277, 277, 279,
   279, 281, 281, 283, 283, 285, 285, 287, 287, 289, 289, 291, 291, 293, 293, 295,
@@ -2320,17 +2320,17 @@ let idna_pvalid_ranges : FixedArray[Int] = [
 
 ///|
 /// `idna.idnadata.codepoint_classes['CONTEXTJ']` as inclusive ranges.
-let idna_contextj_ranges : FixedArray[Int] = [8204, 8205]
+let idna_contextj_ranges : FixedArray[Int32] = [8204, 8205]
 
 ///|
 /// `idna.idnadata.codepoint_classes['CONTEXTO']` as inclusive ranges.
-let idna_contexto_ranges : FixedArray[Int] = [
+let idna_contexto_ranges : FixedArray[Int32] = [
   183, 183, 885, 885, 1523, 1524, 1632, 1641, 1776, 1785, 12539, 12539,
 ]
 
 ///|
 /// `idna.idnadata.scripts['Greek']` as inclusive ranges.
-let idna_script_greek_ranges : FixedArray[Int] = [
+let idna_script_greek_ranges : FixedArray[Int32] = [
   880, 883, 885, 887, 890, 893, 895, 895, 900, 900, 902, 902, 904, 906, 908, 908,
   910, 929, 931, 993, 1008, 1023, 7462, 7466, 7517, 7521, 7526, 7530, 7615, 7615,
   7936, 7957, 7960, 7965, 7968, 8005, 8008, 8013, 8016, 8023, 8025, 8025, 8027, 8027,
@@ -2341,7 +2341,7 @@ let idna_script_greek_ranges : FixedArray[Int] = [
 
 ///|
 /// `idna.idnadata.scripts['Han']` as inclusive ranges.
-let idna_script_han_ranges : FixedArray[Int] = [
+let idna_script_han_ranges : FixedArray[Int32] = [
   11904, 11929, 11931, 12019, 12032, 12245, 12293, 12293, 12295, 12295, 12321, 12329,
   12344, 12347, 13312, 19903, 19968, 40959, 63744, 64109, 64112, 64217, 94178, 94179,
   94192, 94198, 131072, 173791, 173824, 178206, 178208, 183981, 183984, 191456, 191472,
@@ -2350,21 +2350,21 @@ let idna_script_han_ranges : FixedArray[Int] = [
 
 ///|
 /// `idna.idnadata.scripts['Hebrew']` as inclusive ranges.
-let idna_script_hebrew_ranges : FixedArray[Int] = [
+let idna_script_hebrew_ranges : FixedArray[Int32] = [
   1425, 1481, 1488, 1514, 1519, 1524, 64285, 64310, 64312, 64316, 64318, 64318, 64320,
   64321, 64323, 64324, 64326, 64335,
 ]
 
 ///|
 /// `idna.idnadata.scripts['Hiragana']` as inclusive ranges.
-let idna_script_hiragana_ranges : FixedArray[Int] = [
+let idna_script_hiragana_ranges : FixedArray[Int32] = [
   12353, 12438, 12445, 12447, 110593, 110879, 110883, 110883, 110898, 110898, 110928,
   110930, 127488, 127488,
 ]
 
 ///|
 /// `idna.idnadata.scripts['Katakana']` as inclusive ranges.
-let idna_script_katakana_ranges : FixedArray[Int] = [
+let idna_script_katakana_ranges : FixedArray[Int32] = [
   12449, 12538, 12541, 12543, 12784, 12799, 13008, 13054, 13056, 13143, 65382, 65391,
   65393, 65437, 110576, 110579, 110581, 110587, 110589, 110590, 110592, 110592, 110880,
   110882, 110884, 110888, 110933, 110933, 110948, 110952,
@@ -2372,13 +2372,13 @@ let idna_script_katakana_ranges : FixedArray[Int] = [
 
 ///|
 /// `idna.idnadata.joining_types['C']` as inclusive ranges.
-let idna_joining_c_ranges : FixedArray[Int] = [
+let idna_joining_c_ranges : FixedArray[Int32] = [
   1600, 1600, 2042, 2042, 2179, 2181, 6154, 6154, 8205, 8205,
 ]
 
 ///|
 /// `idna.idnadata.joining_types['D']` as inclusive ranges.
-let idna_joining_d_ranges : FixedArray[Int] = [
+let idna_joining_d_ranges : FixedArray[Int32] = [
   1568, 1568, 1574, 1574, 1576, 1576, 1578, 1582, 1587, 1599, 1601, 1607, 1609, 1610,
   1646, 1647, 1656, 1671, 1690, 1727, 1729, 1730, 1740, 1740, 1742, 1742, 1744, 1745,
   1786, 1788, 1791, 1791, 1810, 1812, 1818, 1821, 1823, 1831, 1833, 1833, 1835, 1835,
@@ -2395,13 +2395,13 @@ let idna_joining_d_ranges : FixedArray[Int] = [
 
 ///|
 /// `idna.idnadata.joining_types['L']` as inclusive ranges.
-let idna_joining_l_ranges : FixedArray[Int] = [
+let idna_joining_l_ranges : FixedArray[Int32] = [
   43122, 43122, 68301, 68301, 68311, 68311, 68864, 68864, 69337, 69358, 69579, 69579,
 ]
 
 ///|
 /// `idna.idnadata.joining_types['R']` as inclusive ranges.
-let idna_joining_r_ranges : FixedArray[Int] = [
+let idna_joining_r_ranges : FixedArray[Int32] = [
   1570, 1573, 1575, 1575, 1577, 1577, 1583, 1586, 1608, 1608, 1649, 1651, 1653, 1655,
   1672, 1689, 1728, 1728, 1731, 1739, 1741, 1741, 1743, 1743, 1746, 1747, 1749, 1749,
   1774, 1775, 1808, 1808, 1813, 1817, 1822, 1822, 1832, 1832, 1834, 1834, 1836, 1836,
@@ -2417,7 +2417,7 @@ let idna_joining_r_ranges : FixedArray[Int] = [
 
 ///|
 /// `idna.idnadata.joining_types['T']` as inclusive ranges.
-let idna_joining_t_ranges : FixedArray[Int] = [
+let idna_joining_t_ranges : FixedArray[Int32] = [
   173, 173, 768, 879, 1155, 1161, 1425, 1469, 1471, 1471, 1473, 1474, 1476, 1477,
   1479, 1481, 1552, 1562, 1564, 1564, 1611, 1631, 1648, 1648, 1750, 1756, 1759, 1764,
   1767, 1768, 1770, 1773, 1807, 1807, 1809, 1809, 1840, 1866, 1958, 1968, 2027, 2035,

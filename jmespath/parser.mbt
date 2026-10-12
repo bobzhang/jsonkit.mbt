@@ -4,7 +4,7 @@
 
 ///|
 /// `Parser.BINDING_POWER`.
-fn token_binding_power(token_type : String) -> Int {
+fn token_binding_power(token_type : String) -> Int32 {
   match token_type {
     "eof"
     | "unquoted_identifier"
@@ -37,12 +37,12 @@ fn token_binding_power(token_type : String) -> Int {
 
 ///|
 /// The maximum binding power for a token that can stop a projection.
-let projection_stop : Int = 10
+let projection_stop : Int32 = 10
 
 ///|
 /// The number of most recently compiled expressions kept in the cache
 /// (`Parser._MAX_SIZE`).
-pub let parser_max_size : Int = 512
+pub let parser_max_size : Int32 = 512
 
 ///|
 /// `Parser._CACHE`: shared by all parsers.  When full, the oldest entry is
@@ -53,7 +53,7 @@ let parser_cache : Map[String, ParsedResult] = Map([])
 /// The JMESPath parser (`jmespath.parser.Parser`).
 pub struct Parser {
   priv mut tokens : Array[Token]
-  priv mut index : Int
+  priv mut index : Int32
 }
 
 ///|
@@ -93,7 +93,7 @@ pub fn Parser::purge() -> Unit {
 
 ///|
 /// The number of expressions currently cached.
-pub fn Parser::cache_size() -> Int {
+pub fn Parser::cache_size() -> Int32 {
   parser_cache.length()
 }
 
@@ -158,7 +158,7 @@ fn new_parse_error(token : Token, msg : String) -> JMESPathError {
 ///|
 fn Parser::expression(
   self : Parser,
-  binding_power? : Int = 0,
+  binding_power~ : Int32 = 0,
 ) -> Node raise JMESPathError {
   let left_token = self.lookahead_token(0)
   self.advance()
@@ -378,7 +378,7 @@ fn Parser::parse_slice_expression(self : Parser) -> Node raise JMESPathError {
   // [start:end:step]
   // Where start, end, and step are optional.
   // The last colon is optional as well.
-  let parts : Array[Int?] = [None, None, None]
+  let parts : Array[Int32?] = [None, None, None]
   let mut index = 0
   let mut current_token = self.current_token()
   while current_token != "rbracket" && index < 3 {
@@ -474,7 +474,7 @@ fn Parser::parse_multi_select_hash(self : Parser) -> Node raise JMESPathError {
 ///|
 fn Parser::parse_projection_rhs(
   self : Parser,
-  binding_power : Int,
+  binding_power : Int32,
 ) -> Node raise JMESPathError {
   // Parse the right hand side of the projection.
   let current = self.current_token()
@@ -496,7 +496,7 @@ fn Parser::parse_projection_rhs(
 ///|
 fn Parser::parse_dot_rhs(
   self : Parser,
-  binding_power : Int,
+  binding_power : Int32,
 ) -> Node raise JMESPathError {
   // From the grammar:
   // expression '.' ( identifier /
@@ -587,12 +587,12 @@ fn Parser::current_token(self : Parser) -> String {
 }
 
 ///|
-fn Parser::lookahead(self : Parser, number : Int) -> String {
+fn Parser::lookahead(self : Parser, number : Int32) -> String {
   self.lookahead_token(number).type_
 }
 
 ///|
-fn Parser::lookahead_token(self : Parser, number : Int) -> Token {
+fn Parser::lookahead_token(self : Parser, number : Int32) -> Token {
   let i = self.index + number
   // Python lists accept negative indices.
   self.tokens[if i < 0 { i + self.tokens.length() } else { i }]

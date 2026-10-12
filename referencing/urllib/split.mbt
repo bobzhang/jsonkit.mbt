@@ -113,7 +113,7 @@ fn is_scheme_char(c : UInt16) -> Bool {
 }
 
 ///|
-fn split_netloc(url : String, start : Int) -> (String, String) {
+fn split_netloc(url : String, start : Int32) -> (String, String) {
   let mut delim = url.length()
   for i in start..<url.length() {
     let c = url[i]
@@ -133,8 +133,8 @@ fn split_netloc(url : String, start : Int) -> (String, String) {
 /// Note that `%` escapes are not expanded.
 pub fn urlsplit(
   url : String,
-  scheme? : String = "",
-  allow_fragments? : Bool = true,
+  scheme~ : String = "",
+  allow_fragments~ : Bool = true,
 ) -> SplitResult raise ValueError {
   let mut url = lstrip_c0(url)
   let mut scheme = strip_c0(scheme)
@@ -251,8 +251,8 @@ fn split_params(url : String) -> (String, String) {
 /// `urllib.parse.urlparse(url, scheme='', allow_fragments=True)`.
 pub fn urlparse(
   url : String,
-  scheme? : String = "",
-  allow_fragments? : Bool = true,
+  scheme~ : String = "",
+  allow_fragments~ : Bool = true,
 ) -> ParseResult raise ValueError {
   let split = urlsplit(url, scheme~, allow_fragments~)
   let (path, params) = if in_list(uses_params, split.scheme) &&

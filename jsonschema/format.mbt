@@ -86,7 +86,7 @@ pub fn FormatChecker::checks(
   self : FormatChecker,
   format : String,
   func : FormatCheckFn,
-  raises? : (Error) -> Bool = raises_nothing,
+  raises~ : (Error) -> Bool = raises_nothing,
 ) -> Unit {
   self.checkers[format] = { func, raises, }
 }
@@ -97,7 +97,7 @@ pub fn FormatChecker::checks(
 pub fn FormatChecker::cls_checks(
   format : String,
   func : FormatCheckFn,
-  raises? : (Error) -> Bool = raises_nothing,
+  raises~ : (Error) -> Bool = raises_nothing,
 ) -> Unit {
   class_checkers[format] = { func, raises, }
 }

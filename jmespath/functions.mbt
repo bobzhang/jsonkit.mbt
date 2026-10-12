@@ -19,7 +19,7 @@ pub(all) struct ArgSpec {
 } derive(Eq, Debug)
 
 ///|
-pub fn ArgSpec::new(types : Array[String], variadic? : Bool = false) -> ArgSpec {
+pub fn ArgSpec::new(types : Array[String], variadic~ : Bool = false) -> ArgSpec {
   { types, variadic, }
 }
 

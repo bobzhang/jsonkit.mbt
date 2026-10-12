@@ -56,8 +56,8 @@ fn compliance_error_matches(
 ///|
 fn run_compliance_case(
   suite : Json,
-  group : Int,
-  case_index : Int,
+  group : Int32,
+  case_index : Int32,
 ) -> Unit raise {
   guard suite is Array(groups) &&
     groups[group] is { "given": given, "cases": Array(cases), .. } &&

@@ -1,11 +1,11 @@
 ///|
-fn is_leap(year : Int) -> Bool {
+fn is_leap(year : Int32) -> Bool {
   year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 }
 
 ///|
 /// `calendar.monthrange(year, month)[1]`.
-fn days_in_month(year : Int, month : Int) -> Int {
+fn days_in_month(year : Int32, month : Int32) -> Int32 {
   match month {
     2 => if is_leap(year) { 29 } else { 28 }
     4 | 6 | 9 | 11 => 30
@@ -14,7 +14,7 @@ fn days_in_month(year : Int, month : Int) -> Int {
 }
 
 ///|
-fn parse_ascii_int(s : String) -> Int {
+fn parse_ascii_int(s : String) -> Int32 {
   let mut v = 0
   for c in s {
     v = v * 10 + (c.to_int() - '0')
@@ -45,7 +45,7 @@ pub fn ascii_upper(s : String) -> String {
   let sb = StringBuilder()
   for c in s {
     if c >= 'a' && c <= 'z' {
-      sb.write_char(Int::unsafe_to_char(c.to_int() - 32))
+      sb.write_char(Int32::unsafe_to_char(c.to_int() - 32))
     } else {
       sb.write_char(c)
     }

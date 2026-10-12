@@ -16,7 +16,7 @@ pub struct ErrorTree {
 /// (Python's `KeyError` / `IndexError` / `TypeError`).
 pub suberror LookupError {
   KeyError(String)
-  IndexError(Int)
+  IndexError(Int32)
   TypeError(String)
 } derive(Debug)
 
@@ -34,7 +34,7 @@ fn validator_key(v : Json?) -> String {
 /// at indices not present in it to raise the same error that indexing the
 /// instance itself would.
 pub fn ErrorTree::new(
-  errors? : ArrayView[ValidationError] = [],
+  errors~ : ArrayView[ValidationError] = [],
   instance? : Json,
 ) -> ErrorTree {
   let tree = { errors: Map([]), contents: Map([]), instance, }
@@ -111,7 +111,7 @@ pub fn ErrorTree::iter(self : ErrorTree) -> Iter[PathItem] {
 
 ///|
 /// The total number of errors in the entire tree, including children.
-pub fn ErrorTree::total_errors(self : ErrorTree) -> Int {
+pub fn ErrorTree::total_errors(self : ErrorTree) -> Int32 {
   let mut child_errors = 0
   for _, tree in self.contents {
     child_errors += tree.total_errors()
@@ -121,7 +121,7 @@ pub fn ErrorTree::total_errors(self : ErrorTree) -> Int {
 
 ///|
 /// `len(tree)`: the `total_errors`.
-pub fn ErrorTree::length(self : ErrorTree) -> Int {
+pub fn ErrorTree::length(self : ErrorTree) -> Int32 {
   self.total_errors()
 }
 

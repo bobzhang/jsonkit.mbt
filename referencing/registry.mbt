@@ -44,8 +44,8 @@ pub struct Registry {
 /// `Registry::with_resources` to add resources which should be crawled.
 /// Without `retrieve`, unknown URIs raise `NoSuchResource`.
 pub fn Registry::new(
-  resources? : ArrayView[(String, Resource)] = [],
-  anchors? : ArrayView[((String, String), Anchor)] = [],
+  resources~ : ArrayView[(String, Resource)] = [],
+  anchors~ : ArrayView[((String, String), Anchor)] = [],
   retrieve? : (String) -> Resource raise,
 ) -> Registry {
   {
@@ -105,7 +105,7 @@ pub fn Registry::keys(self : Registry) -> Iter[String] {
 
 ///|
 /// Count the total number of fully crawled resources in this registry.
-pub fn Registry::length(self : Registry) -> Int {
+pub fn Registry::length(self : Registry) -> Int32 {
   self.resources.length()
 }
 
@@ -117,7 +117,7 @@ pub fn Registry::is_empty(self : Registry) -> Bool {
 
 ///|
 /// The number of added resources not yet crawled.
-pub fn Registry::uncrawled_count(self : Registry) -> Int {
+pub fn Registry::uncrawled_count(self : Registry) -> Int32 {
   self.uncrawled.length()
 }
 
@@ -352,7 +352,7 @@ pub fn Registry::combine(
 
 ///|
 /// Return a `Resolver` which resolves references against this registry.
-pub fn Registry::resolver(self : Registry, base_uri? : String = "") -> Resolver {
+pub fn Registry::resolver(self : Registry, base_uri~ : String = "") -> Resolver {
   Resolver::new(base_uri~, registry=self)
 }
 

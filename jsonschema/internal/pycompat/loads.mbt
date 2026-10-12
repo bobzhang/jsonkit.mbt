@@ -1,7 +1,7 @@
 ///|
 /// Raised by `loads`, mirroring Python's `json.JSONDecodeError`.
 pub suberror JSONDecodeError {
-  JSONDecodeError(msg~ : String, pos~ : Int, lineno~ : Int, colno~ : Int)
+  JSONDecodeError(msg~ : String, pos~ : Int32, lineno~ : Int32, colno~ : Int32)
 }
 
 ///|
@@ -13,11 +13,11 @@ pub impl Show for JSONDecodeError with fn output(self, logger) {
 ///|
 priv struct Decoder {
   src : String
-  mut pos : Int
+  mut pos : Int32
 }
 
 ///|
-fn Decoder::error(self : Decoder, msg : String, pos : Int) -> JSONDecodeError {
+fn Decoder::error(self : Decoder, msg : String, pos : Int32) -> JSONDecodeError {
   // line / column are counted in UTF-16 units here; Python counts code points.
   let mut lineno = 1
   let mut last_nl = -1
@@ -31,7 +31,7 @@ fn Decoder::error(self : Decoder, msg : String, pos : Int) -> JSONDecodeError {
 }
 
 ///|
-fn Decoder::peek(self : Decoder) -> Int {
+fn Decoder::peek(self : Decoder) -> Int32 {
   if self.pos < self.src.length() {
     self.src.code_unit_at(self.pos).to_int()
   } else {
@@ -128,7 +128,7 @@ fn Decoder::value(self : Decoder) -> Json raise JSONDecodeError {
 }
 
 ///|
-fn is_digit(c : Int) -> Bool {
+fn is_digit(c : Int32) -> Bool {
   c >= '0' && c <= '9'
 }
 
@@ -137,7 +137,7 @@ fn Decoder::number(self : Decoder) -> Json? {
   let start = self.pos
   let src = self.src
   let n = src.length()
-  let at = (i : Int) => if i < n { src.code_unit_at(i).to_int() } else { -1 }
+  let at = (i : Int32) => if i < n { src.code_unit_at(i).to_int() } else { -1 }
   let mut i = start
   if at(i) == '-' {
     i += 1
@@ -255,7 +255,7 @@ fn Decoder::string_body(self : Decoder) -> String raise JSONDecodeError {
     } else if c < 0x20 {
       raise self.error("Invalid control character at", self.pos)
     } else {
-      sb.write_char(Int::unsafe_to_char(c))
+      sb.write_char(Int32::unsafe_to_char(c))
       self.pos += 1
     }
   }
@@ -263,7 +263,7 @@ fn Decoder::string_body(self : Decoder) -> String raise JSONDecodeError {
 }
 
 ///|
-fn Decoder::hex4(self : Decoder, at : Int) -> Int raise JSONDecodeError {
+fn Decoder::hex4(self : Decoder, at : Int32) -> Int32 raise JSONDecodeError {
   let src = self.src
   if at + 4 > src.length() {
     raise self.error("Invalid \\uXXXX escape", at - 1)

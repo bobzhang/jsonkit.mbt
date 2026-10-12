@@ -5,22 +5,22 @@
 // is identical even when the comparison is not a total order (e.g. NaN).
 
 ///|
-let min_gallop : Int = 7
+let min_gallop : Int32 = 7
 
 ///|
 priv struct SortRun {
-  base : Int
-  mut len : Int
-  mut power : Int
+  base : Int32
+  mut len : Int32
+  mut power : Int32
 }
 
 ///|
 priv struct MergeState {
   keys : Array[Json]
   values : Array[Json]
-  mut min_gallop : Int
+  mut min_gallop : Int32
   pending : Array[SortRun]
-  listlen : Int
+  listlen : Int32
 }
 
 ///|
@@ -29,7 +29,7 @@ fn sort_lt(a : Json, b : Json) -> Bool raise JMESPathError {
 }
 
 ///|
-fn MergeState::reverse(self : MergeState, lo : Int, n : Int) -> Unit {
+fn MergeState::reverse(self : MergeState, lo : Int32, n : Int32) -> Unit {
   let mut i = lo
   let mut j = lo + n - 1
   while i < j {
@@ -48,12 +48,12 @@ fn MergeState::reverse(self : MergeState, lo : Int, n : Int) -> Unit {
 /// Length of the run starting at `lo` (made ascending in place).
 fn MergeState::count_run(
   self : MergeState,
-  lo : Int,
-  nremaining : Int,
-) -> Int raise JMESPathError {
+  lo : Int32,
+  nremaining : Int32,
+) -> Int32 raise JMESPathError {
   let a = self.keys
-  let next_smaller = (n : Int) => sort_lt(a[lo + n], a[lo + n - 1])
-  let next_larger = (n : Int) => sort_lt(a[lo + n - 1], a[lo + n])
+  let next_smaller = (n : Int32) => sort_lt(a[lo + n], a[lo + n - 1])
+  let next_larger = (n : Int32) => sort_lt(a[lo + n - 1], a[lo + n])
   // Try an ascending run first.
   let mut n = 1
   while n < nremaining {
@@ -76,7 +76,7 @@ fn MergeState::count_run(
   n += 1
   // Descending run.
   let mut neq = 0
-  let reverse_last_neq = (n : Int, neq : Int) => {
+  let reverse_last_neq = (n : Int32, neq : Int32) => {
     if neq > 0 {
       let neq = neq + 1
       self.reverse(lo + n - neq, neq)
@@ -109,9 +109,9 @@ fn MergeState::count_run(
 /// Binary insertion sort of `[lo, lo + n)`, where `[lo, lo + ok)` is sorted.
 fn MergeState::binarysort(
   self : MergeState,
-  lo : Int,
-  n : Int,
-  ok : Int,
+  lo : Int32,
+  n : Int32,
+  ok : Int32,
 ) -> Unit raise JMESPathError {
   let a = self.keys
   let v = self.values
@@ -147,10 +147,10 @@ fn MergeState::binarysort(
 fn gallop_left(
   key : Json,
   a : Array[Json],
-  base : Int,
-  n : Int,
-  hint : Int,
-) -> Int raise JMESPathError {
+  base : Int32,
+  n : Int32,
+  hint : Int32,
+) -> Int32 raise JMESPathError {
   let mut lastofs = 0
   let mut ofs = 1
   if sort_lt(a[base + hint], key) {
@@ -203,10 +203,10 @@ fn gallop_left(
 fn gallop_right(
   key : Json,
   a : Array[Json],
-  base : Int,
-  n : Int,
-  hint : Int,
-) -> Int raise JMESPathError {
+  base : Int32,
+  n : Int32,
+  hint : Int32,
+) -> Int32 raise JMESPathError {
   let mut lastofs = 0
   let mut ofs = 1
   if sort_lt(key, a[base + hint]) {
@@ -259,10 +259,10 @@ fn gallop_right(
 /// with `na <= nb` (`merge_lo`).
 fn MergeState::merge_lo(
   self : MergeState,
-  pa : Int,
-  na : Int,
-  pb : Int,
-  nb : Int,
+  pa : Int32,
+  na : Int32,
+  pb : Int32,
+  nb : Int32,
 ) -> Unit raise JMESPathError {
   let keys = self.keys
   let values = self.values
@@ -389,7 +389,7 @@ fn MergeState::merge_lo(
 }
 
 ///|
-fn min_gallop_default() -> Int {
+fn min_gallop_default() -> Int32 {
   min_gallop
 }
 
@@ -398,10 +398,10 @@ fn min_gallop_default() -> Int {
 /// with `na > nb` (`merge_hi`), working from the right.
 fn MergeState::merge_hi(
   self : MergeState,
-  pa : Int,
-  na : Int,
-  pb : Int,
-  nb : Int,
+  pa : Int32,
+  na : Int32,
+  pb : Int32,
+  nb : Int32,
 ) -> Unit raise JMESPathError {
   let keys = self.keys
   let values = self.values
@@ -530,7 +530,10 @@ fn MergeState::merge_hi(
 
 ///|
 /// Merge the two runs at stack indices `i` and `i + 1` (`merge_at`).
-fn MergeState::merge_at(self : MergeState, i : Int) -> Unit raise JMESPathError {
+fn MergeState::merge_at(
+  self : MergeState,
+  i : Int32,
+) -> Unit raise JMESPathError {
   let p = self.pending
   let mut pa = p[i].base
   let mut na = p[i].len
@@ -562,7 +565,7 @@ fn MergeState::merge_at(self : MergeState, i : Int) -> Unit raise JMESPathError 
 
 ///|
 /// Powersort's "power" of the boundary between two adjacent runs.
-fn powerloop(s1 : Int, n1 : Int, n2 : Int, n : Int) -> Int {
+fn powerloop(s1 : Int32, n1 : Int32, n2 : Int32, n : Int32) -> Int32 {
   let mut result = 0
   let mut a = 2L * s1.to_int64() + n1.to_int64()
   let mut b = a + n1.to_int64() + n2.to_int64()
@@ -584,7 +587,7 @@ fn powerloop(s1 : Int, n1 : Int, n2 : Int, n : Int) -> Int {
 ///|
 fn MergeState::found_new_run(
   self : MergeState,
-  n2 : Int,
+  n2 : Int32,
 ) -> Unit raise JMESPathError {
   let p = self.pending
   if p.length() > 0 {
@@ -613,7 +616,7 @@ fn MergeState::merge_force_collapse(
 }
 
 ///|
-fn merge_compute_minrun(n : Int) -> Int {
+fn merge_compute_minrun(n : Int32) -> Int32 {
   let mut n = n
   let mut r = 0
   while n >= 64 {

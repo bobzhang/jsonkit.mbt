@@ -26,7 +26,7 @@ const N_COUNT = 588 // V_COUNT * T_COUNT
 const S_COUNT = 11172 // L_COUNT * N_COUNT
 
 ///|
-fn decomp_index(cp : Int) -> Int? {
+fn decomp_index(cp : Int32) -> Int32? {
   for lo = 0, hi = decomp_cps.length(); lo < hi; {
     let mid = lo + (hi - lo) / 2
     if decomp_cps[mid] < cp {
@@ -42,7 +42,7 @@ fn decomp_index(cp : Int) -> Int? {
 }
 
 ///|
-fn decompose_into(out : Array[Int], cp : Int) -> Unit {
+fn decompose_into(out : Array[Int32], cp : Int32) -> Unit {
   let s = cp - S_BASE
   if s >= 0 && s < S_COUNT {
     out.push(L_BASE + s / N_COUNT)
@@ -63,7 +63,7 @@ fn decompose_into(out : Array[Int], cp : Int) -> Unit {
 }
 
 ///|
-fn compose_pair(a : Int, b : Int) -> Int? {
+fn compose_pair(a : Int32, b : Int32) -> Int32? {
   // Hangul LV / LVT
   let l = a - L_BASE
   if l >= 0 && l < L_COUNT {
@@ -98,7 +98,7 @@ fn compose_pair(a : Int, b : Int) -> Int? {
 
 ///|
 /// `unicodedata.normalize("NFC", ...)` over code points.
-pub fn nfc(cps : ArrayView[Int]) -> Array[Int] {
+pub fn nfc(cps : ArrayView[Int32]) -> Array[Int32] {
   // canonical decomposition
   let d = []
   for cp in cps {
@@ -123,7 +123,7 @@ pub fn nfc(cps : ArrayView[Int]) -> Array[Int] {
     }
   }
   // canonical composition
-  let out : Array[Int] = []
+  let out : Array[Int32] = []
   let mut starter = -1
   let mut last_cc = -1
   for c in d {

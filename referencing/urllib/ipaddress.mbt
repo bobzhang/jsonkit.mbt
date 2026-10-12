@@ -73,7 +73,7 @@ fn is_ipv6_address(s : String) -> Bool {
   if parts.length() > hextet_count + 1 {
     return false
   }
-  let mut skip_index : Int? = None
+  let mut skip_index : Int32? = None
   for i in 1..<(parts.length() - 1) {
     if parts[i] == "" {
       if skip_index is Some(_) {

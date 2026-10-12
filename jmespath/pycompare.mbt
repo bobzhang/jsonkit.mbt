@@ -98,7 +98,7 @@ fn is_comparable(x : Json) -> Bool {
 ///|
 /// Compares two strings by code point, like Python (core's `String`
 /// comparison orders by length first).
-fn py_str_compare(a : String, b : String) -> Int {
+fn py_str_compare(a : String, b : String) -> Int32 {
   let ia = a.iter()
   let ib = b.iter()
   while true {
@@ -186,7 +186,7 @@ fn code_points(s : String) -> Array[Char] {
 }
 
 ///|
-fn chars_match_at(hay : Array[Char], needle : Array[Char], at : Int) -> Bool {
+fn chars_match_at(hay : Array[Char], needle : Array[Char], at : Int32) -> Bool {
   for i, c in needle {
     if hay[at + i] != c {
       return false
