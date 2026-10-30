@@ -40,7 +40,7 @@ fn JsonScanner::starts_with_at(
   word : String,
 ) -> Bool {
   idx + word.length() <= self.len &&
-  self.s.view(start_offset=idx, end_offset=idx + word.length()) == word
+  self.s.clamped_view(start=idx, end=idx + word.length()) == word
 }
 
 ///|
@@ -77,7 +77,7 @@ fn JsonScanner::scanstring(
     if end >= self.len {
       raise self.error("Unterminated string starting at", begin - 1)
     }
-    buf.write_view(self.s.view(start_offset=next, end_offset=end))
+    buf.write_view(self.s.clamped_view(start=next, end~))
     if self.char_at(end) == '"' {
       return (buf.to_string(), end + 1)
     }
@@ -182,7 +182,7 @@ fn JsonScanner::match_number(
       idx = e_start
     }
   }
-  let text = self.s.view(start_offset=start, end_offset=idx).to_owned()
+  let text = self.s.clamped_view(start~, end=idx).to_owned()
   let value = if is_float {
     match py_float_parse(text) {
       Some(v) => v

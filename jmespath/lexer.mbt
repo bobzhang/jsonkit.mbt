@@ -357,7 +357,7 @@ fn Lexer::consume_quoted_identifier(self : Lexer) -> Token raise JMESPathError {
       // error_message = str(e).split(':')[0]
       let full = e.to_string()
       let error_message = match full.find(":") {
-        Some(i) => full.view(end_offset=i).to_owned()
+        Some(i) => full.clamped_view(end=i).to_owned()
         None => full
       }
       raise LexerError(

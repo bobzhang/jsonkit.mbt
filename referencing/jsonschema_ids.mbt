@@ -95,7 +95,7 @@ fn legacy_anchor_in(
     Some(id) if id.has_prefix("#") =>
       [
         Anchor::new(
-          name=id.view(start_offset=1).to_owned(),
+          name=id.clamped_view(start=1).to_owned(),
           resource=specification.create_resource(contents),
         ),
       ]
