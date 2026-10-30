@@ -210,9 +210,9 @@ fn get_allowed_pytypes(
   for t in types {
     let type_ = match t.find("-") {
       Some(i) => {
-        let subtype = t.view(start_offset=i + 1).to_owned()
+        let subtype = t.clamped_view(start=i + 1).to_owned()
         allowed_subtypes.push(reverse_types_map(subtype))
-        t.view(end_offset=i).to_owned()
+        t.clamped_view(end=i).to_owned()
       }
       None => t
     }
@@ -447,7 +447,7 @@ fn func_abs(args : Array[Value]) -> Json {
   } else {
     match repr {
       Some(r) if r.has_prefix("-") =>
-        Json::number(d.abs(), repr=r.view(start_offset=1).to_owned())
+        Json::number(d.abs(), repr=r.clamped_view(start=1).to_owned())
       _ => Json::number(d.abs(), repr?)
     }
   }

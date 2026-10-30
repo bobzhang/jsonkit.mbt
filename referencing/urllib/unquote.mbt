@@ -61,14 +61,12 @@ pub fn unquote(s : String) -> String {
       while i < n && s[i] < 0x80 {
         i += 1
       }
-      out.write_string(
-        unquote_ascii_run(s.view(start_offset=start, end_offset=i)),
-      )
+      out.write_string(unquote_ascii_run(s.clamped_view(start~, end=i)))
     } else {
       while i < n && s[i] >= 0x80 {
         i += 1
       }
-      out.write_view(s.view(start_offset=start, end_offset=i))
+      out.write_view(s.clamped_view(start~, end=i))
     }
   }
   out.to_string()

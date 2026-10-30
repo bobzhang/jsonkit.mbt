@@ -81,7 +81,7 @@ pub fn Resolver::previous(self : Resolver) -> @list.List[String] {
 /// raised by custom specification / anchor callbacks.
 pub fn Resolver::lookup(self : Resolver, reference : String) -> Resolved raise {
   let (uri, fragment) = if reference.has_prefix("#") {
-    (self.base_uri, reference.view(start_offset=1).to_owned())
+    (self.base_uri, reference.clamped_view(start=1).to_owned())
   } else {
     let defragged = @urllib.urldefrag(@urllib.urljoin(self.base_uri, reference))
     (defragged.url, defragged.fragment)

@@ -7,7 +7,7 @@ fn substr(s : String, start : Int32, end? : Int32) -> String {
     None => len
   }
   let start = if start < 0 { 0 } else if start > end { end } else { start }
-  s.view(start_offset=start, end_offset=end).to_owned()
+  s.clamped_view(start~, end~).to_owned()
 }
 
 ///|

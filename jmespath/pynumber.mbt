@@ -56,10 +56,10 @@ fn shortest_digits(d : Double) -> (String, Int32) {
   let s = d.to_string()
   let (mantissa, exp) = match s.find("e") {
     Some(i) => {
-      let m = s.view(end_offset=i).to_owned()
-      let e = s.view(start_offset=i + 1).to_owned()
+      let m = s.clamped_view(end=i).to_owned()
+      let e = s.clamped_view(start=i + 1).to_owned()
       let e = if e.has_prefix("+") {
-        e.view(start_offset=1).to_owned()
+        e.clamped_view(start=1).to_owned()
       } else {
         e
       }
@@ -70,8 +70,8 @@ fn shortest_digits(d : Double) -> (String, Int32) {
   let (int_part, frac_part) = match mantissa.find(".") {
     Some(i) =>
       (
-        mantissa.view(end_offset=i).to_owned(),
-        mantissa.view(start_offset=i + 1).to_owned(),
+        mantissa.clamped_view(end=i).to_owned(),
+        mantissa.clamped_view(start=i + 1).to_owned(),
       )
     None => (mantissa, "")
   }
@@ -114,9 +114,9 @@ fn py_float_repr(d : Double) -> String {
     let mant = if n == 1 {
       digits
     } else {
-      digits.view(end_offset=1).to_owned() +
+      digits.clamped_view(end=1).to_owned() +
       "." +
-      digits.view(start_offset=1).to_owned()
+      digits.clamped_view(start=1).to_owned()
     }
     let exp_sign = if exp < 0 { "-" } else { "+" }
     let exp_abs = exp.abs()
@@ -127,9 +127,9 @@ fn py_float_repr(d : Double) -> String {
   } else if decpt >= n {
     digits + "0".repeat(decpt - n) + ".0"
   } else {
-    digits.view(end_offset=decpt).to_owned() +
+    digits.clamped_view(end=decpt).to_owned() +
     "." +
-    digits.view(start_offset=decpt).to_owned()
+    digits.clamped_view(start=decpt).to_owned()
   }
   sign + body
 }
@@ -266,7 +266,7 @@ fn py_int_parse(s : String) -> Json? {
   // Normalize leading zeros like Python's int().
   let mut text = digits.to_string()
   while text.length() > 1 && text.has_prefix("0") {
-    text = text.view(start_offset=1).to_owned()
+    text = text.clamped_view(start=1).to_owned()
   }
   let d = @string.parse_double(text) catch { _ => @double.infinity }
   let d = if negative { -d } else { d }

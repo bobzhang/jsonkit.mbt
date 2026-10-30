@@ -234,7 +234,7 @@ fn check_bracketed_host(hostname : String) -> Unit raise ValueError {
 fn split_params(url : String) -> (String, String) {
   let i = if url.contains("/") {
     let last_slash = url.rev_find("/").unwrap_or(0)
-    match url.view(start_offset=last_slash).find(";") {
+    match url.clamped_view(start=last_slash).find(";") {
       Some(j) => last_slash + j
       None => return (url, "")
     }

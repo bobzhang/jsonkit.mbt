@@ -98,7 +98,7 @@ pub fn Resource::pointer(
   let mut contents = self.contents
   let mut resolver = resolver
   let mut segments : Array[Segment] = []
-  let decoded = @urllib.unquote(pointer.view(start_offset=1).to_owned())
+  let decoded = @urllib.unquote(pointer.clamped_view(start=1).to_owned())
   for raw in decoded.split("/") {
     let raw = raw.to_owned()
     let (segment, next) = match contents {
@@ -175,5 +175,5 @@ fn rstrip_hash(s : String) -> String {
   while end > 0 && s[end - 1] == '#' {
     end -= 1
   }
-  s.view(end_offset=end).to_owned()
+  s.clamped_view(end~).to_owned()
 }
