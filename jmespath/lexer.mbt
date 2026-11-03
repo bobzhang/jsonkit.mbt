@@ -6,11 +6,12 @@
 ///|
 /// The value of a token: identifiers and operators carry their text,
 /// `number` tokens an integer and `literal` tokens a JSON value.
+#derive(Eq, Debug)
 pub(all) enum TokenValue {
   Str(String)
   Int(Int32)
   Literal(Json)
-} derive(Eq, Debug)
+}
 
 ///|
 /// `str()` of a token value, used by error messages.
@@ -26,12 +27,13 @@ fn TokenValue::py_str(self : TokenValue) -> String {
 /// A token, `{'type': ..., 'value': ..., 'start': ..., 'end': ...}` upstream.
 /// `end` reproduces upstream's values exactly, including its quirks (for
 /// literals it is the token length, for two-character operators `start + 1`).
+#derive(Eq, Debug)
 pub(all) struct Token {
   type_ : String
   value : TokenValue
   start : Int32
   end : Int32
-} derive(Eq, Debug)
+}
 
 ///|
 /// The JMESPath tokenizer (`jmespath.lexer.Lexer`).

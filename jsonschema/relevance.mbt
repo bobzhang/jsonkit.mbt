@@ -11,12 +11,13 @@ pub let strong_matches : Array[String] = []
 /// `(-len(error.path), validator not in weak, validator in strong,
 /// not error._matches_type())`, compared lexicographically (higher is more
 /// relevant).
+#derive(Eq, Compare, Debug)
 pub(all) struct Relevance {
   neg_path_length : Int32
   not_weak : Bool
   strong : Bool
   not_matching_type : Bool
-} derive(Eq, Compare, Debug)
+}
 
 ///|
 /// Create a key function that can be used to sort errors by relevance.

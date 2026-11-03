@@ -3,9 +3,10 @@
 ///|
 /// Raised where upstream would crash with a Python-level error (e.g. a
 /// `TypeError` from `len(True)` on a malformed schema).
+#derive(Debug)
 pub suberror PythonError {
   PythonError(String)
-} derive(Debug)
+}
 
 ///|
 pub impl Show for PythonError with fn output(self, logger) {

@@ -13,9 +13,10 @@ pub fn is_valid(String) -> Bool
 pub fn search(String, StringView) -> Bool raise
 
 // Errors
+#derive(@debug.Debug)
 pub suberror PatternError {
   PatternError(String)
-} derive(@debug.Debug)
+}
 
 // Types and methods
 pub struct Pattern {

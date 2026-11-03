@@ -1,8 +1,9 @@
 ///|
 /// Raised for patterns Python's `re.compile` rejects (`re.error`).
+#derive(Debug)
 pub suberror PatternError {
   PatternError(String)
-} derive(Debug)
+}
 
 ///|
 /// Python regex flags (subset relevant to `str` patterns).

@@ -14,11 +14,12 @@ pub struct ErrorTree {
 ///|
 /// Raised when indexing an `ErrorTree` at an index its instance lacks
 /// (Python's `KeyError` / `IndexError` / `TypeError`).
+#derive(Debug)
 pub suberror LookupError {
   KeyError(String)
   IndexError(Int32)
   TypeError(String)
-} derive(Debug)
+}
 
 ///|
 fn validator_key(v : Json?) -> String {

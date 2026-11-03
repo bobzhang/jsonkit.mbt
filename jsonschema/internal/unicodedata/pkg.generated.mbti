@@ -2,51 +2,51 @@
 package "bobzhang/jsonschema/internal/unicodedata"
 
 // Values
-pub fn alnum_set() -> Array[(Int, Int)]
+pub fn alnum_set() -> Array[(Int32, Int32)]
 
-pub fn bidirectional(Int) -> String
+pub fn bidirectional(Int32) -> String
 
-pub fn case_fold_extras(ArrayView[(Int, Int)]) -> Array[(Int, Int)]
+pub fn case_fold_extras(ArrayView[(Int32, Int32)]) -> Array[(Int32, Int32)]
 
-pub fn code_points(StringView) -> Array[Int]
+pub fn code_points(StringView) -> Array[Int32]
 
-pub fn combining(Int) -> Int
+pub fn combining(Int32) -> Int32
 
-pub fn decimal_set() -> Array[(Int, Int)]
+pub fn decimal_set() -> Array[(Int32, Int32)]
 
-pub fn from_code_points(ArrayView[Int]) -> String
+pub fn from_code_points(ArrayView[Int32]) -> String
 
-pub fn has_name(Int) -> Bool
+pub fn has_name(Int32) -> Bool
 
-pub fn idna_is_contextj(Int) -> Bool
+pub fn idna_is_contextj(Int32) -> Bool
 
-pub fn idna_is_contexto(Int) -> Bool
+pub fn idna_is_contexto(Int32) -> Bool
 
-pub fn idna_is_pvalid(Int) -> Bool
+pub fn idna_is_pvalid(Int32) -> Bool
 
-pub fn idna_is_script(Int, String) -> Bool
+pub fn idna_is_script(Int32, String) -> Bool
 
-pub fn idna_joining_type(Int) -> String?
+pub fn idna_joining_type(Int32) -> String?
 
-pub fn is_alnum(Int) -> Bool
+pub fn is_alnum(Int32) -> Bool
 
-pub fn is_alpha(Int) -> Bool
+pub fn is_alpha(Int32) -> Bool
 
-pub fn is_decimal(Int) -> Bool
+pub fn is_decimal(Int32) -> Bool
 
-pub fn is_mark(Int) -> Bool
+pub fn is_mark(Int32) -> Bool
 
-pub fn is_printable(Int) -> Bool
+pub fn is_printable(Int32) -> Bool
 
-pub fn is_space(Int) -> Bool
+pub fn is_space(Int32) -> Bool
 
-pub fn nfc(ArrayView[Int]) -> Array[Int]
+pub fn nfc(ArrayView[Int32]) -> Array[Int32]
 
-pub fn py_len(StringView) -> Int
+pub fn py_len(StringView) -> Int32
 
-pub fn space_set() -> Array[(Int, Int)]
+pub fn space_set() -> Array[(Int32, Int32)]
 
-pub fn write_code_point(StringBuilder, Int) -> Unit
+pub fn write_code_point(StringBuilder, Int32) -> Unit
 
 // Errors
 

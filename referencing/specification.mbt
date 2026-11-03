@@ -1,10 +1,11 @@
 ///|
 /// A segment of a JSON pointer as seen by `Specification::maybe_in_subresource`
 /// (Python's `int | str`): array indices are `Index`, everything else `Key`.
+#derive(Debug, Eq)
 pub(all) enum Segment {
   Key(String)
   Index(Int32)
-} derive(Debug, Eq)
+}
 
 ///|
 /// Whether the segment is the string `key` (Python's `segment == key`).
