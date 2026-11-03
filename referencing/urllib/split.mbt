@@ -28,16 +28,18 @@ fn in_list(list : ReadOnlyArray[String], s : String) -> Bool {
 
 ///|
 /// The result of `urlsplit`: `<scheme>://<netloc>/<path>?<query>#<fragment>`.
+#derive(Debug, Eq)
 pub(all) struct SplitResult {
   scheme : String
   netloc : String
   path : String
   query : String
   fragment : String
-} derive(Debug, Eq)
+}
 
 ///|
 /// The result of `urlparse`, which additionally splits `;params` off the path.
+#derive(Debug, Eq)
 pub(all) struct ParseResult {
   scheme : String
   netloc : String
@@ -45,14 +47,15 @@ pub(all) struct ParseResult {
   params : String
   query : String
   fragment : String
-} derive(Debug, Eq)
+}
 
 ///|
 /// The result of `urldefrag`.
+#derive(Debug, Eq)
 pub(all) struct DefragResult {
   url : String
   fragment : String
-} derive(Debug, Eq)
+}
 
 ///|
 /// Reassemble the URL (Python's `SplitResult.geturl()`).

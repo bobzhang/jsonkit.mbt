@@ -4,15 +4,16 @@ package "bobzhang/referencing"
 import {
   "bobzhang/referencing/urllib",
   "moonbitlang/core/debug",
+  "moonbitlang/core/json",
   "moonbitlang/core/list",
 }
 
 // Values
-pub fn anchors_2019(Specification, Json) -> Array[Anchor]
+pub fn anchors_2019(Specification, @json.Json) -> Array[Anchor]
 
-pub fn anchors_2020(Specification, Json) -> Array[Anchor]
+pub fn anchors_2020(Specification, @json.Json) -> Array[Anchor]
 
-pub fn dollar_id(Json) -> String?
+pub fn dollar_id(@json.Json) -> String?
 
 pub fn draft201909() -> Specification
 
@@ -32,23 +33,23 @@ pub let empty_registry : Registry
 
 pub fn is_unresolvable(Error) -> Bool
 
-pub fn legacy_anchor_in_dollar_id(Specification, Json) -> Array[Anchor]
+pub fn legacy_anchor_in_dollar_id(Specification, @json.Json) -> Array[Anchor]
 
-pub fn legacy_anchor_in_id(Specification, Json) -> Array[Anchor]
+pub fn legacy_anchor_in_id(Specification, @json.Json) -> Array[Anchor]
 
-pub fn legacy_dollar_id(Json) -> String?
+pub fn legacy_dollar_id(@json.Json) -> String?
 
-pub fn legacy_id(Json) -> String?
+pub fn legacy_id(@json.Json) -> String?
 
 pub fn lookup_recursive_ref(Resolver) -> Resolved raise
 
-pub fn lru_cache(maxsize~ : Int) -> ((String) -> Resource raise) -> (String) -> Resource raise
+pub fn lru_cache(maxsize~ : Int32) -> ((String) -> Resource raise) -> (String) -> Resource raise
 
 pub let opaque_specification : Specification
 
 pub fn specification_with(String, default? : Specification) -> Specification raise ReferencingError
 
-pub fn to_cached_resource((String) -> String raise, cache? : ((String) -> Resource raise) -> (String) -> Resource raise, loads? : (String) -> Json raise, from_contents? : (Json) -> Resource raise) -> (String) -> Resource raise
+pub fn to_cached_resource((String) -> String raise, cache? : ((String) -> Resource raise) -> (String) -> Resource raise, loads? : (String) -> @json.Json raise, from_contents? : (@json.Json) -> Resource raise) -> (String) -> Resource raise
 
 pub fn unbounded_cache() -> ((String) -> Resource raise) -> (String) -> Resource raise
 
@@ -57,7 +58,7 @@ pub(all) suberror ReferencingError {
   NoSuchResource(reference~ : String)
   NoInternalID(resource~ : Resource)
   Unretrievable(reference~ : String, cause~ : Error?)
-  CannotDetermineSpecification(contents~ : Json)
+  CannotDetermineSpecification(contents~ : @json.Json)
   Unresolvable(reference~ : String)
   PointerToNowhere(reference~ : String, resource~ : Resource)
   NoSuchAnchor(reference~ : String, resource~ : Resource, anchor~ : String)
@@ -91,7 +92,7 @@ pub fn Registry::anchor(Self, String, String) -> Retrieved[Anchor] raise
 pub fn Registry::at(Self, String) -> Resource raise ReferencingError
 pub fn Registry::combine(Self, ArrayView[Self]) -> Self raise @urllib.ValueError
 pub fn Registry::contains(Self, String) -> Bool
-pub fn Registry::contents(Self, String) -> Json raise ReferencingError
+pub fn Registry::contents(Self, String) -> @json.Json raise ReferencingError
 pub fn Registry::crawl(Self) -> Self raise @urllib.ValueError
 pub fn Registry::get(Self, String) -> Resource?
 pub fn Registry::get_or_retrieve(Self, String) -> Retrieved[Resource] raise
@@ -99,13 +100,13 @@ pub fn Registry::is_empty(Self) -> Bool
 pub fn Registry::iter(Self) -> Iter[String]
 pub fn Registry::iter2(Self) -> Iter2[String, Resource]
 pub fn Registry::keys(Self) -> Iter[String]
-pub fn Registry::length(Self) -> Int
+pub fn Registry::length(Self) -> Int32
 pub fn Registry::new(resources? : ArrayView[(String, Resource)], anchors? : ArrayView[((String, String), Anchor)], retrieve? : (String) -> Resource raise) -> Self
 pub fn Registry::remove(Self, String) -> Self raise ReferencingError
 pub fn Registry::resolver(Self, base_uri? : String) -> Resolver
 pub fn Registry::resolver_with_root(Self, Resource) -> Resolver
-pub fn Registry::uncrawled_count(Self) -> Int
-pub fn Registry::with_contents(Self, ArrayView[(String, Json)], default_specification? : Specification) -> Self raise ReferencingError
+pub fn Registry::uncrawled_count(Self) -> Int32
+pub fn Registry::with_contents(Self, ArrayView[(String, @json.Json)], default_specification? : Specification) -> Self raise ReferencingError
 pub fn Registry::with_identified_resource(Self, Resource) -> Self raise ReferencingError
 pub fn Registry::with_identified_resources(Self, ArrayView[Resource]) -> Self raise ReferencingError
 pub fn Registry::with_resource(Self, String, Resource) -> Self
@@ -114,7 +115,7 @@ pub impl Eq for Registry
 pub impl Show for Registry
 
 pub(all) struct Resolved {
-  contents : Json
+  contents : @json.Json
   resolver : Resolver
 }
 
@@ -131,14 +132,14 @@ pub fn Resolver::registry(Self) -> Registry
 pub impl Show for Resolver
 
 pub struct Resource {
-  contents : Json
+  contents : @json.Json
   specification : Specification
 }
 pub fn Resource::anchors(Self) -> Array[Anchor]
-pub fn Resource::from_contents(Json, default_specification? : Specification) -> Self raise ReferencingError
+pub fn Resource::from_contents(@json.Json, default_specification? : Specification) -> Self raise ReferencingError
 pub fn Resource::id(Self) -> String?
-pub fn Resource::new(Json, specification~ : Specification) -> Self
-pub fn Resource::new_opaque(Json) -> Self
+pub fn Resource::new(@json.Json, specification~ : Specification) -> Self
+pub fn Resource::new_opaque(@json.Json) -> Self
 pub fn Resource::pointer(Self, String, Resolver) -> Resolved raise
 pub fn Resource::subresources(Self) -> Array[Self]
 pub impl Eq for Resource
@@ -149,26 +150,27 @@ pub(all) struct Retrieved[T] {
   registry : Registry
 }
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Segment {
   Key(String)
-  Index(Int)
-} derive(Eq, @debug.Debug)
+  Index(Int32)
+}
 pub fn Segment::is_key(Self, String) -> Bool
 
 pub struct Specification {
   name : String
-  id_of : (Json) -> String?
-  subresources_of : (Json) -> Array[Json]
+  id_of : (@json.Json) -> String?
+  subresources_of : (@json.Json) -> Array[@json.Json]
   maybe_in_subresource : (Array[Segment], Resolver, Resource) -> Resolver raise
-  anchors_in : (Specification, Json) -> Array[Anchor]
+  anchors_in : (Specification, @json.Json) -> Array[Anchor]
 }
-pub fn Specification::anchors_in(Self, Json) -> Array[Anchor]
-pub fn Specification::create_resource(Self, Json) -> Resource
-pub fn Specification::detect(Json, default? : Self) -> Self raise ReferencingError
-pub fn Specification::id_of(Self, Json) -> String?
+pub fn Specification::anchors_in(Self, @json.Json) -> Array[Anchor]
+pub fn Specification::create_resource(Self, @json.Json) -> Resource
+pub fn Specification::detect(@json.Json, default? : Self) -> Self raise ReferencingError
+pub fn Specification::id_of(Self, @json.Json) -> String?
 pub fn Specification::maybe_in_subresource(Self, Array[Segment], Resolver, Resource) -> Resolver raise
-pub fn Specification::new(name~ : String, id_of~ : (Json) -> String?, subresources_of~ : (Json) -> Array[Json], anchors_in~ : (Self, Json) -> Array[Anchor], maybe_in_subresource~ : (Array[Segment], Resolver, Resource) -> Resolver raise) -> Self
-pub fn Specification::subresources_of(Self, Json) -> Array[Json]
+pub fn Specification::new(name~ : String, id_of~ : (@json.Json) -> String?, subresources_of~ : (@json.Json) -> Array[@json.Json], anchors_in~ : (Self, @json.Json) -> Array[Anchor], maybe_in_subresource~ : (Array[Segment], Resolver, Resource) -> Resolver raise) -> Self
+pub fn Specification::subresources_of(Self, @json.Json) -> Array[@json.Json]
 pub impl Eq for Specification
 pub impl Show for Specification
 

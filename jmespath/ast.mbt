@@ -9,6 +9,7 @@
 
 ///|
 /// A JMESPath AST node.
+#derive(Eq, Debug)
 pub(all) enum Node {
   /// `comparator(name, first, second)`; `name` is one of
   /// `eq`, `ne`, `lt`, `gt`, `lte`, `gte`.
@@ -55,7 +56,7 @@ pub(all) enum Node {
   Slice(Int32?, Int32?, Int32?)
   /// `value_projection(left, right)`
   ValueProjection(Node, Node)
-} derive(Eq, Debug)
+}
 
 ///|
 /// The upstream `node['type']`.

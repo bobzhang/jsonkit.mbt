@@ -27,18 +27,21 @@ pub let uses_params : ReadOnlyArray[String]
 pub let uses_relative : ReadOnlyArray[String]
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror ValueError {
   ValueError(String)
-} derive(Eq, @debug.Debug)
+}
 pub impl Show for ValueError
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) struct DefragResult {
   url : String
   fragment : String
-} derive(Eq, @debug.Debug)
+}
 pub fn DefragResult::geturl(Self) -> String
 
+#derive(Eq, @debug.Debug)
 pub(all) struct ParseResult {
   scheme : String
   netloc : String
@@ -46,16 +49,17 @@ pub(all) struct ParseResult {
   params : String
   query : String
   fragment : String
-} derive(Eq, @debug.Debug)
+}
 pub fn ParseResult::geturl(Self) -> String
 
+#derive(Eq, @debug.Debug)
 pub(all) struct SplitResult {
   scheme : String
   netloc : String
   path : String
   query : String
   fragment : String
-} derive(Eq, @debug.Debug)
+}
 pub fn SplitResult::geturl(Self) -> String
 
 // Type aliases

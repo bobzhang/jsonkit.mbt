@@ -1,10 +1,14 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "bobzhang/jsonschema/specifications"
 
-// Values
-pub fn contents(String) -> Json?
+import {
+  "moonbitlang/core/json",
+}
 
-pub fn schemas() -> Array[(String, Json)]
+// Values
+pub fn contents(String) -> @json.Json?
+
+pub fn schemas() -> Array[(String, @json.Json)]
 
 // Errors
 

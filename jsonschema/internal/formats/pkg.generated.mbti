@@ -6,7 +6,7 @@ pub fn ascii_upper(String) -> String
 
 pub fn css_color(String) -> Unit raise LibError
 
-pub fn fqdn_is_valid(String, min_labels~ : Int) -> Bool raise LibError
+pub fn fqdn_is_valid(String, min_labels~ : Int32) -> Bool raise LibError
 
 pub fn idna_encode(String) -> Unit raise LibError
 
@@ -30,11 +30,11 @@ pub fn json_pointer(String) -> Unit raise LibError
 
 pub fn parse_duration(String) -> Unit raise LibError
 
-pub fn punycode_decode(String) -> Array[Int] raise LibError
+pub fn punycode_decode(String) -> Array[Int32] raise LibError
 
-pub fn punycode_encode(ArrayView[Int]) -> String
+pub fn punycode_encode(ArrayView[Int32]) -> String
 
-pub fn py_lower(ArrayView[Int]) -> Array[Int]
+pub fn py_lower(ArrayView[Int32]) -> Array[Int32]
 
 pub fn relative_json_pointer(String) -> Bool raise LibError
 

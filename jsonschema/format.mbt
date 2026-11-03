@@ -62,9 +62,10 @@ pub fn FormatChecker::new(
 
 ///|
 /// Raised by `FormatChecker::new` for unknown formats (upstream: `KeyError`).
+#derive(Debug)
 pub suberror UnknownFormat {
   UnknownFormat(String)
-} derive(Debug)
+}
 
 ///|
 /// `repr(checker)`: `<FormatChecker checkers=['date', 'email', ...]>`.

@@ -3,14 +3,15 @@ package "bobzhang/referencing/jsonschema"
 
 import {
   "bobzhang/referencing",
+  "moonbitlang/core/json",
 }
 
 // Values
-pub fn anchors_2019(@referencing.Specification, Json) -> Array[@referencing.Anchor]
+pub fn anchors_2019(@referencing.Specification, @json.Json) -> Array[@referencing.Anchor]
 
-pub fn anchors_2020(@referencing.Specification, Json) -> Array[@referencing.Anchor]
+pub fn anchors_2020(@referencing.Specification, @json.Json) -> Array[@referencing.Anchor]
 
-pub fn dollar_id(Json) -> String?
+pub fn dollar_id(@json.Json) -> String?
 
 pub fn draft201909() -> @referencing.Specification
 
@@ -28,13 +29,13 @@ pub fn dynamic_anchor(name~ : String, resource~ : @referencing.Resource) -> @ref
 
 pub let empty_registry : @referencing.Registry
 
-pub fn legacy_anchor_in_dollar_id(@referencing.Specification, Json) -> Array[@referencing.Anchor]
+pub fn legacy_anchor_in_dollar_id(@referencing.Specification, @json.Json) -> Array[@referencing.Anchor]
 
-pub fn legacy_anchor_in_id(@referencing.Specification, Json) -> Array[@referencing.Anchor]
+pub fn legacy_anchor_in_id(@referencing.Specification, @json.Json) -> Array[@referencing.Anchor]
 
-pub fn legacy_dollar_id(Json) -> String?
+pub fn legacy_dollar_id(@json.Json) -> String?
 
-pub fn legacy_id(Json) -> String?
+pub fn legacy_id(@json.Json) -> String?
 
 pub fn lookup_recursive_ref(@referencing.Resolver) -> @referencing.Resolved raise
 

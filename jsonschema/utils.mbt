@@ -1,10 +1,11 @@
 ///|
 /// An element of an error's (instance or schema) path: an object key or an
 /// array index, like the `str | int` items of upstream's path deques.
+#derive(Eq, Hash, Debug)
 pub(all) enum PathItem {
   Key(String)
   Index(Int32)
-} derive(Eq, Hash, Debug)
+}
 
 ///|
 /// Python's ordering: keys by code point, indices numerically. (Upstream

@@ -1,5 +1,6 @@
 ///|
 /// Which upstream exception class an error stands for.
+#derive(Eq, Debug)
 pub(all) enum ErrorKind {
   /// `jsonschema.exceptions.ValidationError`: an instance was invalid under a
   /// provided schema.
@@ -7,7 +8,7 @@ pub(all) enum ErrorKind {
   /// `jsonschema.exceptions.SchemaError`: a schema was invalid under its
   /// corresponding metaschema.
   Schema
-} derive(Eq, Debug)
+}
 
 ///|
 /// A validation error (upstream's `_Error`, i.e. `ValidationError` or

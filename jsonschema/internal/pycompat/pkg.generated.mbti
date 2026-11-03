@@ -3,50 +3,51 @@ package "bobzhang/jsonschema/internal/pycompat"
 
 import {
   "moonbitlang/core/bigint",
+  "moonbitlang/core/json",
 }
 
 // Values
 pub fn bigint_of_whole_double(Double) -> @bigint.BigInt
 
-pub fn compare_numbers(Json, Json) -> Int?
+pub fn compare_numbers(@json.Json, @json.Json) -> Int32?
 
-pub fn int_value(Json) -> @bigint.BigInt
+pub fn int_value(@json.Json) -> @bigint.BigInt
 
-pub fn is_float(Json) -> Bool
+pub fn is_float(@json.Json) -> Bool
 
-pub fn is_int(Json) -> Bool
+pub fn is_int(@json.Json) -> Bool
 
-pub fn is_number(Json) -> Bool
+pub fn is_number(@json.Json) -> Bool
 
 pub fn is_whole(Double) -> Bool
 
-pub fn loads(String) -> Json raise JSONDecodeError
+pub fn loads(String) -> @json.Json raise JSONDecodeError
 
-pub fn multiple_of_failed(Json, Json) -> Bool raise ArithmeticError
+pub fn multiple_of_failed(@json.Json, @json.Json) -> Bool raise ArithmeticError
 
-pub fn number_value(Json) -> Double
+pub fn number_value(@json.Json) -> Double
 
-pub fn numbers_equal(Json, Json) -> Bool
+pub fn numbers_equal(@json.Json, @json.Json) -> Bool
 
-pub fn pformat(Json, width? : Int) -> String
+pub fn pformat(@json.Json, width? : Int32) -> String
 
-pub fn repr(Json) -> String
+pub fn repr(@json.Json) -> String
 
 pub fn repr_float(Double) -> String
 
-pub fn repr_int(Json) -> String
+pub fn repr_int(@json.Json) -> String
 
 pub fn repr_string(StringView) -> String
 
-pub fn short_repr(Json) -> String
+pub fn short_repr(@json.Json) -> String
 
-pub fn splitlines_keepends(Array[Int]) -> Array[Array[Int]]
+pub fn splitlines_keepends(Array[Int32]) -> Array[Array[Int32]]
 
 pub fn text_dedent(String) -> String
 
 pub fn text_indent(String, String) -> String
 
-pub fn write_repr(StringBuilder, Json) -> Unit
+pub fn write_repr(StringBuilder, @json.Json) -> Unit
 
 // Errors
 pub suberror ArithmeticError {
@@ -57,7 +58,7 @@ pub suberror ArithmeticError {
 pub impl Show for ArithmeticError
 
 pub suberror JSONDecodeError {
-  JSONDecodeError(msg~ : String, pos~ : Int, lineno~ : Int, colno~ : Int)
+  JSONDecodeError(msg~ : String, pos~ : Int32, lineno~ : Int32, colno~ : Int32)
 }
 pub impl Show for JSONDecodeError
 

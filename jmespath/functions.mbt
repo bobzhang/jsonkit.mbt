@@ -13,10 +13,11 @@
 /// `types` are JMESPath type names: `number`, `string`, `boolean`, `array`,
 /// `object`, `null`, `expref`, or typed arrays such as `array-number`.  An
 /// empty list accepts any value.
+#derive(Eq, Debug)
 pub(all) struct ArgSpec {
   types : Array[String]
   variadic : Bool
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn ArgSpec::new(types : Array[String], variadic~ : Bool = false) -> ArgSpec {
