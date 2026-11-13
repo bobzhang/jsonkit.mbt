@@ -32,35 +32,35 @@ pub(all) suberror JMESPathError {
     token_value~ : String,
     token_type~ : String,
     msg~ : String,
-    expression~ : String?
+    expression~ : String?,
   )
   IncompleteExpressionError(
     lex_position~ : Int32,
     token_value~ : String?,
     token_type~ : String?,
-    expression~ : String?
+    expression~ : String?,
   )
   LexerError(
     lexer_position~ : Int32,
     lexer_value~ : String,
     message~ : String,
-    expression~ : String?
+    expression~ : String?,
   )
   ArityError(
     expected_arity~ : Int32,
     actual_arity~ : Int32,
-    function_name~ : String
+    function_name~ : String,
   )
   VariadictArityError(
     expected_arity~ : Int32,
     actual_arity~ : Int32,
-    function_name~ : String
+    function_name~ : String,
   )
   JMESPathTypeError(
     function_name~ : String,
     current_value~ : Value,
     actual_type~ : String,
-    expected_types~ : Array[String]
+    expected_types~ : Array[String],
   )
   EmptyExpressionError
   UnknownFunctionError(String)
@@ -123,7 +123,7 @@ pub impl Show for JMESPathError with fn output(self, logger) {
       function_name~,
       current_value~,
       actual_type~,
-      expected_types~
+      expected_types~,
     ) =>
       logger.write_string(
         "In function \{function_name}(), invalid type for value: \{current_value}, expected one of: \{py_repr_str_list(expected_types)}, received: \"\{actual_type}\"",

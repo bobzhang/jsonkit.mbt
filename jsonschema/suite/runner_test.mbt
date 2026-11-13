@@ -117,7 +117,7 @@ fn run_suite_file(
           "schema": schema,
           "tests": Array(tests),
           ..
-        }
+        },
       ) else {
       return "malformed case"
     }
@@ -129,7 +129,7 @@ fn run_suite_file(
             "data": data,
             "valid": valid,
             ..
-          }
+          },
         ) else {
         return "malformed test"
       }
