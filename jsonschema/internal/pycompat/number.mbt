@@ -61,7 +61,10 @@ pub fn bigint_of_whole_double(d : Double) -> @bigint.BigInt {
 pub fn int_value(j : Json) -> @bigint.BigInt {
   match j {
     Number(_, repr=Some(r)) if !repr_is_float(r) =>
-      @bigint.BigInt::from_string(normalize_int_token(r))
+      @string.parse_bigint(normalize_int_token(r)) catch {
+        Failure(msg) => abort(msg)
+        _ => abort("invalid syntax")
+      }
     Number(d, ..) => bigint_of_whole_double(d)
     _ => @bigint.BigInt::from_int(0)
   }

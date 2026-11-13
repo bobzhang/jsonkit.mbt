@@ -1,6 +1,6 @@
 name = "bobzhang/jsonschema"
 
-version = "0.1.2"
+version = "0.1.3"
 
 import {
   "bobzhang/referencing@0.1.2",

@@ -308,7 +308,7 @@ test "by_relevance" {
   for errors in [[shallow, deep], [deep, shallow]] {
     let sorted = errors.copy()
     sorted.sort_by((a, b) => {
-      @jsonschema.relevance(a).compare(@jsonschema.relevance(b))
+      Compare::compare(@jsonschema.relevance(a), @jsonschema.relevance(b))
     })
     inspect(sorted.map(e => path_repr(e.path)).join(" "), content="['foo'] []")
   }
@@ -484,7 +484,7 @@ fn make_error(
 ///|
 /// Everything after the message line of `str(error)`.
 fn shows(error : @jsonschema.ValidationError) -> String {
-  let s = error.to_string()
+  let s = Show::to_string(error)
   match s.find("\n") {
     Some(i) => {
       assert_eq(s.unsafe_substring(start=0, end=i), error.message) catch {
