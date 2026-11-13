@@ -22,7 +22,11 @@ jobs:
       - run: moon update
       - name: moon check (warnings are errors)
         run: moon check --deny-warn --target all
-      - name: moon fmt (no diff)
+      # Stable and prerelease disagree on trailing commas. The requested
+      # canonical source format follows prerelease; both channels still
+      # check and test all targets below.
+      - name: moon fmt (prerelease canonical format)
+        if: matrix.moonbit == 'pre-release'
         run: moon fmt --check
       - name: Run tests
         run: moon test --target all
