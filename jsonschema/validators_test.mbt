@@ -369,9 +369,9 @@ test "draft 6 functionality does not leak into drafts 3 and 4" {
       try cls.check_schema(schema) catch {
         @jsonschema.SchemaError(e) =>
           assert_true(
-            e
-            .to_string()
-            .contains("\{@jsonschema.py_repr(schema)} is not of type"),
+            Show::to_string(e).contains(
+              "\{@jsonschema.py_repr(schema)} is not of type",
+            ),
           )
         _ => fail("expected a SchemaError")
       } noraise {
@@ -478,7 +478,7 @@ test "validate" {
   }
   try @jsonschema.validate(12, { "type": "string" }) catch {
     @jsonschema.ValidationError(e) => {
-      let s = e.to_string()
+      let s = Show::to_string(e)
       assert_true(s.contains("Failed validating 'type' in schema"))
       assert_true(s.contains("On instance"))
     }
@@ -488,7 +488,7 @@ test "validate" {
   }
   try @jsonschema.validate(12, { "type": 12 }) catch {
     @jsonschema.SchemaError(e) => {
-      let s = e.to_string()
+      let s = Show::to_string(e)
       assert_true(s.contains("in metaschema"))
       assert_true(s.contains("On schema"))
     }
@@ -503,7 +503,9 @@ test "validate" {
     })
   catch {
     @jsonschema.ValidationError(e) =>
-      assert_true(e.to_string().contains("12 is less than the minimum of 20"))
+      assert_true(
+        Show::to_string(e).contains("12 is less than the minimum of 20"),
+      )
     _ => fail("expected a ValidationError")
   } noraise {
     _ => fail("expected a ValidationError")

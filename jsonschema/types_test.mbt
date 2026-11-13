@@ -37,7 +37,7 @@ test "TypeChecker" {
   try @jsonschema.TypeChecker::new().is_type(4, "foobar") catch {
     @jsonschema.UndefinedTypeCheck(_) as e =>
       assert_true(
-        e.to_string().contains("'foobar' is unknown to this type checker"),
+        Show::to_string(e).contains("'foobar' is unknown to this type checker"),
       )
     _ => fail("expected UndefinedTypeCheck")
   } noraise {
@@ -57,7 +57,7 @@ test "TypeChecker" {
   // remove
   assert_true(checker.remove(["two"]) == @jsonschema.TypeChecker::new())
   try @jsonschema.TypeChecker::new().remove(["foobar"]) catch {
-    e => assert_true(e.to_string().contains("foobar"))
+    e => assert_true(Show::to_string(e).contains("foobar"))
   } noraise {
     _ => fail("expected UndefinedTypeCheck")
   }
@@ -142,7 +142,7 @@ test "custom types: unknown types" {
     @jsonschema.draft202012_validator.new({}).is_type(12, "some unknown type")
   catch {
     @jsonschema.UnknownType(_) as e =>
-      assert_true(e.to_string().contains("'some unknown type'"))
+      assert_true(Show::to_string(e).contains("'some unknown type'"))
     _ => fail("expected UnknownType")
   } noraise {
     _ => fail("expected UnknownType")

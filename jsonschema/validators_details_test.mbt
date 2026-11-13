@@ -38,7 +38,10 @@ fn sorted_errors(
   errors : Array[@jsonschema.ValidationError],
 ) -> Array[@jsonschema.ValidationError] {
   let key = (e : @jsonschema.ValidationError) => {
-    (e.path.map(p => p.to_string()), e.schema_path.map(p => p.to_string()))
+    (
+      e.path.map(p => Show::to_string(p)),
+      e.schema_path.map(p => Show::to_string(p)),
+    )
   }
   let lex = (a : Array[String], b : Array[String]) => {
     for i in 0..<@cmp.minimum(a.length(), b.length()) {

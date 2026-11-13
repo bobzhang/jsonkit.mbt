@@ -36,7 +36,7 @@ test "eq of equal errors" {
 
 ///|
 test "str of errors (as Python's str())" {
-  let messages = error_thunks().map(e => e.to_string())
+  let messages = error_thunks().map(e => Show::to_string(e))
   debug_inspect(
     messages,
     content=(

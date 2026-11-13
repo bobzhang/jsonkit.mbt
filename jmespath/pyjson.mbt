@@ -15,7 +15,7 @@ fn JsonScanner::error(
   idx : Int32,
 ) -> JSONDecodeError {
   // Python positions count code points, ours are UTF-16 offsets.
-  let pos = self.s.char_length(end_offset=idx.clamp(min=0, max=self.len))
+  let pos = self.s.char_length(end=idx.clamp(min=0, max=self.len))
   JSONDecodeError(msg~, doc=self.s, pos~)
 }
 
