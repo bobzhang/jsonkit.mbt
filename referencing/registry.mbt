@@ -51,7 +51,7 @@ pub fn Registry::new(
   {
     resources: @hashmap.HashMap(resources),
     anchors: @hashmap.HashMap(anchors),
-    uncrawled: @hashset.HashSet::new(),
+    uncrawled: @hashset.HashSet::empty(),
     retrieve,
   }
 }
@@ -135,8 +135,8 @@ pub fn Registry::with_identified_resources(
   let mut uncrawled = self.uncrawled
   for resource in new {
     guard resource.id() is Some(id) else { raise NoInternalID(resource~) }
-    uncrawled = uncrawled.add(id)
-    resources = resources.add(id, resource)
+    uncrawled = uncrawled.insert(id)
+    resources = resources.insert(id, resource)
   }
   { ..self, resources, uncrawled, }
 }
@@ -252,19 +252,19 @@ pub fn Registry::crawl(self : Registry) -> Registry raise @urllib.ValueError {
     let uri = match resource.id() {
       Some(id) => {
         let uri = @urllib.urljoin(uri, id)
-        resources = resources.add(uri, resource)
+        resources = resources.insert(uri, resource)
         uri
       }
       None => uri
     }
     for each in resource.anchors() {
-      anchors = anchors.add((uri, each.name), each)
+      anchors = anchors.insert((uri, each.name), each)
     }
     for each in resource.subresources() {
       uncrawled.push((uri, each))
     }
   }
-  { ..self, resources, anchors, uncrawled: @hashset.HashSet::new(), }
+  { ..self, resources, anchors, uncrawled: @hashset.HashSet::empty(), }
 }
 
 ///|
@@ -290,8 +290,8 @@ pub fn Registry::with_resources(
   let mut uncrawled = self.uncrawled
   for pair in pairs {
     let uri = rstrip_hash(pair.0)
-    uncrawled = uncrawled.add(uri)
-    resources = resources.add(uri, pair.1)
+    uncrawled = uncrawled.insert(uri)
+    resources = resources.insert(uri, pair.1)
   }
   { ..self, resources, uncrawled, }
 }
@@ -332,12 +332,14 @@ pub fn Registry::combine(
   let mut retrieve = self.retrieve
   for registry in registries {
     resources = registry.resources.fold(init=resources, (acc, k, v) => {
-      acc.add(k, v)
+      acc.insert(k, v)
     })
-    anchors = registry.anchors.fold(init=anchors, (acc, k, v) => acc.add(k, v))
+    anchors = registry.anchors.fold(init=anchors, (acc, k, v) => {
+      acc.insert(k, v)
+    })
     uncrawled = registry.uncrawled
       .iter()
-      .fold(init=uncrawled, (acc, k) => acc.add(k))
+      .fold(init=uncrawled, (acc, k) => acc.insert(k))
     if registry.retrieve is Some(theirs) {
       if retrieve is Some(ours) && !physical_equal(theirs, ours) {
         raise @urllib.ValueError(

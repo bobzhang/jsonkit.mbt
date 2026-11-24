@@ -208,7 +208,7 @@ pub fn case_fold_extras(
   let n = case_classes.length() / 2
   for i in 0..<n {
     if in_pairs(set, case_classes[2 * i]) {
-      roots.add(case_classes[2 * i + 1])
+      roots.insert(case_classes[2 * i + 1])
     }
   }
   let out = []
