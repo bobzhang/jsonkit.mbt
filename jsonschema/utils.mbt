@@ -229,7 +229,7 @@ fn uniq(container : ArrayView[Json]) -> Bool {
       if seen.contains(key) {
         return false
       }
-      seen.add(key)
+      seen.insert(key)
     } else {
       for previous in unsupported {
         if equal(previous, element) {
