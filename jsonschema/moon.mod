@@ -1,9 +1,9 @@
 name = "bobzhang/jsonschema"
 
-version = "0.1.5"
+version = "0.1.6"
 
 import {
-  "bobzhang/referencing@0.1.3",
+  "bobzhang/referencing@0.1.4",
 }
 
 readme = "README.md"
